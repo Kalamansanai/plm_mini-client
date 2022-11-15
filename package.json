@@ -4,6 +4,7 @@
     "version": "0.0.0",
     "scripts": {
         "dev": "vite",
+        "check": "tsc --noEmit",
         "build": "vite build",
         "preview": "vite preview"
     },
@@ -14,8 +15,8 @@
         "@mui/icons-material": "^5.8.4",
         "@mui/lab": "^5.0.0-alpha.88",
         "@mui/material": "^5.8.6",
+        "@mui/x-data-grid": "^5.17.11",
         "@react-hook/resize-observer": "^1.2.5",
-        "axios": "^0.27.2",
         "base64-arraybuffer": "^1.0.2",
         "material-ui-popup-state": "^3.1.1",
         "notistack": "^2.0.5",
@@ -26,8 +27,12 @@
     },
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^3.2.0",
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
         "@vitejs/plugin-react": "^1.0.7",
         "prettier": "^2.7.1",
-        "vite": "^2.8.0"
+        "typescript": "latest",
+        "vite": "^2.8.0",
+        "vite-tsconfig-paths": "^3.5.2"
     }
 }

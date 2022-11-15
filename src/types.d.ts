@@ -7,13 +7,17 @@ export type Template = {
     height: number;
 };
 
-export type Site = {
+export type CompanyHierarchyNode = {
     id: number;
     name: string;
+};
+
+export type Site = CompanyHierarchyNode & {
     opus?: Array<OPU>;
 };
 
-export type OPU = {
-    id: number;
-    name: string;
+export type OPU = CompanyHierarchyNode & {
+    lines?: Array<Line>;
 };
+
+export type Line = CompanyHierarchyNode;
