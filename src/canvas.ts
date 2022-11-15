@@ -1,4 +1,5 @@
-import { bifilter } from "./utils";
+import { type Template } from "./types";
+import { bifilter } from "./utils/bifilter";
 
 const TEMPLATE_COLOR = "#ff0";
 const TEMPLATE_DASH_COLOR = "#fff";
@@ -12,7 +13,7 @@ export const canvasActionTypes = {
     move: 2,
 };
 
-const drawLabel = (ctx, x, y, text) => {
+const drawLabel = (ctx: CanvasRenderingContext2D, x: number, y: number, text: string) => {
     ctx.save();
 
     ctx.globalCompositeOperation = "source-over";
@@ -38,7 +39,7 @@ const drawLabel = (ctx, x, y, text) => {
     ctx.restore();
 };
 
-export const streamDrawFps = (ctx, fps) => {
+export const streamDrawFps = (ctx: CanvasRenderingContext2D, fps: number) => {
     ctx.save();
 
     let color;
@@ -54,8 +55,8 @@ export const streamDrawFps = (ctx, fps) => {
     ctx.fillStyle = color;
     ctx.strokeStyle = "#000";
 
-    ctx.fillText(fps, 4, 28);
-    ctx.strokeText(fps, 4, 28);
+    ctx.fillText(fps.toString(), 4, 28);
+    ctx.strokeText(fps.toString(), 4, 28);
 
     ctx.fill();
     ctx.stroke();
@@ -63,7 +64,11 @@ export const streamDrawFps = (ctx, fps) => {
     ctx.restore();
 };
 
-export const streamDrawTemplates = (ctx, ts, drawLabels) => {
+export const streamDrawTemplates = (
+    ctx: CanvasRenderingContext2D,
+    ts: Template[],
+    drawLabels: boolean
+) => {
     ctx.save();
 
     const [tracked, untracked] = bifilter((t) => Object.keys(t).includes("present"), ts);
@@ -84,7 +89,11 @@ export const streamDrawTemplates = (ctx, ts, drawLabels) => {
     ctx.restore();
 };
 
-export const editorDrawTemplates = (ctx, ts, drawLabels) => {
+export const editorDrawTemplates = (
+    ctx: CanvasRenderingContext2D,
+    ts: Template[],
+    drawLabels: boolean
+) => {
     ctx.save();
 
     ctx.lineWidth = TEMPLATE_LINE_WIDTH;
@@ -97,7 +106,12 @@ export const editorDrawTemplates = (ctx, ts, drawLabels) => {
     ctx.restore();
 };
 
-const drawDashedTemplate = (ctx, t, bgcolor, dashcolor) => {
+const drawDashedTemplate = (
+    ctx: CanvasRenderingContext2D,
+    t: Template,
+    bgcolor: string,
+    dashcolor: string
+) => {
     ctx.globalCompositeOperation = "difference";
     ctx.strokeStyle = bgcolor;
     ctx.setLineDash([]);
@@ -109,7 +123,11 @@ const drawDashedTemplate = (ctx, t, bgcolor, dashcolor) => {
     ctx.strokeRect(t.x, t.y, t.width, t.height);
 };
 
-export const editorDrawSelectedTemplate = (ctx, t, drawLabels) => {
+export const editorDrawSelectedTemplate = (
+    ctx: CanvasRenderingContext2D,
+    t: Template,
+    drawLabels: boolean
+) => {
     ctx.save();
 
     ctx.globalCompositeOperation = "screen";
@@ -127,7 +145,14 @@ export const editorDrawSelectedTemplate = (ctx, t, drawLabels) => {
     ctx.restore();
 };
 
-export const editorDarkenOutsideRectangle = (ctx, x, y, w, h, image) => {
+export const editorDarkenOutsideRectangle = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    image: HTMLImageElement
+) => {
     const cw = image.width;
     const ch = image.height;
 
@@ -151,7 +176,7 @@ export const editorDarkenOutsideRectangle = (ctx, x, y, w, h, image) => {
     ctx.restore();
 };
 
-export const getActionForTemplate = (x, y, t) => {
+export const getActionForTemplate = (x: number, y: number, t: Template) => {
     if (isInCircle(x, y, t.x + t.width, t.y + t.height, TEMPLATE_CIRCLE_SIZE)) {
         return { type: canvasActionTypes.resize, args: null };
     } else if (isInRectangle(x, y, t.x, t.y, t.width, t.height)) {
@@ -166,19 +191,19 @@ export const getActionForTemplate = (x, y, t) => {
     return null;
 };
 
-const isBetween = (x, x1, x2) => {
+const isBetween = (x: number, x1: number, x2: number) => {
     return x >= x1 && x <= x2;
 };
 
-const distance = (x1, y1, x2, y2) => {
+const distance = (x1: number, y1: number, x2: number, y2: number) => {
     return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 };
 
-const isInRectangle = (x, y, rx, ry, rw, rh) => {
+const isInRectangle = (x: number, y: number, rx: number, ry: number, rw: number, rh: number) => {
     return isBetween(x, rx, rx + rw) && isBetween(y, ry, ry + rh);
 };
 
-const isInCircle = (x, y, cx, cy, cr) => {
+const isInCircle = (x: number, y: number, cx: number, cy: number, cr: number) => {
     const d = distance(x, y, cx, cy);
     return d < cr;
 };

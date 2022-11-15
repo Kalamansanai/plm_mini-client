@@ -20,16 +20,6 @@ import type {
   StationsGetByIdRes,
   StationsRenameReq,
 } from '../models';
-import {
-    StationsCreateReqFromJSON,
-    StationsCreateReqToJSON,
-    StationsCreateResFromJSON,
-    StationsCreateResToJSON,
-    StationsGetByIdResFromJSON,
-    StationsGetByIdResToJSON,
-    StationsRenameReqFromJSON,
-    StationsRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsStationsCreateRequest {
     stationsCreateReq: StationsCreateReq;
@@ -71,10 +61,10 @@ export class StationsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: StationsCreateReqToJSON(requestParameters.stationsCreateReq),
+            body: requestParameters.stationsCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => StationsCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -130,7 +120,7 @@ export class StationsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => StationsGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -162,7 +152,7 @@ export class StationsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: StationsRenameReqToJSON(requestParameters.stationsRenameReq),
+            body: requestParameters.stationsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

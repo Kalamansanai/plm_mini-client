@@ -20,16 +20,6 @@ import type {
   OPUsGetByIdRes,
   OPUsRenameReq,
 } from '../models';
-import {
-    OPUsCreateReqFromJSON,
-    OPUsCreateReqToJSON,
-    OPUsCreateResFromJSON,
-    OPUsCreateResToJSON,
-    OPUsGetByIdResFromJSON,
-    OPUsGetByIdResToJSON,
-    OPUsRenameReqFromJSON,
-    OPUsRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsOPUsCreateRequest {
     oPUsCreateReq: OPUsCreateReq;
@@ -71,10 +61,10 @@ export class OPUsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: OPUsCreateReqToJSON(requestParameters.oPUsCreateReq),
+            body: requestParameters.oPUsCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OPUsCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -130,7 +120,7 @@ export class OPUsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => OPUsGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -162,7 +152,7 @@ export class OPUsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: OPUsRenameReqToJSON(requestParameters.oPUsRenameReq),
+            body: requestParameters.oPUsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

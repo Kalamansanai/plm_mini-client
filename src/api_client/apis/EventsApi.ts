@@ -17,10 +17,6 @@ import * as runtime from '../runtime';
 import type {
   EventsCreateReq,
 } from '../models';
-import {
-    EventsCreateReqFromJSON,
-    EventsCreateReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsEventsCreateRequest {
     eventsCreateReq: EventsCreateReq;
@@ -49,7 +45,7 @@ export class EventsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EventsCreateReqToJSON(requestParameters.eventsCreateReq),
+            body: requestParameters.eventsCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

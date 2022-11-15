@@ -23,22 +23,6 @@ import type {
   TasksGetObjectsAndStepsRes,
   TasksUpdateReq,
 } from '../models';
-import {
-    TasksCreateReqFromJSON,
-    TasksCreateReqToJSON,
-    TasksCreateResFromJSON,
-    TasksCreateResToJSON,
-    TasksDeleteReqFromJSON,
-    TasksDeleteReqToJSON,
-    TasksGetByIdResFromJSON,
-    TasksGetByIdResToJSON,
-    TasksGetInstanceResFromJSON,
-    TasksGetInstanceResToJSON,
-    TasksGetObjectsAndStepsResFromJSON,
-    TasksGetObjectsAndStepsResToJSON,
-    TasksUpdateReqFromJSON,
-    TasksUpdateReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsTasksCreateRequest {
     tasksCreateReq: TasksCreateReq;
@@ -90,10 +74,10 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TasksCreateReqToJSON(requestParameters.tasksCreateReq),
+            body: requestParameters.tasksCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TasksCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -125,7 +109,7 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: TasksDeleteReqToJSON(requestParameters.tasksDeleteReq),
+            body: requestParameters.tasksDeleteReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -156,7 +140,7 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TasksGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -192,7 +176,7 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TasksGetInstanceResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -220,7 +204,7 @@ export class TasksApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TasksGetObjectsAndStepsResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -252,7 +236,7 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: TasksUpdateReqToJSON(requestParameters.tasksUpdateReq),
+            body: requestParameters.tasksUpdateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

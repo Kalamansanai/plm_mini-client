@@ -1,34 +1,24 @@
-import { grey, lightGreen, pink, teal } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
+import type {} from "@mui/x-data-grid/themeAugmentation";
+
+export const drawerWidth = 240;
+export const shape = {
+    borderRadius: 8,
+};
 
 const theme = createTheme({
-    drawerWidth: 240,
-    shape: {
-        borderRadius: 8,
-    },
     palette: {
         primary: {
             main: "#00457E",
         },
         background: {
             default: "#eaeaea",
-            panel: "#f0f0f0",
+            paper: "#f0f0f0",
         },
         text: {
-            lighter: grey[500],
-            lightest: grey[200],
-        },
-        tool: {
-            main: teal[400],
-            contrastText: "#fff",
-        },
-        itemKit: {
-            main: lightGreen[300],
-            contrastText: "#000",
-        },
-        qa: {
-            main: pink[300],
-            contrastText: "#fff",
+            primary: grey[500],
+            secondary: grey[200],
         },
     },
     components: {

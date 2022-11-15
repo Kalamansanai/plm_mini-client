@@ -19,14 +19,6 @@ import type {
   DetectorsHeartBeatReq,
   DetectorsIdentifyReq,
 } from '../models';
-import {
-    DetectorsCommandReqFromJSON,
-    DetectorsCommandReqToJSON,
-    DetectorsHeartBeatReqFromJSON,
-    DetectorsHeartBeatReqToJSON,
-    DetectorsIdentifyReqFromJSON,
-    DetectorsIdentifyReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsDetectorsAttachRequest {
     locationId: number;
@@ -119,7 +111,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DetectorsCommandReqToJSON(requestParameters.detectorsCommandReq),
+            body: requestParameters.detectorsCommandReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -182,7 +174,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DetectorsHeartBeatReqToJSON(requestParameters.detectorsHeartBeatReq),
+            body: requestParameters.detectorsHeartBeatReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -217,7 +209,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DetectorsIdentifyReqToJSON(requestParameters.detectorsIdentifyReq),
+            body: requestParameters.detectorsIdentifyReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

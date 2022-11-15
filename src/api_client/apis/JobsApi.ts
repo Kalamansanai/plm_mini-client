@@ -21,18 +21,6 @@ import type {
   JobsListRes,
   JobsRenameReq,
 } from '../models';
-import {
-    JobsCreateReqFromJSON,
-    JobsCreateReqToJSON,
-    JobsCreateResFromJSON,
-    JobsCreateResToJSON,
-    JobsGetByIdResFromJSON,
-    JobsGetByIdResToJSON,
-    JobsListResFromJSON,
-    JobsListResToJSON,
-    JobsRenameReqFromJSON,
-    JobsRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsJobsCreateRequest {
     jobsCreateReq: JobsCreateReq;
@@ -74,10 +62,10 @@ export class JobsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: JobsCreateReqToJSON(requestParameters.jobsCreateReq),
+            body: requestParameters.jobsCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => JobsCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -133,7 +121,7 @@ export class JobsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => JobsGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -157,7 +145,7 @@ export class JobsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(JobsListResFromJSON));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -189,7 +177,7 @@ export class JobsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: JobsRenameReqToJSON(requestParameters.jobsRenameReq),
+            body: requestParameters.jobsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

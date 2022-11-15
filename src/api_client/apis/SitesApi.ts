@@ -21,18 +21,6 @@ import type {
   SitesListRes,
   SitesRenameReq,
 } from '../models';
-import {
-    SitesCreateReqFromJSON,
-    SitesCreateReqToJSON,
-    SitesCreateResFromJSON,
-    SitesCreateResToJSON,
-    SitesGetByIdResFromJSON,
-    SitesGetByIdResToJSON,
-    SitesListResFromJSON,
-    SitesListResToJSON,
-    SitesRenameReqFromJSON,
-    SitesRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsSitesCreateRequest {
     sitesCreateReq: SitesCreateReq;
@@ -74,10 +62,10 @@ export class SitesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SitesCreateReqToJSON(requestParameters.sitesCreateReq),
+            body: requestParameters.sitesCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SitesCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -133,7 +121,7 @@ export class SitesApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SitesGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -157,7 +145,7 @@ export class SitesApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SitesListResFromJSON));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -189,7 +177,7 @@ export class SitesApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: SitesRenameReqToJSON(requestParameters.sitesRenameReq),
+            body: requestParameters.sitesRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

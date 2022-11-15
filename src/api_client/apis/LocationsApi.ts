@@ -20,16 +20,6 @@ import type {
   LocationsGetByIdRes,
   LocationsRenameReq,
 } from '../models';
-import {
-    LocationsCreateReqFromJSON,
-    LocationsCreateReqToJSON,
-    LocationsCreateResFromJSON,
-    LocationsCreateResToJSON,
-    LocationsGetByIdResFromJSON,
-    LocationsGetByIdResToJSON,
-    LocationsRenameReqFromJSON,
-    LocationsRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsLocationsCreateRequest {
     locationsCreateReq: LocationsCreateReq;
@@ -71,10 +61,10 @@ export class LocationsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationsCreateReqToJSON(requestParameters.locationsCreateReq),
+            body: requestParameters.locationsCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LocationsCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -130,7 +120,7 @@ export class LocationsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LocationsGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -162,7 +152,7 @@ export class LocationsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationsRenameReqToJSON(requestParameters.locationsRenameReq),
+            body: requestParameters.locationsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

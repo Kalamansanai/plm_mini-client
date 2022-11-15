@@ -20,16 +20,6 @@ import type {
   LinesGetByIdRes,
   LinesRenameReq,
 } from '../models';
-import {
-    LinesCreateReqFromJSON,
-    LinesCreateReqToJSON,
-    LinesCreateResFromJSON,
-    LinesCreateResToJSON,
-    LinesGetByIdResFromJSON,
-    LinesGetByIdResToJSON,
-    LinesRenameReqFromJSON,
-    LinesRenameReqToJSON,
-} from '../models';
 
 export interface ApiEndpointsLinesCreateRequest {
     linesCreateReq: LinesCreateReq;
@@ -71,10 +61,10 @@ export class LinesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LinesCreateReqToJSON(requestParameters.linesCreateReq),
+            body: requestParameters.linesCreateReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LinesCreateResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -130,7 +120,7 @@ export class LinesApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => LinesGetByIdResFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -162,7 +152,7 @@ export class LinesApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: LinesRenameReqToJSON(requestParameters.linesRenameReq),
+            body: requestParameters.linesRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
