@@ -41,6 +41,5 @@
     "skipLibCheck": true,
     "composite": true
   },
-  "include": ["src"],
-  "exclude": ["src/theme.ts"]
+  "include": ["src"]
 }

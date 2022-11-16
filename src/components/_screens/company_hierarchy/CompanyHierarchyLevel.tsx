@@ -2,7 +2,7 @@ import { LevelDescriptor, State as CHState, Action as CHAction } from "companyHi
 import { bindPopover, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import {ChangeEvent, ChangeEventHandler, useEffect, useState} from "react";
 
-import Box from "@mui/material/Box";
+import {Box} from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
@@ -18,7 +18,7 @@ type Props = LevelDescriptor & {
     dispatch: React.Dispatch<CHAction>;
 };
 
-export default function CompanyHierarchyLevel({ state, dispatch, index, label, addFn, getFn }: Props) {
+export default function CompanyHierarchyLevel({ state, dispatch, index, label, addFn, getFn, renameFn }: Props) {
     const ownSelectedId = state.selectedIds[index];
 
     const [newItemName, setNewItemName] = useState("");
@@ -105,6 +105,12 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
         addPopup.close();
     }
 
+    const onItemRename = async (id: number, name: string) => {
+        await renameFn(id, name);
+        dispatch({ type: "RenameItem", level: index, id: id, name: name });
+        return true;
+    }
+
     const addPopupElement = (
         <Popover {...bindPopover(addPopup)}>
             <TextField label="Name"
@@ -119,10 +125,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
                         onClick={onNewItemMouseSubmit}>
                 <CheckIcon />
             </IconButton>
-
-
         </Popover>
-
     );
 
     return (
@@ -148,6 +151,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
                                 item={item}
                                 selected={item.id === ownSelectedId}
                                 clickHandler={onNodeClick}
+                                renameHandler={onItemRename}
                             />
                         ))}
                         <ListItem disablePadding>

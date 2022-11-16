@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   StationsCreateReq,
   StationsCreateRes,
   StationsGetByIdRes,
@@ -76,7 +77,7 @@ export class StationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsStationsDeleteRaw(requestParameters: ApiEndpointsStationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsStationsDeleteRaw(requestParameters: ApiEndpointsStationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsStationsDelete.');
         }
@@ -92,14 +93,13 @@ export class StationsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsStationsDelete(requestParameters: ApiEndpointsStationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsStationsDeleteRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsStationsDelete(requestParameters: ApiEndpointsStationsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsStationsDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -132,7 +132,7 @@ export class StationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsStationsRenameRaw(requestParameters: ApiEndpointsStationsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsStationsRenameRaw(requestParameters: ApiEndpointsStationsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsStationsRename.');
         }
@@ -155,14 +155,13 @@ export class StationsApi extends runtime.BaseAPI {
             body: requestParameters.stationsRenameReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsStationsRename(requestParameters: ApiEndpointsStationsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsStationsRenameRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsStationsRename(requestParameters: ApiEndpointsStationsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsStationsRenameRaw(requestParameters, initOverrides);
     }
 
 }

@@ -9,7 +9,7 @@ export type LevelDescriptor = {
     label: string;
     addFn: (name: string, parentId?: number) => Promise<CHNode>;
     getFn: (id?: number) => Promise<CHNode[]>;
-    // updateFn: () => void,
+    renameFn: (id: number, name: string) => Promise<void>;
     // deleteFn: () => void
 };
 
@@ -27,6 +27,9 @@ export const descriptors: LevelDescriptor[] = [
             const sites = await new SitesApi(defaultConfig).apiEndpointsSitesList();
             return sites.map<Site>((s) => ({ id: s.id!, name: s.name! }));
         },
+        renameFn: async (id, name) => {
+            await new SitesApi(defaultConfig).apiEndpointsSitesRename({ id, sitesRenameReq: { name }});
+        }
     },
     {
         index: 1,
@@ -42,6 +45,9 @@ export const descriptors: LevelDescriptor[] = [
             });
             return parentSite.opus!.map((o) => ({ id: o.id!, name: o.name! }));
         },
+        renameFn: async (id, name) => {
+            await new OPUsApi(defaultConfig).apiEndpointsOPUsRename({ id, oPUsRenameReq: { name }});
+        }
     },
     {
         index: 2,
@@ -55,6 +61,9 @@ export const descriptors: LevelDescriptor[] = [
             const parentOpu = await new OPUsApi(defaultConfig).apiEndpointsOPUsGetById({ id: id! });
             return parentOpu.lines!.map((l) => ({ id: l.id!, name: l.name! }));
         },
+        renameFn: async (id, name) => {
+            await new LinesApi(defaultConfig).apiEndpointsLinesRename({ id, linesRenameReq: { name }});
+        }
     },
     {
         index: 3,
@@ -67,6 +76,9 @@ export const descriptors: LevelDescriptor[] = [
         getFn: async (id) => {
             const parentLine = await new LinesApi(defaultConfig).apiEndpointsLinesGetById({ id: id! });
             return parentLine.stations!.map((s) => ({ id: s.id!, name: s.name! }));
+        },
+        renameFn: async (id, name) => {
+            await new StationsApi(defaultConfig).apiEndpointsStationsRename({ id, stationsRenameReq: { name }});
         }
     }
 ];
@@ -86,21 +98,31 @@ export const initialState: State = {
 };
 
 export type Action =
-    | { type: "AddItem"; level: number; item: CHNode }
     | { type: "SetItems"; level: number; items: CHNode[] }
+    | { type: "AddItem"; level: number; item: CHNode }
+    | { type: "RenameItem"; level: number; id: number; name: string }
     | { type: "SetSelectedId"; level: number; id: number | null }
     | { type: "Reset" };
 
 export default function reducer(state: State, action: Action): State {
     switch (action.type) {
+        case "SetItems": {
+            const newState = { ...state };
+            newState.items[action.level] = action.items;
+            return newState;
+        }
         case "AddItem": {
             const newState = { ...state };
             newState.items[action.level] = [...newState.items[action.level]!, action.item];
             return newState;
         }
-        case "SetItems": {
+        case "RenameItem": {
+            const newItems = [...state.items[action.level]!];
+            const renamedItem = newItems.find((i) => i.id === action.id)!;
+            renamedItem.name = action.name;
+
             const newState = { ...state };
-            newState.items[action.level] = action.items;
+            newState.items[action.level] = newItems;
             return newState;
         }
         case "SetSelectedId": {

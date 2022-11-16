@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   SitesCreateReq,
   SitesCreateRes,
   SitesGetByIdRes,
@@ -77,7 +78,7 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesDeleteRaw(requestParameters: ApiEndpointsSitesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsSitesDeleteRaw(requestParameters: ApiEndpointsSitesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsSitesDelete.');
         }
@@ -93,14 +94,13 @@ export class SitesApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsSitesDelete(requestParameters: ApiEndpointsSitesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsSitesDeleteRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsSitesDelete(requestParameters: ApiEndpointsSitesDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsSitesDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -157,7 +157,7 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesRenameRaw(requestParameters: ApiEndpointsSitesRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsSitesRenameRaw(requestParameters: ApiEndpointsSitesRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsSitesRename.');
         }
@@ -180,14 +180,13 @@ export class SitesApi extends runtime.BaseAPI {
             body: requestParameters.sitesRenameReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsSitesRename(requestParameters: ApiEndpointsSitesRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsSitesRenameRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsSitesRename(requestParameters: ApiEndpointsSitesRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsSitesRenameRaw(requestParameters, initOverrides);
     }
 
 }

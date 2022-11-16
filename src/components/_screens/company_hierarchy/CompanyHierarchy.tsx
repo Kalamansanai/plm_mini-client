@@ -27,10 +27,7 @@ export default function CompanyHierarchy({ state, dispatch }: Props) {
                     key={i}
                     state={state}
                     dispatch={dispatch}
-                    index={desc.index}
-                    label={desc.label}
-                    addFn={desc.addFn}
-                    getFn={desc.getFn}
+                    {...desc}
                 />
             ))}
         </Grid>

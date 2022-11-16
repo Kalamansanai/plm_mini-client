@@ -116,6 +116,31 @@ export interface DetectorsIdentifyReqCalibrationCoordsReq {
 /**
  * 
  * @export
+ * @interface ErrorResponse
+ */
+export interface ErrorResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof ErrorResponse
+     */
+    statusCode?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ErrorResponse
+     */
+    message?: string;
+    /**
+     * 
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof ErrorResponse
+     */
+    errors?: { [key: string]: Array<string>; };
+}
+/**
+ * 
+ * @export
  * @interface EventsCreateReq
  */
 export interface EventsCreateReq {

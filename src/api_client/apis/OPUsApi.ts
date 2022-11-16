@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  ErrorResponse,
   OPUsCreateReq,
   OPUsCreateRes,
   OPUsGetByIdRes,
@@ -76,7 +77,7 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsDeleteRaw(requestParameters: ApiEndpointsOPUsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsOPUsDeleteRaw(requestParameters: ApiEndpointsOPUsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsOPUsDelete.');
         }
@@ -92,14 +93,13 @@ export class OPUsApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsOPUsDelete(requestParameters: ApiEndpointsOPUsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsOPUsDeleteRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsOPUsDelete(requestParameters: ApiEndpointsOPUsDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsOPUsDeleteRaw(requestParameters, initOverrides);
     }
 
     /**
@@ -132,7 +132,7 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsRenameRaw(requestParameters: ApiEndpointsOPUsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async apiEndpointsOPUsRenameRaw(requestParameters: ApiEndpointsOPUsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsOPUsRename.');
         }
@@ -155,14 +155,13 @@ export class OPUsApi extends runtime.BaseAPI {
             body: requestParameters.oPUsRenameReq,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.VoidApiResponse(response);
     }
 
     /**
      */
-    async apiEndpointsOPUsRename(requestParameters: ApiEndpointsOPUsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
-        const response = await this.apiEndpointsOPUsRenameRaw(requestParameters, initOverrides);
-        return await response.value();
+    async apiEndpointsOPUsRename(requestParameters: ApiEndpointsOPUsRenameRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.apiEndpointsOPUsRenameRaw(requestParameters, initOverrides);
     }
 
 }

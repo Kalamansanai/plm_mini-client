@@ -1,5 +1,5 @@
 import { grey } from "@mui/material/colors";
-import { createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 
 export const drawerWidth = 240;
