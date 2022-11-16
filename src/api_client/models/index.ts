@@ -3,1266 +3,1266 @@
 /**
  * 
  * @export
- * @interface DetectorCommandDetectorCommand
+ * @interface ApiEndpointsDetectorsCommandReq
  */
-export interface DetectorCommandDetectorCommand {
+export interface ApiEndpointsDetectorsCommandReq {
     /**
      * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
+     * @type {DomainCommonDetectorCommandDetectorCommand}
+     * @memberof ApiEndpointsDetectorsCommandReq
      */
-    isRestart?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isStartDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isStopDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isResumeDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isPauseDetection?: boolean;
+    command?: DomainCommonDetectorCommandDetectorCommand;
 }
 /**
  * 
  * @export
- * @interface DetectorsCommandReq
+ * @interface ApiEndpointsDetectorsHeartBeatReq
  */
-export interface DetectorsCommandReq {
-    /**
-     * 
-     * @type {DetectorCommandDetectorCommand}
-     * @memberof DetectorsCommandReq
-     */
-    command?: DetectorCommandDetectorCommand;
-}
-/**
- * 
- * @export
- * @interface DetectorsHeartBeatReq
- */
-export interface DetectorsHeartBeatReq {
+export interface ApiEndpointsDetectorsHeartBeatReq {
     /**
      * 
      * @type {number}
-     * @memberof DetectorsHeartBeatReq
+     * @memberof ApiEndpointsDetectorsHeartBeatReq
      */
     temperature?: number;
     /**
      * 
      * @type {number}
-     * @memberof DetectorsHeartBeatReq
+     * @memberof ApiEndpointsDetectorsHeartBeatReq
      */
     freeStoragePercentage?: number;
     /**
      * 
      * @type {number}
-     * @memberof DetectorsHeartBeatReq
+     * @memberof ApiEndpointsDetectorsHeartBeatReq
      */
     uptime?: number;
 }
 /**
  * 
  * @export
- * @interface DetectorsIdentifyReq
+ * @interface ApiEndpointsDetectorsIdentifyReq
  */
-export interface DetectorsIdentifyReq {
+export interface ApiEndpointsDetectorsIdentifyReq {
     /**
      * 
      * @type {string}
-     * @memberof DetectorsIdentifyReq
+     * @memberof ApiEndpointsDetectorsIdentifyReq
      */
     macAddress?: string;
     /**
      * 
-     * @type {Array<DetectorsIdentifyReqCalibrationCoordsReq>}
-     * @memberof DetectorsIdentifyReq
+     * @type {Array<ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq>}
+     * @memberof ApiEndpointsDetectorsIdentifyReq
      */
-    coordinates?: Array<DetectorsIdentifyReqCalibrationCoordsReq>;
+    coordinates?: Array<ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq>;
 }
 /**
  * 
  * @export
- * @interface DetectorsIdentifyReqCalibrationCoordsReq
+ * @interface ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq
  */
-export interface DetectorsIdentifyReqCalibrationCoordsReq {
+export interface ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq {
     /**
      * 
      * @type {number}
-     * @memberof DetectorsIdentifyReqCalibrationCoordsReq
+     * @memberof ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq
      */
     x?: number;
     /**
      * 
      * @type {number}
-     * @memberof DetectorsIdentifyReqCalibrationCoordsReq
+     * @memberof ApiEndpointsDetectorsIdentifyReqCalibrationCoordsReq
      */
     y?: number;
 }
 /**
  * 
  * @export
- * @interface EventsCreateReq
+ * @interface ApiEndpointsEventsCreateReq
  */
-export interface EventsCreateReq {
+export interface ApiEndpointsEventsCreateReq {
     /**
      * 
      * @type {number}
-     * @memberof EventsCreateReq
+     * @memberof ApiEndpointsEventsCreateReq
      */
     taskId?: number;
     /**
      * 
      * @type {number}
-     * @memberof EventsCreateReq
+     * @memberof ApiEndpointsEventsCreateReq
      */
     stepId?: number;
     /**
      * 
      * @type {boolean}
-     * @memberof EventsCreateReq
+     * @memberof ApiEndpointsEventsCreateReq
      */
     eventResult?: boolean;
     /**
      * 
      * @type {string}
-     * @memberof EventsCreateReq
+     * @memberof ApiEndpointsEventsCreateReq
      */
     failureReason?: string;
 }
 /**
  * 
  * @export
- * @interface JobsCreateReq
+ * @interface ApiEndpointsJobsCreateReq
  */
-export interface JobsCreateReq {
+export interface ApiEndpointsJobsCreateReq {
     /**
      * 
      * @type {string}
-     * @memberof JobsCreateReq
+     * @memberof ApiEndpointsJobsCreateReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface JobsCreateRes
+ * @interface ApiEndpointsJobsCreateRes
  */
-export interface JobsCreateRes {
+export interface ApiEndpointsJobsCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof JobsCreateRes
+     * @memberof ApiEndpointsJobsCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof JobsCreateRes
+     * @memberof ApiEndpointsJobsCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface JobsGetByIdRes
+ * @interface ApiEndpointsJobsGetByIdRes
  */
-export interface JobsGetByIdRes {
+export interface ApiEndpointsJobsGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof JobsGetByIdRes
+     * @memberof ApiEndpointsJobsGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof JobsGetByIdRes
+     * @memberof ApiEndpointsJobsGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {Array<JobsGetByIdResResTask>}
-     * @memberof JobsGetByIdRes
+     * @type {Array<ApiEndpointsJobsGetByIdResResTask>}
+     * @memberof ApiEndpointsJobsGetByIdRes
      */
-    tasks?: Array<JobsGetByIdResResTask>;
+    tasks?: Array<ApiEndpointsJobsGetByIdResResTask>;
 }
 /**
  * 
  * @export
- * @interface JobsGetByIdResResTask
+ * @interface ApiEndpointsJobsGetByIdResResTask
  */
-export interface JobsGetByIdResResTask {
+export interface ApiEndpointsJobsGetByIdResResTask {
     /**
      * 
      * @type {number}
-     * @memberof JobsGetByIdResResTask
+     * @memberof ApiEndpointsJobsGetByIdResResTask
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof JobsGetByIdResResTask
+     * @memberof ApiEndpointsJobsGetByIdResResTask
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface JobsListRes
+ * @interface ApiEndpointsJobsListRes
  */
-export interface JobsListRes {
+export interface ApiEndpointsJobsListRes {
     /**
      * 
      * @type {number}
-     * @memberof JobsListRes
+     * @memberof ApiEndpointsJobsListRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof JobsListRes
+     * @memberof ApiEndpointsJobsListRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface JobsRenameReq
+ * @interface ApiEndpointsJobsRenameReq
  */
-export interface JobsRenameReq {
+export interface ApiEndpointsJobsRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof JobsRenameReq
+     * @memberof ApiEndpointsJobsRenameReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface LinesCreateReq
+ * @interface ApiEndpointsLinesCreateReq
  */
-export interface LinesCreateReq {
+export interface ApiEndpointsLinesCreateReq {
     /**
      * 
      * @type {string}
-     * @memberof LinesCreateReq
+     * @memberof ApiEndpointsLinesCreateReq
      */
     name?: string;
     /**
      * 
      * @type {number}
-     * @memberof LinesCreateReq
+     * @memberof ApiEndpointsLinesCreateReq
      */
     oPUId?: number;
 }
 /**
  * 
  * @export
- * @interface LinesCreateRes
+ * @interface ApiEndpointsLinesCreateRes
  */
-export interface LinesCreateRes {
+export interface ApiEndpointsLinesCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof LinesCreateRes
+     * @memberof ApiEndpointsLinesCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LinesCreateRes
+     * @memberof ApiEndpointsLinesCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface LinesGetByIdRes
+ * @interface ApiEndpointsLinesGetByIdRes
  */
-export interface LinesGetByIdRes {
+export interface ApiEndpointsLinesGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof LinesGetByIdRes
+     * @memberof ApiEndpointsLinesGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LinesGetByIdRes
+     * @memberof ApiEndpointsLinesGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {Array<LinesGetByIdResResStation>}
-     * @memberof LinesGetByIdRes
+     * @type {Array<ApiEndpointsLinesGetByIdResResStation>}
+     * @memberof ApiEndpointsLinesGetByIdRes
      */
-    stations?: Array<LinesGetByIdResResStation>;
+    stations?: Array<ApiEndpointsLinesGetByIdResResStation>;
 }
 /**
  * 
  * @export
- * @interface LinesGetByIdResResStation
+ * @interface ApiEndpointsLinesGetByIdResResStation
  */
-export interface LinesGetByIdResResStation {
+export interface ApiEndpointsLinesGetByIdResResStation {
     /**
      * 
      * @type {number}
-     * @memberof LinesGetByIdResResStation
+     * @memberof ApiEndpointsLinesGetByIdResResStation
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LinesGetByIdResResStation
+     * @memberof ApiEndpointsLinesGetByIdResResStation
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface LinesRenameReq
+ * @interface ApiEndpointsLinesRenameReq
  */
-export interface LinesRenameReq {
+export interface ApiEndpointsLinesRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof LinesRenameReq
+     * @memberof ApiEndpointsLinesRenameReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface LocationsCreateReq
+ * @interface ApiEndpointsLocationsCreateReq
  */
-export interface LocationsCreateReq {
+export interface ApiEndpointsLocationsCreateReq {
     /**
      * 
      * @type {number}
-     * @memberof LocationsCreateReq
+     * @memberof ApiEndpointsLocationsCreateReq
      */
     parentStationId?: number;
     /**
      * 
      * @type {string}
-     * @memberof LocationsCreateReq
+     * @memberof ApiEndpointsLocationsCreateReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface LocationsCreateRes
+ * @interface ApiEndpointsLocationsCreateRes
  */
-export interface LocationsCreateRes {
+export interface ApiEndpointsLocationsCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof LocationsCreateRes
+     * @memberof ApiEndpointsLocationsCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LocationsCreateRes
+     * @memberof ApiEndpointsLocationsCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface LocationsGetByIdRes
+ * @interface ApiEndpointsLocationsGetByIdRes
  */
-export interface LocationsGetByIdRes {
+export interface ApiEndpointsLocationsGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof LocationsGetByIdRes
+     * @memberof ApiEndpointsLocationsGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LocationsGetByIdRes
+     * @memberof ApiEndpointsLocationsGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {LocationsGetByIdResDetector}
-     * @memberof LocationsGetByIdRes
+     * @type {ApiEndpointsLocationsGetByIdResDetector}
+     * @memberof ApiEndpointsLocationsGetByIdRes
      */
-    detector?: LocationsGetByIdResDetector | null;
+    detector?: ApiEndpointsLocationsGetByIdResDetector | null;
 }
 /**
- * @type LocationsGetByIdResDetector
+ * @type ApiEndpointsLocationsGetByIdResDetector
  * 
  * @export
  */
-export type LocationsGetByIdResDetector = LocationsGetByIdResDetectorRes;
+export type ApiEndpointsLocationsGetByIdResDetector = ApiEndpointsLocationsGetByIdResDetectorRes;
 /**
  * 
  * @export
- * @interface LocationsGetByIdResDetectorRes
+ * @interface ApiEndpointsLocationsGetByIdResDetectorRes
  */
-export interface LocationsGetByIdResDetectorRes {
+export interface ApiEndpointsLocationsGetByIdResDetectorRes {
     /**
      * 
      * @type {number}
-     * @memberof LocationsGetByIdResDetectorRes
+     * @memberof ApiEndpointsLocationsGetByIdResDetectorRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LocationsGetByIdResDetectorRes
+     * @memberof ApiEndpointsLocationsGetByIdResDetectorRes
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface LocationsRenameReq
+ * @interface ApiEndpointsLocationsRenameReq
  */
-export interface LocationsRenameReq {
+export interface ApiEndpointsLocationsRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof LocationsRenameReq
+     * @memberof ApiEndpointsLocationsRenameReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface OPUsCreateReq
+ * @interface ApiEndpointsOPUsCreateReq
  */
-export interface OPUsCreateReq {
+export interface ApiEndpointsOPUsCreateReq {
     /**
      * 
      * @type {number}
-     * @memberof OPUsCreateReq
+     * @memberof ApiEndpointsOPUsCreateReq
      */
     parentSiteId?: number;
     /**
      * 
      * @type {string}
-     * @memberof OPUsCreateReq
+     * @memberof ApiEndpointsOPUsCreateReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface OPUsCreateRes
+ * @interface ApiEndpointsOPUsCreateRes
  */
-export interface OPUsCreateRes {
+export interface ApiEndpointsOPUsCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof OPUsCreateRes
+     * @memberof ApiEndpointsOPUsCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof OPUsCreateRes
+     * @memberof ApiEndpointsOPUsCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface OPUsGetByIdRes
+ * @interface ApiEndpointsOPUsGetByIdRes
  */
-export interface OPUsGetByIdRes {
+export interface ApiEndpointsOPUsGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof OPUsGetByIdRes
+     * @memberof ApiEndpointsOPUsGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof OPUsGetByIdRes
+     * @memberof ApiEndpointsOPUsGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {Array<OPUsGetByIdResLineRes>}
-     * @memberof OPUsGetByIdRes
+     * @type {Array<ApiEndpointsOPUsGetByIdResLineRes>}
+     * @memberof ApiEndpointsOPUsGetByIdRes
      */
-    lines?: Array<OPUsGetByIdResLineRes>;
+    lines?: Array<ApiEndpointsOPUsGetByIdResLineRes>;
 }
 /**
  * 
  * @export
- * @interface OPUsGetByIdResLineRes
+ * @interface ApiEndpointsOPUsGetByIdResLineRes
  */
-export interface OPUsGetByIdResLineRes {
+export interface ApiEndpointsOPUsGetByIdResLineRes {
     /**
      * 
      * @type {number}
-     * @memberof OPUsGetByIdResLineRes
+     * @memberof ApiEndpointsOPUsGetByIdResLineRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof OPUsGetByIdResLineRes
+     * @memberof ApiEndpointsOPUsGetByIdResLineRes
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface OPUsRenameReq
+ * @interface ApiEndpointsOPUsRenameReq
  */
-export interface OPUsRenameReq {
+export interface ApiEndpointsOPUsRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof OPUsRenameReq
+     * @memberof ApiEndpointsOPUsRenameReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface ObjectCoordinates
+ * @interface ApiEndpointsSitesCreateReq
  */
-export interface ObjectCoordinates {
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectCoordinates
-     */
-    x?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectCoordinates
-     */
-    y?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectCoordinates
-     */
-    width?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ObjectCoordinates
-     */
-    height?: number;
-}
-/**
- * 
- * @export
- * @interface SitesCreateReq
- */
-export interface SitesCreateReq {
+export interface ApiEndpointsSitesCreateReq {
     /**
      * 
      * @type {string}
-     * @memberof SitesCreateReq
+     * @memberof ApiEndpointsSitesCreateReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface SitesCreateRes
+ * @interface ApiEndpointsSitesCreateRes
  */
-export interface SitesCreateRes {
+export interface ApiEndpointsSitesCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof SitesCreateRes
+     * @memberof ApiEndpointsSitesCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof SitesCreateRes
+     * @memberof ApiEndpointsSitesCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface SitesGetByIdRes
+ * @interface ApiEndpointsSitesGetByIdRes
  */
-export interface SitesGetByIdRes {
+export interface ApiEndpointsSitesGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof SitesGetByIdRes
+     * @memberof ApiEndpointsSitesGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof SitesGetByIdRes
+     * @memberof ApiEndpointsSitesGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {Array<SitesGetByIdResResOPU>}
-     * @memberof SitesGetByIdRes
+     * @type {Array<ApiEndpointsSitesGetByIdResResOPU>}
+     * @memberof ApiEndpointsSitesGetByIdRes
      */
-    oPUs?: Array<SitesGetByIdResResOPU>;
+    opus?: Array<ApiEndpointsSitesGetByIdResResOPU>;
 }
 /**
  * 
  * @export
- * @interface SitesGetByIdResResOPU
+ * @interface ApiEndpointsSitesGetByIdResResOPU
  */
-export interface SitesGetByIdResResOPU {
+export interface ApiEndpointsSitesGetByIdResResOPU {
     /**
      * 
      * @type {number}
-     * @memberof SitesGetByIdResResOPU
+     * @memberof ApiEndpointsSitesGetByIdResResOPU
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof SitesGetByIdResResOPU
+     * @memberof ApiEndpointsSitesGetByIdResResOPU
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface SitesListRes
+ * @interface ApiEndpointsSitesListRes
  */
-export interface SitesListRes {
+export interface ApiEndpointsSitesListRes {
     /**
      * 
      * @type {number}
-     * @memberof SitesListRes
+     * @memberof ApiEndpointsSitesListRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof SitesListRes
+     * @memberof ApiEndpointsSitesListRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface SitesRenameReq
+ * @interface ApiEndpointsSitesRenameReq
  */
-export interface SitesRenameReq {
+export interface ApiEndpointsSitesRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof SitesRenameReq
+     * @memberof ApiEndpointsSitesRenameReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface StationsCreateReq
+ * @interface ApiEndpointsStationsCreateReq
  */
-export interface StationsCreateReq {
+export interface ApiEndpointsStationsCreateReq {
     /**
      * 
      * @type {number}
-     * @memberof StationsCreateReq
+     * @memberof ApiEndpointsStationsCreateReq
      */
     parentLineId?: number;
     /**
      * 
      * @type {string}
-     * @memberof StationsCreateReq
+     * @memberof ApiEndpointsStationsCreateReq
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface StationsCreateRes
+ * @interface ApiEndpointsStationsCreateRes
  */
-export interface StationsCreateRes {
+export interface ApiEndpointsStationsCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof StationsCreateRes
+     * @memberof ApiEndpointsStationsCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof StationsCreateRes
+     * @memberof ApiEndpointsStationsCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface StationsGetByIdRes
+ * @interface ApiEndpointsStationsGetByIdRes
  */
-export interface StationsGetByIdRes {
+export interface ApiEndpointsStationsGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof StationsGetByIdRes
+     * @memberof ApiEndpointsStationsGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof StationsGetByIdRes
+     * @memberof ApiEndpointsStationsGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {Array<StationsGetByIdResLocationRes>}
-     * @memberof StationsGetByIdRes
+     * @type {Array<ApiEndpointsStationsGetByIdResLocationRes>}
+     * @memberof ApiEndpointsStationsGetByIdRes
      */
-    locations?: Array<StationsGetByIdResLocationRes>;
+    locations?: Array<ApiEndpointsStationsGetByIdResLocationRes>;
 }
 /**
  * 
  * @export
- * @interface StationsGetByIdResLocationRes
+ * @interface ApiEndpointsStationsGetByIdResLocationRes
  */
-export interface StationsGetByIdResLocationRes {
+export interface ApiEndpointsStationsGetByIdResLocationRes {
     /**
      * 
      * @type {number}
-     * @memberof StationsGetByIdResLocationRes
+     * @memberof ApiEndpointsStationsGetByIdResLocationRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof StationsGetByIdResLocationRes
+     * @memberof ApiEndpointsStationsGetByIdResLocationRes
      */
     name?: string | null;
 }
 /**
  * 
  * @export
- * @interface StationsRenameReq
+ * @interface ApiEndpointsStationsRenameReq
  */
-export interface StationsRenameReq {
+export interface ApiEndpointsStationsRenameReq {
     /**
      * 
      * @type {string}
-     * @memberof StationsRenameReq
+     * @memberof ApiEndpointsStationsRenameReq
      */
     name?: string;
 }
-
 /**
  * 
  * @export
+ * @interface ApiEndpointsTasksCreateReq
  */
-export const TaskInstanceFinalState = {
-    Completed: 'Completed',
-    Abandoned: 'Abandoned'
-} as const;
-export type TaskInstanceFinalState = typeof TaskInstanceFinalState[keyof typeof TaskInstanceFinalState];
-
-
-/**
- * 
- * @export
- */
-export const TaskState = {
-    Active: 'Active',
-    Paused: 'Paused',
-    Inactive: 'Inactive'
-} as const;
-export type TaskState = typeof TaskState[keyof typeof TaskState];
-
-
-/**
- * 
- * @export
- */
-export const TaskType = {
-    ToolKit: 'ToolKit',
-    ItemKit: 'ItemKit',
-    Qa: 'QA'
-} as const;
-export type TaskType = typeof TaskType[keyof typeof TaskType];
-
-/**
- * 
- * @export
- * @interface TasksCreateReq
- */
-export interface TasksCreateReq {
+export interface ApiEndpointsTasksCreateReq {
     /**
      * 
      * @type {number}
-     * @memberof TasksCreateReq
+     * @memberof ApiEndpointsTasksCreateReq
      */
     parentJobId?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksCreateReq
+     * @memberof ApiEndpointsTasksCreateReq
      */
     name?: string;
     /**
      * 
      * @type {number}
-     * @memberof TasksCreateReq
+     * @memberof ApiEndpointsTasksCreateReq
      */
     locationId?: number;
 }
 /**
  * 
  * @export
- * @interface TasksCreateRes
+ * @interface ApiEndpointsTasksCreateRes
  */
-export interface TasksCreateRes {
+export interface ApiEndpointsTasksCreateRes {
     /**
      * 
      * @type {number}
-     * @memberof TasksCreateRes
+     * @memberof ApiEndpointsTasksCreateRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksCreateRes
+     * @memberof ApiEndpointsTasksCreateRes
      */
     name?: string;
 }
 /**
  * 
  * @export
- * @interface TasksDeleteReq
+ * @interface ApiEndpointsTasksDeleteReq
  */
-export interface TasksDeleteReq {
+export interface ApiEndpointsTasksDeleteReq {
     /**
      * 
      * @type {number}
-     * @memberof TasksDeleteReq
+     * @memberof ApiEndpointsTasksDeleteReq
      */
     parentJobId?: number;
 }
 /**
  * 
  * @export
- * @interface TasksGetByIdRes
+ * @interface ApiEndpointsTasksGetByIdRes
  */
-export interface TasksGetByIdRes {
+export interface ApiEndpointsTasksGetByIdRes {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetByIdRes
+     * @memberof ApiEndpointsTasksGetByIdRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetByIdRes
+     * @memberof ApiEndpointsTasksGetByIdRes
      */
     name?: string;
     /**
      * 
-     * @type {TaskState}
-     * @memberof TasksGetByIdRes
+     * @type {DomainCommonTaskState}
+     * @memberof ApiEndpointsTasksGetByIdRes
      */
-    state?: TaskState;
+    state?: DomainCommonTaskState;
 }
 /**
  * 
  * @export
- * @interface TasksGetInstanceRes
+ * @interface ApiEndpointsTasksGetInstanceRes
  */
-export interface TasksGetInstanceRes {
+export interface ApiEndpointsTasksGetInstanceRes {
     /**
      * 
-     * @type {TasksGetInstanceResResTaskInstance}
-     * @memberof TasksGetInstanceRes
+     * @type {ApiEndpointsTasksGetInstanceResResTaskInstance}
+     * @memberof ApiEndpointsTasksGetInstanceRes
      */
-    instance?: TasksGetInstanceResResTaskInstance;
+    instance?: ApiEndpointsTasksGetInstanceResResTaskInstance;
 }
 /**
  * 
  * @export
- * @interface TasksGetInstanceResResEvent
+ * @interface ApiEndpointsTasksGetInstanceResResEvent
  */
-export interface TasksGetInstanceResResEvent {
+export interface ApiEndpointsTasksGetInstanceResResEvent {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     timeStamp?: string;
     /**
      * 
      * @type {boolean}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     eventResultSuccess?: boolean;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     failureReason?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     stepId?: number;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof ApiEndpointsTasksGetInstanceResResEvent
      */
     taskInstanceId?: number;
 }
 /**
  * 
  * @export
- * @interface TasksGetInstanceResResTaskInstance
+ * @interface ApiEndpointsTasksGetInstanceResResTaskInstance
  */
-export interface TasksGetInstanceResResTaskInstance {
+export interface ApiEndpointsTasksGetInstanceResResTaskInstance {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @memberof ApiEndpointsTasksGetInstanceResResTaskInstance
      */
     id?: number;
     /**
      * 
-     * @type {TasksGetInstanceResResTaskInstanceFinalState}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @type {ApiEndpointsTasksGetInstanceResResTaskInstanceFinalState}
+     * @memberof ApiEndpointsTasksGetInstanceResResTaskInstance
      */
-    finalState?: TasksGetInstanceResResTaskInstanceFinalState | null;
+    finalState?: ApiEndpointsTasksGetInstanceResResTaskInstanceFinalState | null;
     /**
      * 
-     * @type {Array<TasksGetInstanceResResEvent>}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @type {Array<ApiEndpointsTasksGetInstanceResResEvent>}
+     * @memberof ApiEndpointsTasksGetInstanceResResTaskInstance
      */
-    events?: Array<TasksGetInstanceResResEvent> | null;
+    events?: Array<ApiEndpointsTasksGetInstanceResResEvent> | null;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @memberof ApiEndpointsTasksGetInstanceResResTaskInstance
      */
     taskId?: number;
 }
 /**
- * @type TasksGetInstanceResResTaskInstanceFinalState
+ * @type ApiEndpointsTasksGetInstanceResResTaskInstanceFinalState
  * 
  * @export
  */
-export type TasksGetInstanceResResTaskInstanceFinalState = TaskInstanceFinalState;
+export type ApiEndpointsTasksGetInstanceResResTaskInstanceFinalState = DomainCommonTaskInstanceFinalState;
 /**
  * 
  * @export
- * @interface TasksGetObjectsAndStepsRes
+ * @interface ApiEndpointsTasksGetObjectsAndStepsRes
  */
-export interface TasksGetObjectsAndStepsRes {
+export interface ApiEndpointsTasksGetObjectsAndStepsRes {
     /**
      * 
-     * @type {Array<TasksGetObjectsAndStepsResResObject>}
-     * @memberof TasksGetObjectsAndStepsRes
+     * @type {Array<ApiEndpointsTasksGetObjectsAndStepsResResObject>}
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsRes
      */
-    objects?: Array<TasksGetObjectsAndStepsResResObject>;
+    objects?: Array<ApiEndpointsTasksGetObjectsAndStepsResResObject>;
     /**
      * 
-     * @type {Array<TasksGetObjectsAndStepsResResStep>}
-     * @memberof TasksGetObjectsAndStepsRes
+     * @type {Array<ApiEndpointsTasksGetObjectsAndStepsResResStep>}
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsRes
      */
-    steps?: Array<TasksGetObjectsAndStepsResResStep>;
+    steps?: Array<ApiEndpointsTasksGetObjectsAndStepsResResStep>;
 }
 /**
  * 
  * @export
- * @interface TasksGetObjectsAndStepsResResObject
+ * @interface ApiEndpointsTasksGetObjectsAndStepsResResObject
  */
-export interface TasksGetObjectsAndStepsResResObject {
+export interface ApiEndpointsTasksGetObjectsAndStepsResResObject {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetObjectsAndStepsResResObject
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResObject
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetObjectsAndStepsResResObject
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResObject
      */
     name?: string | null;
     /**
      * 
-     * @type {TasksGetObjectsAndStepsResResObjectCoordinates}
-     * @memberof TasksGetObjectsAndStepsResResObject
+     * @type {ApiEndpointsTasksGetObjectsAndStepsResResObjectCoordinates}
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResObject
      */
-    coordinates?: TasksGetObjectsAndStepsResResObjectCoordinates | null;
+    coordinates?: ApiEndpointsTasksGetObjectsAndStepsResResObjectCoordinates | null;
 }
 /**
- * @type TasksGetObjectsAndStepsResResObjectCoordinates
+ * @type ApiEndpointsTasksGetObjectsAndStepsResResObjectCoordinates
  * 
  * @export
  */
-export type TasksGetObjectsAndStepsResResObjectCoordinates = ObjectCoordinates;
+export type ApiEndpointsTasksGetObjectsAndStepsResResObjectCoordinates = DomainCommonObjectCoordinates;
 /**
  * 
  * @export
- * @interface TasksGetObjectsAndStepsResResStep
+ * @interface ApiEndpointsTasksGetObjectsAndStepsResResStep
  */
-export interface TasksGetObjectsAndStepsResResStep {
+export interface ApiEndpointsTasksGetObjectsAndStepsResResStep {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetObjectsAndStepsResResStep
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResStep
      */
     id?: number;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetObjectsAndStepsResResStep
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResStep
      */
     orderNum?: number | null;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksGetObjectsAndStepsResResStep
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResStep
      */
-    expectedInitialState?: TemplateState;
+    expectedInitialState?: DomainCommonTemplateState;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksGetObjectsAndStepsResResStep
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResStep
      */
-    expectedSubsequentState?: TemplateState;
+    expectedSubsequentState?: DomainCommonTemplateState;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetObjectsAndStepsResResStep
+     * @memberof ApiEndpointsTasksGetObjectsAndStepsResResStep
      */
     objectId?: number;
 }
 /**
  * 
  * @export
- * @interface TasksUpdateReq
+ * @interface ApiEndpointsTasksUpdateReq
  */
-export interface TasksUpdateReq {
+export interface ApiEndpointsTasksUpdateReq {
     /**
      * 
      * @type {string}
-     * @memberof TasksUpdateReq
+     * @memberof ApiEndpointsTasksUpdateReq
      */
     newName?: string | null;
     /**
      * 
-     * @type {TasksUpdateReqNewType}
-     * @memberof TasksUpdateReq
+     * @type {ApiEndpointsTasksUpdateReqNewType}
+     * @memberof ApiEndpointsTasksUpdateReq
      */
-    newType?: TasksUpdateReqNewType | null;
+    newType?: ApiEndpointsTasksUpdateReqNewType | null;
     /**
      * 
      * @type {number}
-     * @memberof TasksUpdateReq
+     * @memberof ApiEndpointsTasksUpdateReq
      */
     parentJobId?: number;
     /**
      * 
-     * @type {Array<TasksUpdateReqNewObjectReq>}
-     * @memberof TasksUpdateReq
+     * @type {Array<ApiEndpointsTasksUpdateReqNewObjectReq>}
+     * @memberof ApiEndpointsTasksUpdateReq
      */
-    newObjects?: Array<TasksUpdateReqNewObjectReq> | null;
+    newObjects?: Array<ApiEndpointsTasksUpdateReqNewObjectReq> | null;
     /**
      * 
-     * @type {Array<TasksUpdateReqModObjectReq>}
-     * @memberof TasksUpdateReq
+     * @type {Array<ApiEndpointsTasksUpdateReqModObjectReq>}
+     * @memberof ApiEndpointsTasksUpdateReq
      */
-    modifiedObjects?: Array<TasksUpdateReqModObjectReq> | null;
+    modifiedObjects?: Array<ApiEndpointsTasksUpdateReqModObjectReq> | null;
     /**
      * 
      * @type {Array<number>}
-     * @memberof TasksUpdateReq
+     * @memberof ApiEndpointsTasksUpdateReq
      */
     deletedObjects?: Array<number> | null;
     /**
      * 
-     * @type {Array<TasksUpdateReqNewStepReq>}
-     * @memberof TasksUpdateReq
+     * @type {Array<ApiEndpointsTasksUpdateReqNewStepReq>}
+     * @memberof ApiEndpointsTasksUpdateReq
      */
-    newSteps?: Array<TasksUpdateReqNewStepReq> | null;
+    newSteps?: Array<ApiEndpointsTasksUpdateReqNewStepReq> | null;
     /**
      * 
-     * @type {Array<TasksUpdateReqModStepReq>}
-     * @memberof TasksUpdateReq
+     * @type {Array<ApiEndpointsTasksUpdateReqModStepReq>}
+     * @memberof ApiEndpointsTasksUpdateReq
      */
-    modifiedSteps?: Array<TasksUpdateReqModStepReq> | null;
+    modifiedSteps?: Array<ApiEndpointsTasksUpdateReqModStepReq> | null;
     /**
      * 
      * @type {Array<number>}
-     * @memberof TasksUpdateReq
+     * @memberof ApiEndpointsTasksUpdateReq
      */
     deletedSteps?: Array<number> | null;
 }
 /**
  * 
  * @export
- * @interface TasksUpdateReqModObjectReq
+ * @interface ApiEndpointsTasksUpdateReqModObjectReq
  */
-export interface TasksUpdateReqModObjectReq {
+export interface ApiEndpointsTasksUpdateReqModObjectReq {
     /**
      * 
      * @type {number}
-     * @memberof TasksUpdateReqModObjectReq
+     * @memberof ApiEndpointsTasksUpdateReqModObjectReq
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksUpdateReqModObjectReq
+     * @memberof ApiEndpointsTasksUpdateReqModObjectReq
      */
     name?: string;
     /**
      * 
-     * @type {ObjectCoordinates}
-     * @memberof TasksUpdateReqModObjectReq
+     * @type {DomainCommonObjectCoordinates}
+     * @memberof ApiEndpointsTasksUpdateReqModObjectReq
      */
-    coordinates?: ObjectCoordinates;
+    coordinates?: DomainCommonObjectCoordinates;
 }
 /**
  * 
  * @export
- * @interface TasksUpdateReqModStepReq
+ * @interface ApiEndpointsTasksUpdateReqModStepReq
  */
-export interface TasksUpdateReqModStepReq {
+export interface ApiEndpointsTasksUpdateReqModStepReq {
     /**
      * 
      * @type {number}
-     * @memberof TasksUpdateReqModStepReq
+     * @memberof ApiEndpointsTasksUpdateReqModStepReq
      */
     id?: number;
     /**
      * 
      * @type {number}
-     * @memberof TasksUpdateReqModStepReq
+     * @memberof ApiEndpointsTasksUpdateReqModStepReq
      */
     orderNum?: number;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksUpdateReqModStepReq
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksUpdateReqModStepReq
      */
-    expectedInitialState?: TemplateState;
+    expectedInitialState?: DomainCommonTemplateState;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksUpdateReqModStepReq
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksUpdateReqModStepReq
      */
-    expectedSubsequentState?: TemplateState;
+    expectedSubsequentState?: DomainCommonTemplateState;
     /**
      * 
      * @type {string}
-     * @memberof TasksUpdateReqModStepReq
+     * @memberof ApiEndpointsTasksUpdateReqModStepReq
      */
     objectName?: string;
 }
 /**
  * 
  * @export
- * @interface TasksUpdateReqNewObjectReq
+ * @interface ApiEndpointsTasksUpdateReqNewObjectReq
  */
-export interface TasksUpdateReqNewObjectReq {
+export interface ApiEndpointsTasksUpdateReqNewObjectReq {
     /**
      * 
      * @type {string}
-     * @memberof TasksUpdateReqNewObjectReq
+     * @memberof ApiEndpointsTasksUpdateReqNewObjectReq
      */
     name?: string;
     /**
      * 
-     * @type {ObjectCoordinates}
-     * @memberof TasksUpdateReqNewObjectReq
+     * @type {DomainCommonObjectCoordinates}
+     * @memberof ApiEndpointsTasksUpdateReqNewObjectReq
      */
-    coordinates?: ObjectCoordinates;
+    coordinates?: DomainCommonObjectCoordinates;
 }
 /**
  * 
  * @export
- * @interface TasksUpdateReqNewStepReq
+ * @interface ApiEndpointsTasksUpdateReqNewStepReq
  */
-export interface TasksUpdateReqNewStepReq {
+export interface ApiEndpointsTasksUpdateReqNewStepReq {
     /**
      * 
      * @type {number}
-     * @memberof TasksUpdateReqNewStepReq
+     * @memberof ApiEndpointsTasksUpdateReqNewStepReq
      */
     orderNum?: number;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksUpdateReqNewStepReq
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksUpdateReqNewStepReq
      */
-    expectedInitialState?: TemplateState;
+    expectedInitialState?: DomainCommonTemplateState;
     /**
      * 
-     * @type {TemplateState}
-     * @memberof TasksUpdateReqNewStepReq
+     * @type {DomainCommonTemplateState}
+     * @memberof ApiEndpointsTasksUpdateReqNewStepReq
      */
-    expectedSubsequentState?: TemplateState;
+    expectedSubsequentState?: DomainCommonTemplateState;
     /**
      * 
      * @type {string}
-     * @memberof TasksUpdateReqNewStepReq
+     * @memberof ApiEndpointsTasksUpdateReqNewStepReq
      */
     objectName?: string;
 }
 /**
- * @type TasksUpdateReqNewType
+ * @type ApiEndpointsTasksUpdateReqNewType
  * 
  * @export
  */
-export type TasksUpdateReqNewType = TaskType;
+export type ApiEndpointsTasksUpdateReqNewType = DomainCommonTaskType;
+/**
+ * 
+ * @export
+ * @interface DomainCommonDetectorCommandDetectorCommand
+ */
+export interface DomainCommonDetectorCommandDetectorCommand {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DomainCommonDetectorCommandDetectorCommand
+     */
+    isRestart?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DomainCommonDetectorCommandDetectorCommand
+     */
+    isStartDetection?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DomainCommonDetectorCommandDetectorCommand
+     */
+    isStopDetection?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DomainCommonDetectorCommandDetectorCommand
+     */
+    isResumeDetection?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DomainCommonDetectorCommandDetectorCommand
+     */
+    isPauseDetection?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface DomainCommonObjectCoordinates
+ */
+export interface DomainCommonObjectCoordinates {
+    /**
+     * 
+     * @type {number}
+     * @memberof DomainCommonObjectCoordinates
+     */
+    x?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DomainCommonObjectCoordinates
+     */
+    y?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DomainCommonObjectCoordinates
+     */
+    width?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DomainCommonObjectCoordinates
+     */
+    height?: number;
+}
 
 /**
  * 
  * @export
  */
-export const TemplateState = {
+export const DomainCommonTaskInstanceFinalState = {
+    Completed: 'Completed',
+    Abandoned: 'Abandoned'
+} as const;
+export type DomainCommonTaskInstanceFinalState = typeof DomainCommonTaskInstanceFinalState[keyof typeof DomainCommonTaskInstanceFinalState];
+
+
+/**
+ * 
+ * @export
+ */
+export const DomainCommonTaskState = {
+    Active: 'Active',
+    Paused: 'Paused',
+    Inactive: 'Inactive'
+} as const;
+export type DomainCommonTaskState = typeof DomainCommonTaskState[keyof typeof DomainCommonTaskState];
+
+
+/**
+ * 
+ * @export
+ */
+export const DomainCommonTaskType = {
+    ToolKit: 'ToolKit',
+    ItemKit: 'ItemKit',
+    Qa: 'QA'
+} as const;
+export type DomainCommonTaskType = typeof DomainCommonTaskType[keyof typeof DomainCommonTaskType];
+
+
+/**
+ * 
+ * @export
+ */
+export const DomainCommonTemplateState = {
     Present: 'Present',
     Missing: 'Missing',
     Uncertain: 'Uncertain',
     UnknownObject: 'UnknownObject'
 } as const;
-export type TemplateState = typeof TemplateState[keyof typeof TemplateState];
+export type DomainCommonTemplateState = typeof DomainCommonTemplateState[keyof typeof DomainCommonTemplateState];
 

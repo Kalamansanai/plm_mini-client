@@ -21,16 +21,41 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, g
         dispatch({ type: "SetSelectedId", level: index, id });
     };
 
+    // fetch for first level
     useEffect(() => {
         const fetchData = async () => {
             if (index !== 0) return;
 
             const data = await getFn();
+            console.log('Level 0 fetch');
             dispatch({ type: "SetItems", level: index, items: data });
         };
 
         fetchData();
     }, [index]);
+
+    // fetch for all other levels
+    useEffect(() => {
+        const fetchData = async () => {
+            const previousLevelId = state.selectedIds[index - 1];
+            if (previousLevelId === null || previousLevelId === undefined) return;
+
+            const data = await getFn(previousLevelId);
+            console.log(`Level 1 fetch, data len: ${data.length}`);
+            dispatch({ type: "SetItems", level: index, items: data});
+        }
+
+        if (index > state.highestShownLevel) {
+            dispatch({type: "SetItems", level: index, items: []});
+            dispatch({ type: "SetSelectedId", level: index, id: null});
+        }
+
+        if (index === state.highestShownLevel) {
+            if (state.selectedIds[index - 1] !== null) {
+                fetchData();
+            }
+        }
+    }, [index, state.selectedIds[index - 1], state.highestShownLevel])
 
     return (
         <Grid
@@ -46,7 +71,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, g
                 {label}
             </Typography>
             <Divider />
-            <Box sx={{ flexGrow: 1, height: 0 }} hidden={index > state.currentLevel}>
+            <Box sx={{ flexGrow: 1, height: 0 }} hidden={index > state.highestShownLevel}>
                 <List sx={{ height: "100%", overflowY: "auto" }}>
                     {state.items[index]!.map((item, i) => (
                         <CHNode

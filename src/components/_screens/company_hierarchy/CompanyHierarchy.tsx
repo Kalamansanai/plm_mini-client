@@ -1,15 +1,9 @@
-import { SitesApi } from "api_client/apis/SitesApi";
-import { Configuration } from "api_client/runtime";
 import {
     descriptors as chLevelDescriptors,
     State as CHState,
     Action as CHAction,
 } from "companyHierarchy";
-import { useState, useEffect } from "react";
-import { Site } from "types";
 
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 
 import { default as CHLevel } from "./CompanyHierarchyLevel";

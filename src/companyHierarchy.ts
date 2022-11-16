@@ -29,7 +29,7 @@ export const descriptors: LevelDescriptor[] = [
             const parentSite = await new SitesApi(defaultConfig).apiEndpointsSitesGetById({
                 id: id!,
             });
-            return parentSite.oPUs!.map((o) => ({ id: o.id!, name: o.name! }));
+            return parentSite.opus!.map((o) => ({ id: o.id!, name: o.name! }));
         },
     },
     {
@@ -45,14 +45,14 @@ export const descriptors: LevelDescriptor[] = [
 export type State = {
     items: Array<CHNode[]>;
     selectedIds: Array<number | null>;
-    currentLevel: number;
+    highestShownLevel: number;
     lastClickedId: number | null;
 };
 
 export const initialState: State = {
     items: Array(descriptors.length).fill([]),
     selectedIds: Array(descriptors.length).fill(null),
-    currentLevel: 0,
+    highestShownLevel: 0,
     lastClickedId: null,
 };
 
@@ -69,8 +69,19 @@ export default function reducer(state: State, action: Action): State {
             return newState;
         }
         case "SetSelectedId": {
+            const sameIdSelected = state.selectedIds[action.level] === action.id;
+
             const newState = { ...state };
-            newState.selectedIds[action.level] = action.id;
+            if (action.id !== null) {
+                console.log(action.id);
+                newState.highestShownLevel = sameIdSelected ? action.level : Math.min(action.level + 1, descriptors.length);
+            }
+            newState.selectedIds[action.level] = sameIdSelected ? null : action.id;
+
+            console.log('================');
+            console.log(`${JSON.stringify(action)}`);
+            console.log(`${JSON.stringify(newState)}`);
+
             return newState;
         }
         case "Reset": {

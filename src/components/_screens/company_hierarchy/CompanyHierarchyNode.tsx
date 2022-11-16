@@ -11,10 +11,8 @@ type Props = {
 export default function CompanyHierarchyNode({ item, selected, clickHandler }: Props) {
     const onClick = (e: React.MouseEvent) => {
         e.preventDefault();
-        console.log(`item named ${item.name} has been clicked`);
         clickHandler(item.id);
     };
-    console.log(`item id: ${item.id}`);
 
     return (
         <ListItem disablePadding>
