@@ -29,6 +29,7 @@ export default function CompanyHierarchy({ state, dispatch }: Props) {
                     dispatch={dispatch}
                     index={desc.index}
                     label={desc.label}
+                    addFn={desc.addFn}
                     getFn={desc.getFn}
                 />
             ))}

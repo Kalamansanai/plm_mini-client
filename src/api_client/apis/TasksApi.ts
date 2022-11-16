@@ -15,22 +15,22 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsTasksCreateReq,
-  ApiEndpointsTasksCreateRes,
-  ApiEndpointsTasksDeleteReq,
-  ApiEndpointsTasksGetByIdRes,
-  ApiEndpointsTasksGetInstanceRes,
-  ApiEndpointsTasksGetObjectsAndStepsRes,
-  ApiEndpointsTasksUpdateReq,
+  TasksCreateReq,
+  TasksCreateRes,
+  TasksDeleteReq,
+  TasksGetByIdRes,
+  TasksGetInstanceRes,
+  TasksGetObjectsAndStepsRes,
+  TasksUpdateReq,
 } from '../models';
 
 export interface ApiEndpointsTasksCreateRequest {
-    apiEndpointsTasksCreateReq: ApiEndpointsTasksCreateReq;
+    tasksCreateReq: TasksCreateReq;
 }
 
 export interface ApiEndpointsTasksDeleteRequest {
     id: number;
-    apiEndpointsTasksDeleteReq: ApiEndpointsTasksDeleteReq;
+    tasksDeleteReq: TasksDeleteReq;
 }
 
 export interface ApiEndpointsTasksGetByIdRequest {
@@ -48,7 +48,7 @@ export interface ApiEndpointsTasksGetObjectsAndStepsRequest {
 
 export interface ApiEndpointsTasksUpdateRequest {
     id: number;
-    apiEndpointsTasksUpdateReq: ApiEndpointsTasksUpdateReq;
+    tasksUpdateReq: TasksUpdateReq;
 }
 
 /**
@@ -58,9 +58,9 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksCreateRaw(requestParameters: ApiEndpointsTasksCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsTasksCreateRes>> {
-        if (requestParameters.apiEndpointsTasksCreateReq === null || requestParameters.apiEndpointsTasksCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsTasksCreateReq','Required parameter requestParameters.apiEndpointsTasksCreateReq was null or undefined when calling apiEndpointsTasksCreate.');
+    async apiEndpointsTasksCreateRaw(requestParameters: ApiEndpointsTasksCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksCreateRes>> {
+        if (requestParameters.tasksCreateReq === null || requestParameters.tasksCreateReq === undefined) {
+            throw new runtime.RequiredError('tasksCreateReq','Required parameter requestParameters.tasksCreateReq was null or undefined when calling apiEndpointsTasksCreate.');
         }
 
         const queryParameters: any = {};
@@ -74,7 +74,7 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsTasksCreateReq,
+            body: requestParameters.tasksCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -82,7 +82,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksCreate(requestParameters: ApiEndpointsTasksCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsTasksCreateRes> {
+    async apiEndpointsTasksCreate(requestParameters: ApiEndpointsTasksCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksCreateRes> {
         const response = await this.apiEndpointsTasksCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -94,8 +94,8 @@ export class TasksApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksDelete.');
         }
 
-        if (requestParameters.apiEndpointsTasksDeleteReq === null || requestParameters.apiEndpointsTasksDeleteReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsTasksDeleteReq','Required parameter requestParameters.apiEndpointsTasksDeleteReq was null or undefined when calling apiEndpointsTasksDelete.');
+        if (requestParameters.tasksDeleteReq === null || requestParameters.tasksDeleteReq === undefined) {
+            throw new runtime.RequiredError('tasksDeleteReq','Required parameter requestParameters.tasksDeleteReq was null or undefined when calling apiEndpointsTasksDelete.');
         }
 
         const queryParameters: any = {};
@@ -109,7 +109,7 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'DELETE',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsTasksDeleteReq,
+            body: requestParameters.tasksDeleteReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -124,7 +124,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetByIdRaw(requestParameters: ApiEndpointsTasksGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsTasksGetByIdRes>> {
+    async apiEndpointsTasksGetByIdRaw(requestParameters: ApiEndpointsTasksGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksGetById.');
         }
@@ -145,14 +145,14 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetById(requestParameters: ApiEndpointsTasksGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsTasksGetByIdRes> {
+    async apiEndpointsTasksGetById(requestParameters: ApiEndpointsTasksGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksGetByIdRes> {
         const response = await this.apiEndpointsTasksGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiEndpointsTasksGetInstanceRaw(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsTasksGetInstanceRes>> {
+    async apiEndpointsTasksGetInstanceRaw(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksGetInstanceRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksGetInstance.');
         }
@@ -181,14 +181,14 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetInstance(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsTasksGetInstanceRes> {
+    async apiEndpointsTasksGetInstance(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksGetInstanceRes> {
         const response = await this.apiEndpointsTasksGetInstanceRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiEndpointsTasksGetObjectsAndStepsRaw(requestParameters: ApiEndpointsTasksGetObjectsAndStepsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsTasksGetObjectsAndStepsRes>> {
+    async apiEndpointsTasksGetObjectsAndStepsRaw(requestParameters: ApiEndpointsTasksGetObjectsAndStepsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksGetObjectsAndStepsRes>> {
         if (requestParameters.taskId === null || requestParameters.taskId === undefined) {
             throw new runtime.RequiredError('taskId','Required parameter requestParameters.taskId was null or undefined when calling apiEndpointsTasksGetObjectsAndSteps.');
         }
@@ -209,7 +209,7 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetObjectsAndSteps(requestParameters: ApiEndpointsTasksGetObjectsAndStepsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsTasksGetObjectsAndStepsRes> {
+    async apiEndpointsTasksGetObjectsAndSteps(requestParameters: ApiEndpointsTasksGetObjectsAndStepsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksGetObjectsAndStepsRes> {
         const response = await this.apiEndpointsTasksGetObjectsAndStepsRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -221,8 +221,8 @@ export class TasksApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksUpdate.');
         }
 
-        if (requestParameters.apiEndpointsTasksUpdateReq === null || requestParameters.apiEndpointsTasksUpdateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsTasksUpdateReq','Required parameter requestParameters.apiEndpointsTasksUpdateReq was null or undefined when calling apiEndpointsTasksUpdate.');
+        if (requestParameters.tasksUpdateReq === null || requestParameters.tasksUpdateReq === undefined) {
+            throw new runtime.RequiredError('tasksUpdateReq','Required parameter requestParameters.tasksUpdateReq was null or undefined when calling apiEndpointsTasksUpdate.');
         }
 
         const queryParameters: any = {};
@@ -236,7 +236,7 @@ export class TasksApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsTasksUpdateReq,
+            body: requestParameters.tasksUpdateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

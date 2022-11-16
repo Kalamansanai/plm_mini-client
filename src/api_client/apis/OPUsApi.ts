@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsOPUsCreateReq,
-  ApiEndpointsOPUsCreateRes,
-  ApiEndpointsOPUsGetByIdRes,
-  ApiEndpointsOPUsRenameReq,
+  OPUsCreateReq,
+  OPUsCreateRes,
+  OPUsGetByIdRes,
+  OPUsRenameReq,
 } from '../models';
 
 export interface ApiEndpointsOPUsCreateRequest {
-    apiEndpointsOPUsCreateReq: ApiEndpointsOPUsCreateReq;
+    oPUsCreateReq: OPUsCreateReq;
 }
 
 export interface ApiEndpointsOPUsDeleteRequest {
@@ -35,7 +35,7 @@ export interface ApiEndpointsOPUsGetByIdRequest {
 
 export interface ApiEndpointsOPUsRenameRequest {
     id: number;
-    apiEndpointsOPUsRenameReq: ApiEndpointsOPUsRenameReq;
+    oPUsRenameReq: OPUsRenameReq;
 }
 
 /**
@@ -45,9 +45,9 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsCreateRaw(requestParameters: ApiEndpointsOPUsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsOPUsCreateRes>> {
-        if (requestParameters.apiEndpointsOPUsCreateReq === null || requestParameters.apiEndpointsOPUsCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsOPUsCreateReq','Required parameter requestParameters.apiEndpointsOPUsCreateReq was null or undefined when calling apiEndpointsOPUsCreate.');
+    async apiEndpointsOPUsCreateRaw(requestParameters: ApiEndpointsOPUsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OPUsCreateRes>> {
+        if (requestParameters.oPUsCreateReq === null || requestParameters.oPUsCreateReq === undefined) {
+            throw new runtime.RequiredError('oPUsCreateReq','Required parameter requestParameters.oPUsCreateReq was null or undefined when calling apiEndpointsOPUsCreate.');
         }
 
         const queryParameters: any = {};
@@ -61,7 +61,7 @@ export class OPUsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsOPUsCreateReq,
+            body: requestParameters.oPUsCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -69,7 +69,7 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsCreate(requestParameters: ApiEndpointsOPUsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsOPUsCreateRes> {
+    async apiEndpointsOPUsCreate(requestParameters: ApiEndpointsOPUsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OPUsCreateRes> {
         const response = await this.apiEndpointsOPUsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -104,7 +104,7 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsGetByIdRaw(requestParameters: ApiEndpointsOPUsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsOPUsGetByIdRes>> {
+    async apiEndpointsOPUsGetByIdRaw(requestParameters: ApiEndpointsOPUsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<OPUsGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsOPUsGetById.');
         }
@@ -125,7 +125,7 @@ export class OPUsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsOPUsGetById(requestParameters: ApiEndpointsOPUsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsOPUsGetByIdRes> {
+    async apiEndpointsOPUsGetById(requestParameters: ApiEndpointsOPUsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<OPUsGetByIdRes> {
         const response = await this.apiEndpointsOPUsGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -137,8 +137,8 @@ export class OPUsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsOPUsRename.');
         }
 
-        if (requestParameters.apiEndpointsOPUsRenameReq === null || requestParameters.apiEndpointsOPUsRenameReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsOPUsRenameReq','Required parameter requestParameters.apiEndpointsOPUsRenameReq was null or undefined when calling apiEndpointsOPUsRename.');
+        if (requestParameters.oPUsRenameReq === null || requestParameters.oPUsRenameReq === undefined) {
+            throw new runtime.RequiredError('oPUsRenameReq','Required parameter requestParameters.oPUsRenameReq was null or undefined when calling apiEndpointsOPUsRename.');
         }
 
         const queryParameters: any = {};
@@ -152,7 +152,7 @@ export class OPUsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsOPUsRenameReq,
+            body: requestParameters.oPUsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

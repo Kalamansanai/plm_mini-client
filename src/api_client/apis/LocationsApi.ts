@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsLocationsCreateReq,
-  ApiEndpointsLocationsCreateRes,
-  ApiEndpointsLocationsGetByIdRes,
-  ApiEndpointsLocationsRenameReq,
+  LocationsCreateReq,
+  LocationsCreateRes,
+  LocationsGetByIdRes,
+  LocationsRenameReq,
 } from '../models';
 
 export interface ApiEndpointsLocationsCreateRequest {
-    apiEndpointsLocationsCreateReq: ApiEndpointsLocationsCreateReq;
+    locationsCreateReq: LocationsCreateReq;
 }
 
 export interface ApiEndpointsLocationsDeleteRequest {
@@ -35,7 +35,7 @@ export interface ApiEndpointsLocationsGetByIdRequest {
 
 export interface ApiEndpointsLocationsRenameRequest {
     id: number;
-    apiEndpointsLocationsRenameReq: ApiEndpointsLocationsRenameReq;
+    locationsRenameReq: LocationsRenameReq;
 }
 
 /**
@@ -45,9 +45,9 @@ export class LocationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLocationsCreateRaw(requestParameters: ApiEndpointsLocationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsLocationsCreateRes>> {
-        if (requestParameters.apiEndpointsLocationsCreateReq === null || requestParameters.apiEndpointsLocationsCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsLocationsCreateReq','Required parameter requestParameters.apiEndpointsLocationsCreateReq was null or undefined when calling apiEndpointsLocationsCreate.');
+    async apiEndpointsLocationsCreateRaw(requestParameters: ApiEndpointsLocationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LocationsCreateRes>> {
+        if (requestParameters.locationsCreateReq === null || requestParameters.locationsCreateReq === undefined) {
+            throw new runtime.RequiredError('locationsCreateReq','Required parameter requestParameters.locationsCreateReq was null or undefined when calling apiEndpointsLocationsCreate.');
         }
 
         const queryParameters: any = {};
@@ -61,7 +61,7 @@ export class LocationsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsLocationsCreateReq,
+            body: requestParameters.locationsCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -69,7 +69,7 @@ export class LocationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLocationsCreate(requestParameters: ApiEndpointsLocationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsLocationsCreateRes> {
+    async apiEndpointsLocationsCreate(requestParameters: ApiEndpointsLocationsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LocationsCreateRes> {
         const response = await this.apiEndpointsLocationsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -104,7 +104,7 @@ export class LocationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLocationsGetByIdRaw(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsLocationsGetByIdRes>> {
+    async apiEndpointsLocationsGetByIdRaw(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LocationsGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLocationsGetById.');
         }
@@ -125,7 +125,7 @@ export class LocationsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLocationsGetById(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsLocationsGetByIdRes> {
+    async apiEndpointsLocationsGetById(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LocationsGetByIdRes> {
         const response = await this.apiEndpointsLocationsGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -137,8 +137,8 @@ export class LocationsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLocationsRename.');
         }
 
-        if (requestParameters.apiEndpointsLocationsRenameReq === null || requestParameters.apiEndpointsLocationsRenameReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsLocationsRenameReq','Required parameter requestParameters.apiEndpointsLocationsRenameReq was null or undefined when calling apiEndpointsLocationsRename.');
+        if (requestParameters.locationsRenameReq === null || requestParameters.locationsRenameReq === undefined) {
+            throw new runtime.RequiredError('locationsRenameReq','Required parameter requestParameters.locationsRenameReq was null or undefined when calling apiEndpointsLocationsRename.');
         }
 
         const queryParameters: any = {};
@@ -152,7 +152,7 @@ export class LocationsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsLocationsRenameReq,
+            body: requestParameters.locationsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsJobsCreateReq,
-  ApiEndpointsJobsCreateRes,
-  ApiEndpointsJobsGetByIdRes,
-  ApiEndpointsJobsListRes,
-  ApiEndpointsJobsRenameReq,
+  JobsCreateReq,
+  JobsCreateRes,
+  JobsGetByIdRes,
+  JobsListRes,
+  JobsRenameReq,
 } from '../models';
 
 export interface ApiEndpointsJobsCreateRequest {
-    apiEndpointsJobsCreateReq: ApiEndpointsJobsCreateReq;
+    jobsCreateReq: JobsCreateReq;
 }
 
 export interface ApiEndpointsJobsDeleteRequest {
@@ -36,7 +36,7 @@ export interface ApiEndpointsJobsGetByIdRequest {
 
 export interface ApiEndpointsJobsRenameRequest {
     id: number;
-    apiEndpointsJobsRenameReq: ApiEndpointsJobsRenameReq;
+    jobsRenameReq: JobsRenameReq;
 }
 
 /**
@@ -46,9 +46,9 @@ export class JobsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsJobsCreateRaw(requestParameters: ApiEndpointsJobsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsJobsCreateRes>> {
-        if (requestParameters.apiEndpointsJobsCreateReq === null || requestParameters.apiEndpointsJobsCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsJobsCreateReq','Required parameter requestParameters.apiEndpointsJobsCreateReq was null or undefined when calling apiEndpointsJobsCreate.');
+    async apiEndpointsJobsCreateRaw(requestParameters: ApiEndpointsJobsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobsCreateRes>> {
+        if (requestParameters.jobsCreateReq === null || requestParameters.jobsCreateReq === undefined) {
+            throw new runtime.RequiredError('jobsCreateReq','Required parameter requestParameters.jobsCreateReq was null or undefined when calling apiEndpointsJobsCreate.');
         }
 
         const queryParameters: any = {};
@@ -62,7 +62,7 @@ export class JobsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsJobsCreateReq,
+            body: requestParameters.jobsCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -70,7 +70,7 @@ export class JobsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsJobsCreate(requestParameters: ApiEndpointsJobsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsJobsCreateRes> {
+    async apiEndpointsJobsCreate(requestParameters: ApiEndpointsJobsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<JobsCreateRes> {
         const response = await this.apiEndpointsJobsCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -105,7 +105,7 @@ export class JobsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsJobsGetByIdRaw(requestParameters: ApiEndpointsJobsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsJobsGetByIdRes>> {
+    async apiEndpointsJobsGetByIdRaw(requestParameters: ApiEndpointsJobsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<JobsGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsJobsGetById.');
         }
@@ -126,14 +126,14 @@ export class JobsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsJobsGetById(requestParameters: ApiEndpointsJobsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsJobsGetByIdRes> {
+    async apiEndpointsJobsGetById(requestParameters: ApiEndpointsJobsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<JobsGetByIdRes> {
         const response = await this.apiEndpointsJobsGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiEndpointsJobsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiEndpointsJobsListRes>>> {
+    async apiEndpointsJobsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<JobsListRes>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -150,7 +150,7 @@ export class JobsApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsJobsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiEndpointsJobsListRes>> {
+    async apiEndpointsJobsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<JobsListRes>> {
         const response = await this.apiEndpointsJobsListRaw(initOverrides);
         return await response.value();
     }
@@ -162,8 +162,8 @@ export class JobsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsJobsRename.');
         }
 
-        if (requestParameters.apiEndpointsJobsRenameReq === null || requestParameters.apiEndpointsJobsRenameReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsJobsRenameReq','Required parameter requestParameters.apiEndpointsJobsRenameReq was null or undefined when calling apiEndpointsJobsRename.');
+        if (requestParameters.jobsRenameReq === null || requestParameters.jobsRenameReq === undefined) {
+            throw new runtime.RequiredError('jobsRenameReq','Required parameter requestParameters.jobsRenameReq was null or undefined when calling apiEndpointsJobsRename.');
         }
 
         const queryParameters: any = {};
@@ -177,7 +177,7 @@ export class JobsApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsJobsRenameReq,
+            body: requestParameters.jobsRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

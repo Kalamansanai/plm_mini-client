@@ -15,11 +15,11 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsEventsCreateReq,
+  EventsCreateReq,
 } from '../models';
 
 export interface ApiEndpointsEventsCreateRequest {
-    apiEndpointsEventsCreateReq: ApiEndpointsEventsCreateReq;
+    eventsCreateReq: EventsCreateReq;
 }
 
 /**
@@ -30,8 +30,8 @@ export class EventsApi extends runtime.BaseAPI {
     /**
      */
     async apiEndpointsEventsCreateRaw(requestParameters: ApiEndpointsEventsCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters.apiEndpointsEventsCreateReq === null || requestParameters.apiEndpointsEventsCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsEventsCreateReq','Required parameter requestParameters.apiEndpointsEventsCreateReq was null or undefined when calling apiEndpointsEventsCreate.');
+        if (requestParameters.eventsCreateReq === null || requestParameters.eventsCreateReq === undefined) {
+            throw new runtime.RequiredError('eventsCreateReq','Required parameter requestParameters.eventsCreateReq was null or undefined when calling apiEndpointsEventsCreate.');
         }
 
         const queryParameters: any = {};
@@ -45,7 +45,7 @@ export class EventsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsEventsCreateReq,
+            body: requestParameters.eventsCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

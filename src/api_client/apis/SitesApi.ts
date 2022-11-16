@@ -15,15 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsSitesCreateReq,
-  ApiEndpointsSitesCreateRes,
-  ApiEndpointsSitesGetByIdRes,
-  ApiEndpointsSitesListRes,
-  ApiEndpointsSitesRenameReq,
+  SitesCreateReq,
+  SitesCreateRes,
+  SitesGetByIdRes,
+  SitesListRes,
+  SitesRenameReq,
 } from '../models';
 
 export interface ApiEndpointsSitesCreateRequest {
-    apiEndpointsSitesCreateReq: ApiEndpointsSitesCreateReq;
+    sitesCreateReq: SitesCreateReq;
 }
 
 export interface ApiEndpointsSitesDeleteRequest {
@@ -36,7 +36,7 @@ export interface ApiEndpointsSitesGetByIdRequest {
 
 export interface ApiEndpointsSitesRenameRequest {
     id: number;
-    apiEndpointsSitesRenameReq: ApiEndpointsSitesRenameReq;
+    sitesRenameReq: SitesRenameReq;
 }
 
 /**
@@ -46,9 +46,9 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesCreateRaw(requestParameters: ApiEndpointsSitesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsSitesCreateRes>> {
-        if (requestParameters.apiEndpointsSitesCreateReq === null || requestParameters.apiEndpointsSitesCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsSitesCreateReq','Required parameter requestParameters.apiEndpointsSitesCreateReq was null or undefined when calling apiEndpointsSitesCreate.');
+    async apiEndpointsSitesCreateRaw(requestParameters: ApiEndpointsSitesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SitesCreateRes>> {
+        if (requestParameters.sitesCreateReq === null || requestParameters.sitesCreateReq === undefined) {
+            throw new runtime.RequiredError('sitesCreateReq','Required parameter requestParameters.sitesCreateReq was null or undefined when calling apiEndpointsSitesCreate.');
         }
 
         const queryParameters: any = {};
@@ -62,7 +62,7 @@ export class SitesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsSitesCreateReq,
+            body: requestParameters.sitesCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -70,7 +70,7 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesCreate(requestParameters: ApiEndpointsSitesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsSitesCreateRes> {
+    async apiEndpointsSitesCreate(requestParameters: ApiEndpointsSitesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SitesCreateRes> {
         const response = await this.apiEndpointsSitesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -105,7 +105,7 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesGetByIdRaw(requestParameters: ApiEndpointsSitesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsSitesGetByIdRes>> {
+    async apiEndpointsSitesGetByIdRaw(requestParameters: ApiEndpointsSitesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<SitesGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsSitesGetById.');
         }
@@ -126,14 +126,14 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesGetById(requestParameters: ApiEndpointsSitesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsSitesGetByIdRes> {
+    async apiEndpointsSitesGetById(requestParameters: ApiEndpointsSitesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<SitesGetByIdRes> {
         const response = await this.apiEndpointsSitesGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async apiEndpointsSitesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ApiEndpointsSitesListRes>>> {
+    async apiEndpointsSitesListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<SitesListRes>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -150,7 +150,7 @@ export class SitesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsSitesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiEndpointsSitesListRes>> {
+    async apiEndpointsSitesList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<SitesListRes>> {
         const response = await this.apiEndpointsSitesListRaw(initOverrides);
         return await response.value();
     }
@@ -162,8 +162,8 @@ export class SitesApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsSitesRename.');
         }
 
-        if (requestParameters.apiEndpointsSitesRenameReq === null || requestParameters.apiEndpointsSitesRenameReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsSitesRenameReq','Required parameter requestParameters.apiEndpointsSitesRenameReq was null or undefined when calling apiEndpointsSitesRename.');
+        if (requestParameters.sitesRenameReq === null || requestParameters.sitesRenameReq === undefined) {
+            throw new runtime.RequiredError('sitesRenameReq','Required parameter requestParameters.sitesRenameReq was null or undefined when calling apiEndpointsSitesRename.');
         }
 
         const queryParameters: any = {};
@@ -177,7 +177,7 @@ export class SitesApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsSitesRenameReq,
+            body: requestParameters.sitesRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

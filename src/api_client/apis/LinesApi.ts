@@ -15,14 +15,14 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsLinesCreateReq,
-  ApiEndpointsLinesCreateRes,
-  ApiEndpointsLinesGetByIdRes,
-  ApiEndpointsLinesRenameReq,
+  LinesCreateReq,
+  LinesCreateRes,
+  LinesGetByIdRes,
+  LinesRenameReq,
 } from '../models';
 
 export interface ApiEndpointsLinesCreateRequest {
-    apiEndpointsLinesCreateReq: ApiEndpointsLinesCreateReq;
+    linesCreateReq: LinesCreateReq;
 }
 
 export interface ApiEndpointsLinesDeleteRequest {
@@ -35,7 +35,7 @@ export interface ApiEndpointsLinesGetByIdRequest {
 
 export interface ApiEndpointsLinesRenameRequest {
     id: number;
-    apiEndpointsLinesRenameReq: ApiEndpointsLinesRenameReq;
+    linesRenameReq: LinesRenameReq;
 }
 
 /**
@@ -45,9 +45,9 @@ export class LinesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLinesCreateRaw(requestParameters: ApiEndpointsLinesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsLinesCreateRes>> {
-        if (requestParameters.apiEndpointsLinesCreateReq === null || requestParameters.apiEndpointsLinesCreateReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsLinesCreateReq','Required parameter requestParameters.apiEndpointsLinesCreateReq was null or undefined when calling apiEndpointsLinesCreate.');
+    async apiEndpointsLinesCreateRaw(requestParameters: ApiEndpointsLinesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LinesCreateRes>> {
+        if (requestParameters.linesCreateReq === null || requestParameters.linesCreateReq === undefined) {
+            throw new runtime.RequiredError('linesCreateReq','Required parameter requestParameters.linesCreateReq was null or undefined when calling apiEndpointsLinesCreate.');
         }
 
         const queryParameters: any = {};
@@ -61,7 +61,7 @@ export class LinesApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsLinesCreateReq,
+            body: requestParameters.linesCreateReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response);
@@ -69,7 +69,7 @@ export class LinesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLinesCreate(requestParameters: ApiEndpointsLinesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsLinesCreateRes> {
+    async apiEndpointsLinesCreate(requestParameters: ApiEndpointsLinesCreateRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LinesCreateRes> {
         const response = await this.apiEndpointsLinesCreateRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -104,7 +104,7 @@ export class LinesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLinesGetByIdRaw(requestParameters: ApiEndpointsLinesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiEndpointsLinesGetByIdRes>> {
+    async apiEndpointsLinesGetByIdRaw(requestParameters: ApiEndpointsLinesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LinesGetByIdRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLinesGetById.');
         }
@@ -125,7 +125,7 @@ export class LinesApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsLinesGetById(requestParameters: ApiEndpointsLinesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiEndpointsLinesGetByIdRes> {
+    async apiEndpointsLinesGetById(requestParameters: ApiEndpointsLinesGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LinesGetByIdRes> {
         const response = await this.apiEndpointsLinesGetByIdRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -137,8 +137,8 @@ export class LinesApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLinesRename.');
         }
 
-        if (requestParameters.apiEndpointsLinesRenameReq === null || requestParameters.apiEndpointsLinesRenameReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsLinesRenameReq','Required parameter requestParameters.apiEndpointsLinesRenameReq was null or undefined when calling apiEndpointsLinesRename.');
+        if (requestParameters.linesRenameReq === null || requestParameters.linesRenameReq === undefined) {
+            throw new runtime.RequiredError('linesRenameReq','Required parameter requestParameters.linesRenameReq was null or undefined when calling apiEndpointsLinesRename.');
         }
 
         const queryParameters: any = {};
@@ -152,7 +152,7 @@ export class LinesApi extends runtime.BaseAPI {
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsLinesRenameReq,
+            body: requestParameters.linesRenameReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);

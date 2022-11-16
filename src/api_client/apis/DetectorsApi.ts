@@ -15,9 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
-  ApiEndpointsDetectorsCommandReq,
-  ApiEndpointsDetectorsHeartBeatReq,
-  ApiEndpointsDetectorsIdentifyReq,
+  DetectorsCommandReq,
+  DetectorsHeartBeatReq,
+  DetectorsIdentifyReq,
 } from '../models';
 
 export interface ApiEndpointsDetectorsAttachRequest {
@@ -27,7 +27,7 @@ export interface ApiEndpointsDetectorsAttachRequest {
 
 export interface ApiEndpointsDetectorsCommandRequest {
     id: number;
-    apiEndpointsDetectorsCommandReq: ApiEndpointsDetectorsCommandReq;
+    detectorsCommandReq: DetectorsCommandReq;
 }
 
 export interface ApiEndpointsDetectorsDetachRequest {
@@ -36,12 +36,12 @@ export interface ApiEndpointsDetectorsDetachRequest {
 
 export interface ApiEndpointsDetectorsHeartBeatRequest {
     macAddress: string;
-    apiEndpointsDetectorsHeartBeatReq: ApiEndpointsDetectorsHeartBeatReq;
+    detectorsHeartBeatReq: DetectorsHeartBeatReq;
 }
 
 export interface ApiEndpointsDetectorsIdentifyRequest {
     locationId: number;
-    apiEndpointsDetectorsIdentifyReq: ApiEndpointsDetectorsIdentifyReq;
+    detectorsIdentifyReq: DetectorsIdentifyReq;
 }
 
 export interface ApiEndpointsDetectorsSnapshotRequest {
@@ -96,8 +96,8 @@ export class DetectorsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsDetectorsCommand.');
         }
 
-        if (requestParameters.apiEndpointsDetectorsCommandReq === null || requestParameters.apiEndpointsDetectorsCommandReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsDetectorsCommandReq','Required parameter requestParameters.apiEndpointsDetectorsCommandReq was null or undefined when calling apiEndpointsDetectorsCommand.');
+        if (requestParameters.detectorsCommandReq === null || requestParameters.detectorsCommandReq === undefined) {
+            throw new runtime.RequiredError('detectorsCommandReq','Required parameter requestParameters.detectorsCommandReq was null or undefined when calling apiEndpointsDetectorsCommand.');
         }
 
         const queryParameters: any = {};
@@ -111,7 +111,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsDetectorsCommandReq,
+            body: requestParameters.detectorsCommandReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -159,8 +159,8 @@ export class DetectorsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('macAddress','Required parameter requestParameters.macAddress was null or undefined when calling apiEndpointsDetectorsHeartBeat.');
         }
 
-        if (requestParameters.apiEndpointsDetectorsHeartBeatReq === null || requestParameters.apiEndpointsDetectorsHeartBeatReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsDetectorsHeartBeatReq','Required parameter requestParameters.apiEndpointsDetectorsHeartBeatReq was null or undefined when calling apiEndpointsDetectorsHeartBeat.');
+        if (requestParameters.detectorsHeartBeatReq === null || requestParameters.detectorsHeartBeatReq === undefined) {
+            throw new runtime.RequiredError('detectorsHeartBeatReq','Required parameter requestParameters.detectorsHeartBeatReq was null or undefined when calling apiEndpointsDetectorsHeartBeat.');
         }
 
         const queryParameters: any = {};
@@ -174,7 +174,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsDetectorsHeartBeatReq,
+            body: requestParameters.detectorsHeartBeatReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -194,8 +194,8 @@ export class DetectorsApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('locationId','Required parameter requestParameters.locationId was null or undefined when calling apiEndpointsDetectorsIdentify.');
         }
 
-        if (requestParameters.apiEndpointsDetectorsIdentifyReq === null || requestParameters.apiEndpointsDetectorsIdentifyReq === undefined) {
-            throw new runtime.RequiredError('apiEndpointsDetectorsIdentifyReq','Required parameter requestParameters.apiEndpointsDetectorsIdentifyReq was null or undefined when calling apiEndpointsDetectorsIdentify.');
+        if (requestParameters.detectorsIdentifyReq === null || requestParameters.detectorsIdentifyReq === undefined) {
+            throw new runtime.RequiredError('detectorsIdentifyReq','Required parameter requestParameters.detectorsIdentifyReq was null or undefined when calling apiEndpointsDetectorsIdentify.');
         }
 
         const queryParameters: any = {};
@@ -209,7 +209,7 @@ export class DetectorsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.apiEndpointsDetectorsIdentifyReq,
+            body: requestParameters.detectorsIdentifyReq,
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
