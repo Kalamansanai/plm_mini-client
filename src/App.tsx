@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 
 import "./App.css";
 import { setupInterceptors } from "./api";
+import NavBar from "./components/NavBar";
 import CompanyHierarchy from "./components/_screens/company_hierarchy/CompanyHierarchy";
 
 export default function App() {
@@ -42,5 +43,10 @@ export default function App() {
         });
     }, []);
 
-    return <CompanyHierarchy state={chState} dispatch={dispatchChState} />;
+    return (
+        <>
+            <NavBar />
+            <CompanyHierarchy state={chState} dispatch={dispatchChState} />
+        </>
+    );
 }

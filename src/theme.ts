@@ -17,8 +17,9 @@ const theme = createTheme({
             paper: "#f0f0f0",
         },
         text: {
-            primary: grey[500],
-            secondary: grey[200],
+            primary: grey[800],
+            secondary: grey[600],
+            disabled: grey[400],
         },
     },
     components: {
