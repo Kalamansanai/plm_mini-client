@@ -1,9 +1,9 @@
 ## 
- - Install dependencies: npm install
- - Build for production: npm run build
- - Run (development): npm run dev
- - Run (production): npm run check
- - Run typescript type checker: npm run check
+ - Install dependencies: `npm install`
+ - Build for production: `npm run build`
+ - Run (development): `npm run dev`
+ - Run (production): `npm run check`
+ - Run typescript type checker: `npm run check`
 
 ## Before pushing or submitting a PR:
  - make sure that all changed source files have been formatted using Prettier (configuration is
