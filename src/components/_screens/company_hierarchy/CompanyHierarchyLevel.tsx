@@ -18,7 +18,7 @@ type Props = LevelDescriptor & {
     dispatch: React.Dispatch<CHAction>;
 };
 
-export default function CompanyHierarchyLevel({ state, dispatch, index, label, addFn, getFn, renameFn }: Props) {
+export default function CompanyHierarchyLevel({ state, dispatch, index, label, addFn, getFn, renameFn, deleteFn }: Props) {
     const ownSelectedId = state.selectedIds[index];
 
     const [newItemName, setNewItemName] = useState("");
@@ -111,6 +111,11 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
         return true;
     }
 
+    const onItemDelete = async(id: number) => {
+        await deleteFn(id);
+        dispatch({ type: "DeleteItem", level: index, id: id });
+    }
+
     const addPopupElement = (
         <Popover {...bindPopover(addPopup)}>
             <TextField label="Name"
@@ -152,6 +157,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
                                 selected={item.id === ownSelectedId}
                                 clickHandler={onNodeClick}
                                 renameHandler={onItemRename}
+                                deleteHandler={onItemDelete}
                             />
                         ))}
                         <ListItem disablePadding>

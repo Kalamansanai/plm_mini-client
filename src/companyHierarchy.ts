@@ -10,7 +10,7 @@ export type LevelDescriptor = {
     addFn: (name: string, parentId?: number) => Promise<CHNode>;
     getFn: (id?: number) => Promise<CHNode[]>;
     renameFn: (id: number, name: string) => Promise<void>;
-    // deleteFn: () => void
+    deleteFn: (id: number) => Promise<void>;
 };
 
 const defaultConfig = new Configuration({ basePath: "https://localhost:9696" });
@@ -29,6 +29,9 @@ export const descriptors: LevelDescriptor[] = [
         },
         renameFn: async (id, name) => {
             await new SitesApi(defaultConfig).apiEndpointsSitesRename({ id, sitesRenameReq: { name }});
+        },
+        deleteFn: async (id) => {
+            await new SitesApi(defaultConfig).apiEndpointsSitesDelete({ id });
         }
     },
     {
@@ -47,6 +50,9 @@ export const descriptors: LevelDescriptor[] = [
         },
         renameFn: async (id, name) => {
             await new OPUsApi(defaultConfig).apiEndpointsOPUsRename({ id, oPUsRenameReq: { name }});
+        },
+        deleteFn: async (id) => {
+            await new OPUsApi(defaultConfig).apiEndpointsOPUsDelete({ id });
         }
     },
     {
@@ -63,6 +69,9 @@ export const descriptors: LevelDescriptor[] = [
         },
         renameFn: async (id, name) => {
             await new LinesApi(defaultConfig).apiEndpointsLinesRename({ id, linesRenameReq: { name }});
+        },
+        deleteFn: async (id) => {
+            await new LinesApi(defaultConfig).apiEndpointsLinesDelete({ id });
         }
     },
     {
@@ -79,6 +88,9 @@ export const descriptors: LevelDescriptor[] = [
         },
         renameFn: async (id, name) => {
             await new StationsApi(defaultConfig).apiEndpointsStationsRename({ id, stationsRenameReq: { name }});
+        },
+        deleteFn: async (id) => {
+            await new StationsApi(defaultConfig).apiEndpointsStationsDelete({ id });
         }
     }
 ];
@@ -101,6 +113,7 @@ export type Action =
     | { type: "SetItems"; level: number; items: CHNode[] }
     | { type: "AddItem"; level: number; item: CHNode }
     | { type: "RenameItem"; level: number; id: number; name: string }
+    | { type: "DeleteItem"; level: number; id: number }
     | { type: "SetSelectedId"; level: number; id: number | null }
     | { type: "Reset" };
 
@@ -123,6 +136,17 @@ export default function reducer(state: State, action: Action): State {
 
             const newState = { ...state };
             newState.items[action.level] = newItems;
+            return newState;
+        }
+        case "DeleteItem": {
+            const newItems = [...state.items[action.level]!.filter(item => item.id !== action.id)];
+            const newState = { ...state };
+            newState.items[action.level] = newItems;
+
+            if (action.id === state.selectedIds[action.level]) {
+                newState.highestShownLevel = action.level;
+            }
+
             return newState;
         }
         case "SetSelectedId": {

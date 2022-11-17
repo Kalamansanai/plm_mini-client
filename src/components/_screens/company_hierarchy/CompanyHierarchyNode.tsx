@@ -5,15 +5,18 @@ import {usePopupState} from "material-ui-popup-state/hooks";
 import {useRef} from "react";
 import RenamePopup from "components/popups/RenamePopup";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ConfirmPopup from "../../popups/ConfirmPopup";
 
 type Props = {
     item: CHNode;
     selected: boolean;
     clickHandler: (id: number) => void;
     renameHandler: (id: number, name: string) => Promise<boolean>;
+    deleteHandler: (id: number) => Promise<void>;
 };
 
-export default function CompanyHierarchyNode({ item, selected, clickHandler, renameHandler }: Props) {
+export default function CompanyHierarchyNode({ item, selected, clickHandler, renameHandler, deleteHandler }: Props) {
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-item" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-item" });
 
@@ -38,6 +41,12 @@ export default function CompanyHierarchyNode({ item, selected, clickHandler, ren
         return false;
     }
 
+    const onDeleteConfirm = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        await deleteHandler(item.id);
+        deletePopup.close();
+    }
+
     return (
         <>
             <ListItem disablePadding ref={listItemRef}>
@@ -55,9 +64,22 @@ export default function CompanyHierarchyNode({ item, selected, clickHandler, ren
                             <EditIcon />
                         </IconButton>
                     </Tooltip>
+                    <Tooltip title="Delete" followCursor>
+                        <IconButton
+                            sx={{ color: "error.light", p: 0 }}
+                            className="hidden-icon"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                deletePopup.open(listItemRef.current);
+                            }}
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
                 </ListItemButton>
             </ListItem>
             <RenamePopup popupProps={renamePopup} initialValue={item.name} label="Name" handler={onRenameSubmit} />
+            <ConfirmPopup popupProps={deletePopup} text={<>Deleting <i>{item.name}</i></>} handler={onDeleteConfirm} />
         </>
     );
 }
