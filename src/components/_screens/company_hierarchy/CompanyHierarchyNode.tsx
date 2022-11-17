@@ -1,11 +1,12 @@
+import RenamePopup from "components/popups/RenamePopup";
+import { usePopupState } from "material-ui-popup-state/hooks";
+import { useRef } from "react";
 import { CompanyHierarchyNode as CHNode } from "types";
 
-import {IconButton, ListItem, ListItemButton, ListItemText, Tooltip} from "@mui/material";
-import {usePopupState} from "material-ui-popup-state/hooks";
-import {useRef} from "react";
-import RenamePopup from "components/popups/RenamePopup";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { IconButton, ListItem, ListItemButton, ListItemText, Tooltip } from "@mui/material";
+
 import ConfirmPopup from "../../popups/ConfirmPopup";
 
 type Props = {
@@ -16,7 +17,13 @@ type Props = {
     deleteHandler: (id: number) => Promise<void>;
 };
 
-export default function CompanyHierarchyNode({ item, selected, clickHandler, renameHandler, deleteHandler }: Props) {
+export default function CompanyHierarchyNode({
+    item,
+    selected,
+    clickHandler,
+    renameHandler,
+    deleteHandler,
+}: Props) {
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-item" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-item" });
 
@@ -39,13 +46,13 @@ export default function CompanyHierarchyNode({ item, selected, clickHandler, ren
         }
 
         return false;
-    }
+    };
 
     const onDeleteConfirm = async (e: React.MouseEvent) => {
         e.stopPropagation();
         await deleteHandler(item.id);
         deletePopup.close();
-    }
+    };
 
     return (
         <>
@@ -78,8 +85,21 @@ export default function CompanyHierarchyNode({ item, selected, clickHandler, ren
                     </Tooltip>
                 </ListItemButton>
             </ListItem>
-            <RenamePopup popupProps={renamePopup} initialValue={item.name} label="Name" handler={onRenameSubmit} />
-            <ConfirmPopup popupProps={deletePopup} text={<>Deleting <i>{item.name}</i></>} handler={onDeleteConfirm} />
+            <RenamePopup
+                popupProps={renamePopup}
+                initialValue={item.name}
+                label="Name"
+                handler={onRenameSubmit}
+            />
+            <ConfirmPopup
+                popupProps={deletePopup}
+                text={
+                    <>
+                        Deleting <i>{item.name}</i>
+                    </>
+                }
+                handler={onDeleteConfirm}
+            />
         </>
     );
 }

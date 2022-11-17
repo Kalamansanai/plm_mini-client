@@ -1,8 +1,9 @@
+import { config as apiConfig } from "api";
 import { OPUsApi } from "api_client/apis/OPUsApi";
 import { SitesApi } from "api_client/apis/SitesApi";
-import { config as apiConfig } from "api";
 import { CompanyHierarchyNode as CHNode, Site } from "types";
-import {LinesApi, StationsApi} from "./api_client";
+
+import { LinesApi, StationsApi } from "./api_client";
 
 export type LevelDescriptor = {
     index: number;
@@ -17,8 +18,10 @@ export const descriptors: LevelDescriptor[] = [
     {
         index: 0,
         label: "Sites",
-        addFn : async (name) => {
-            const site = await new SitesApi(apiConfig).apiEndpointsSitesCreate({ sitesCreateReq: { name }});
+        addFn: async (name) => {
+            const site = await new SitesApi(apiConfig).apiEndpointsSitesCreate({
+                sitesCreateReq: { name },
+            });
             return { id: site.id!, name: site.name! };
         },
         getFn: async () => {
@@ -26,18 +29,19 @@ export const descriptors: LevelDescriptor[] = [
             return sites.map<Site>((s) => ({ id: s.id!, name: s.name! }));
         },
         renameFn: async (id, name) => {
-            await new SitesApi(apiConfig).apiEndpointsSitesRename({ id, sitesRenameReq: { name }});
+            await new SitesApi(apiConfig).apiEndpointsSitesRename({ id, sitesRenameReq: { name } });
         },
         deleteFn: async (id) => {
             await new SitesApi(apiConfig).apiEndpointsSitesDelete({ id });
-        }
+        },
     },
     {
         index: 1,
         label: "OPUs",
-        addFn : async (name, parentId) => {
-            const opu = await new OPUsApi(apiConfig)
-                .apiEndpointsOPUsCreate({ oPUsCreateReq: { parentSiteId: parentId, name }});
+        addFn: async (name, parentId) => {
+            const opu = await new OPUsApi(apiConfig).apiEndpointsOPUsCreate({
+                oPUsCreateReq: { parentSiteId: parentId, name },
+            });
             return { id: opu.id!, name: opu.name! };
         },
         getFn: async (id) => {
@@ -47,18 +51,19 @@ export const descriptors: LevelDescriptor[] = [
             return parentSite.opus!.map((o) => ({ id: o.id!, name: o.name! }));
         },
         renameFn: async (id, name) => {
-            await new OPUsApi(apiConfig).apiEndpointsOPUsRename({ id, oPUsRenameReq: { name }});
+            await new OPUsApi(apiConfig).apiEndpointsOPUsRename({ id, oPUsRenameReq: { name } });
         },
         deleteFn: async (id) => {
             await new OPUsApi(apiConfig).apiEndpointsOPUsDelete({ id });
-        }
+        },
     },
     {
         index: 2,
         label: "Lines",
-        addFn : async (name, parentId) => {
-            const line = await new LinesApi(apiConfig)
-                .apiEndpointsLinesCreate({ linesCreateReq: { opuId: parentId, name }});
+        addFn: async (name, parentId) => {
+            const line = await new LinesApi(apiConfig).apiEndpointsLinesCreate({
+                linesCreateReq: { opuId: parentId, name },
+            });
             return { id: line.id!, name: line.name! };
         },
         getFn: async (id) => {
@@ -66,18 +71,19 @@ export const descriptors: LevelDescriptor[] = [
             return parentOpu.lines!.map((l) => ({ id: l.id!, name: l.name! }));
         },
         renameFn: async (id, name) => {
-            await new LinesApi(apiConfig).apiEndpointsLinesRename({ id, linesRenameReq: { name }});
+            await new LinesApi(apiConfig).apiEndpointsLinesRename({ id, linesRenameReq: { name } });
         },
         deleteFn: async (id) => {
             await new LinesApi(apiConfig).apiEndpointsLinesDelete({ id });
-        }
+        },
     },
     {
         index: 3,
         label: "Stations",
-        addFn : async (name, parentId) => {
-            const station = await new StationsApi(apiConfig)
-                .apiEndpointsStationsCreate({ stationsCreateReq: { parentLineId: parentId, name }});
+        addFn: async (name, parentId) => {
+            const station = await new StationsApi(apiConfig).apiEndpointsStationsCreate({
+                stationsCreateReq: { parentLineId: parentId, name },
+            });
             return { id: station.id!, name: station.name! };
         },
         getFn: async (id) => {
@@ -85,12 +91,15 @@ export const descriptors: LevelDescriptor[] = [
             return parentLine.stations!.map((s) => ({ id: s.id!, name: s.name! }));
         },
         renameFn: async (id, name) => {
-            await new StationsApi(apiConfig).apiEndpointsStationsRename({ id, stationsRenameReq: { name }});
+            await new StationsApi(apiConfig).apiEndpointsStationsRename({
+                id,
+                stationsRenameReq: { name },
+            });
         },
         deleteFn: async (id) => {
             await new StationsApi(apiConfig).apiEndpointsStationsDelete({ id });
-        }
-    }
+        },
+    },
 ];
 
 export type State = {
@@ -137,7 +146,9 @@ export default function reducer(state: State, action: Action): State {
             return newState;
         }
         case "DeleteItem": {
-            const newItems = [...state.items[action.level]!.filter(item => item.id !== action.id)];
+            const newItems = [
+                ...state.items[action.level]!.filter((item) => item.id !== action.id),
+            ];
             const newState = { ...state };
             newState.items[action.level] = newItems;
 
@@ -152,7 +163,9 @@ export default function reducer(state: State, action: Action): State {
 
             const newState = { ...state };
             if (action.id !== null) {
-                newState.highestShownLevel = sameIdSelected ? action.level : Math.min(action.level + 1, descriptors.length);
+                newState.highestShownLevel = sameIdSelected
+                    ? action.level
+                    : Math.min(action.level + 1, descriptors.length);
             }
             newState.selectedIds[action.level] = sameIdSelected ? null : action.id;
 

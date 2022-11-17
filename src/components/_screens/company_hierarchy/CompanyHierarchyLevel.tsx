@@ -1,24 +1,33 @@
 import { LevelDescriptor, State as CHState, Action as CHAction } from "companyHierarchy";
 import { bindPopover, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
-import {ChangeEvent, ChangeEventHandler, useEffect, useState} from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
 
-import {Box} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import CheckIcon from "@mui/icons-material/Check";
+import { Box } from "@mui/material";
+import { IconButton, ListItem, Popover, TextField, Tooltip } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import CheckIcon from "@mui/icons-material/Check";
-import AddIcon from "@mui/icons-material/Add";
 
 import { default as CHNode } from "./CompanyHierarchyNode";
-import {IconButton, ListItem, Popover, TextField, Tooltip} from "@mui/material";
 
 type Props = LevelDescriptor & {
     state: CHState;
     dispatch: React.Dispatch<CHAction>;
 };
 
-export default function CompanyHierarchyLevel({ state, dispatch, index, label, addFn, getFn, renameFn, deleteFn }: Props) {
+export default function CompanyHierarchyLevel({
+    state,
+    dispatch,
+    index,
+    label,
+    addFn,
+    getFn,
+    renameFn,
+    deleteFn,
+}: Props) {
     const ownSelectedId = state.selectedIds[index];
 
     const [newItemName, setNewItemName] = useState("");
@@ -31,7 +40,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
             if (index !== 0) return;
 
             const data = await getFn();
-            console.log('Level 0 fetch');
+            console.log("Level 0 fetch");
             dispatch({ type: "SetItems", level: index, items: data });
         };
 
@@ -46,12 +55,12 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
 
             const data = await getFn(previousLevelId);
             console.log(`Level 1 fetch, data len: ${data.length}`);
-            dispatch({ type: "SetItems", level: index, items: data});
-        }
+            dispatch({ type: "SetItems", level: index, items: data });
+        };
 
         if (index > state.highestShownLevel) {
-            dispatch({type: "SetItems", level: index, items: []});
-            dispatch({ type: "SetSelectedId", level: index, id: null});
+            dispatch({ type: "SetItems", level: index, items: [] });
+            dispatch({ type: "SetSelectedId", level: index, id: null });
         }
 
         if (index === state.highestShownLevel) {
@@ -59,7 +68,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
                 fetchData();
             }
         }
-    }, [index, state.selectedIds[index - 1], state.highestShownLevel])
+    }, [index, state.selectedIds[index - 1], state.highestShownLevel]);
 
     const onNodeClick = (id: number) => {
         dispatch({ type: "SetSelectedId", level: index, id });
@@ -67,21 +76,21 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
 
     const onNewItemNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewItemName(e.target.value);
-    }
+    };
 
     const onNewItemKeyboardSubmit = (e: React.KeyboardEvent) => {
         if (e.key !== "Enter") return;
         if (!newItemName) return;
 
         onNewItemSubmit();
-    }
+    };
 
     const onNewItemMouseSubmit = async (e: React.MouseEvent) => {
         e.stopPropagation();
         if (!newItemName) return;
 
         onNewItemSubmit();
-    }
+    };
 
     const onNewItemSubmit = async () => {
         let newNode;
@@ -89,7 +98,7 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
         if (index === 0) {
             // We're on the site level - no parentId is needed when adding a node
             const newNodeRes = await addFn(newItemName);
-            newNode = {id: newNodeRes.id, name: newNodeRes.name};
+            newNode = { id: newNodeRes.id, name: newNodeRes.name };
         } else {
             // ...otherwise, parent id is needed, as the new node will be the child of the node
             // selected on the previous level
@@ -97,37 +106,40 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
             if (previousSelectedId === null || previousSelectedId === undefined) return;
 
             const newSiteRes = await addFn(newItemName, previousSelectedId);
-            newNode = {id: newSiteRes.id, name: newSiteRes.name};
+            newNode = { id: newSiteRes.id, name: newSiteRes.name };
         }
 
-        dispatch({ type: "AddItem", level: index, item: newNode})
+        dispatch({ type: "AddItem", level: index, item: newNode });
         setNewItemName("");
         addPopup.close();
-    }
+    };
 
     const onItemRename = async (id: number, name: string) => {
         await renameFn(id, name);
         dispatch({ type: "RenameItem", level: index, id: id, name: name });
         return true;
-    }
+    };
 
-    const onItemDelete = async(id: number) => {
+    const onItemDelete = async (id: number) => {
         await deleteFn(id);
         dispatch({ type: "DeleteItem", level: index, id: id });
-    }
+    };
 
     const addPopupElement = (
         <Popover {...bindPopover(addPopup)}>
-            <TextField label="Name"
-                       variant="filled"
-                       autoFocus
-                       onChange={onNewItemNameChange}
-                       onKeyUp={onNewItemKeyboardSubmit}
-                       onClick={(e) => e.stopPropagation()}
+            <TextField
+                label="Name"
+                variant="filled"
+                autoFocus
+                onChange={onNewItemNameChange}
+                onKeyUp={onNewItemKeyboardSubmit}
+                onClick={(e) => e.stopPropagation()}
             />
-            <IconButton sx={{color: "success.light" }}
-                        disabled={!newItemName}
-                        onClick={onNewItemMouseSubmit}>
+            <IconButton
+                sx={{ color: "success.light" }}
+                disabled={!newItemName}
+                onClick={onNewItemMouseSubmit}
+            >
                 <CheckIcon />
             </IconButton>
         </Popover>
@@ -162,7 +174,10 @@ export default function CompanyHierarchyLevel({ state, dispatch, index, label, a
                         ))}
                         <ListItem disablePadding>
                             <Tooltip title="Add">
-                                <IconButton sx={{ color: 'primary.light' }} {...bindTrigger(addPopup)}>
+                                <IconButton
+                                    sx={{ color: "primary.light" }}
+                                    {...bindTrigger(addPopup)}
+                                >
                                     <AddIcon />
                                 </IconButton>
                             </Tooltip>

@@ -23,12 +23,7 @@ export default function CompanyHierarchy({ state, dispatch }: Props) {
             flexGrow={1}
         >
             {chLevelDescriptors.map((desc, i) => (
-                <CHLevel
-                    key={i}
-                    state={state}
-                    dispatch={dispatch}
-                    {...desc}
-                />
+                <CHLevel key={i} state={state} dispatch={dispatch} {...desc} />
             ))}
         </Grid>
     );
