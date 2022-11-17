@@ -2,7 +2,7 @@
  - Install dependencies: `npm install`
  - Build for production: `npm run build`
  - Run (development): `npm run dev`
- - Run (production): `npm run check`
+ - Run (production): `npm run preview`
  - Run typescript type checker: `npm run check`
 
 ## Before pushing or submitting a PR:
