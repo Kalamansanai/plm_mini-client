@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { SnackbarProvider } from "notistack";
 
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
@@ -10,8 +11,10 @@ import theme from "./theme";
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <App/>
+            <SnackbarProvider maxSnack={3}>
+                <CssBaseline/>
+                <App/>
+            </SnackbarProvider>
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById("root")
