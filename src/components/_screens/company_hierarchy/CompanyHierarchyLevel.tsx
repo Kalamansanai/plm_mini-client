@@ -17,6 +17,7 @@ import { default as CHNode } from "./CompanyHierarchyNode";
 export default function CompanyHierarchyLevel({
     level,
     label,
+    labelSingular,
     addFn,
     getFn,
     renameFn,
@@ -155,18 +156,23 @@ export default function CompanyHierarchyLevel({
             <Grid
                 item
                 sx={{
-                    height: "100vh",
+                    height: "100%",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "stretch",
+                    flex: 1,
                 }}
             >
                 <Typography sx={{ display: "flex", justifyContent: "center" }} variant="button">
                     {label}
                 </Typography>
                 <Divider />
-                <Box sx={{ flexGrow: 1, height: 0 }} hidden={level > state.highestShownLevel}>
-                    <List sx={{ height: "100%", overflowY: "auto" }}>
+                <Box sx={{ display: "flex", flexDirection: "flex-end", flexGrow: 1, height: 0 }}>
+                    {level !== 0 && <Divider orientation="vertical" />}
+                    <List
+                        sx={{ height: "100%", overflowY: "auto", flex: 1 }}
+                        hidden={level > state.highestShownLevel}
+                    >
                         {state.items[level]!.map((item, i) => (
                             <CHNode
                                 key={i}
@@ -177,10 +183,10 @@ export default function CompanyHierarchyLevel({
                                 deleteHandler={onItemDelete}
                             />
                         ))}
-                        <ListItem disablePadding>
-                            <Tooltip title="Add">
+                        <ListItem disablePadding sx={{ pt: 1 }}>
+                            <Tooltip title={`Add ${labelSingular}`}>
                                 <IconButton
-                                    sx={{ color: "primary.light" }}
+                                    sx={{ color: "primary.light", mx: "auto" }}
                                     {...bindTrigger(addPopup)}
                                 >
                                     <AddIcon />

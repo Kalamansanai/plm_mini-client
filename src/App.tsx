@@ -42,9 +42,11 @@ export default function App() {
     }, []);
 
     return (
-        <>
+        <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
             <NavBar />
-            <Outlet />
-        </>
+            <Box sx={{ m: 2, flexGrow: 1 }}>
+                <Outlet />
+            </Box>
+        </Box>
     );
 }

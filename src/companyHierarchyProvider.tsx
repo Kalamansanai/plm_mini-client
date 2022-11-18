@@ -9,6 +9,7 @@ import { LinesApi, StationsApi } from "./api_client";
 export type LevelDescriptor = {
     level: number;
     label: string;
+    labelSingular: string;
     addFn: (name: string, parentId?: number) => Promise<CHNode>;
     getFn: (id?: number) => Promise<CHNode[]>;
     renameFn: (id: number, name: string) => Promise<void>;
@@ -19,6 +20,7 @@ export const descriptors: LevelDescriptor[] = [
     {
         level: 0,
         label: "Sites",
+        labelSingular: "Site",
         addFn: async (name) => {
             const site = await new SitesApi(apiConfig).apiEndpointsSitesCreate({
                 sitesCreateReq: { name },
@@ -39,6 +41,7 @@ export const descriptors: LevelDescriptor[] = [
     {
         level: 1,
         label: "OPUs",
+        labelSingular: "OPU",
         addFn: async (name, parentId) => {
             const opu = await new OPUsApi(apiConfig).apiEndpointsOPUsCreate({
                 oPUsCreateReq: { parentSiteId: parentId, name },
@@ -61,6 +64,7 @@ export const descriptors: LevelDescriptor[] = [
     {
         level: 2,
         label: "Lines",
+        labelSingular: "Line",
         addFn: async (name, parentId) => {
             const line = await new LinesApi(apiConfig).apiEndpointsLinesCreate({
                 linesCreateReq: { opuId: parentId, name },
@@ -81,6 +85,7 @@ export const descriptors: LevelDescriptor[] = [
     {
         level: 3,
         label: "Stations",
+        labelSingular: "Station",
         addFn: async (name, parentId) => {
             const station = await new StationsApi(apiConfig).apiEndpointsStationsCreate({
                 stationsCreateReq: { parentLineId: parentId, name },
