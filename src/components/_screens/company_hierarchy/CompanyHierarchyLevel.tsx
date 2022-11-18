@@ -71,12 +71,8 @@ export default function CompanyHierarchyLevel({
     const onNodeClick = (id: number) => {
         dispatch({ type: "SetSelectedId", level: level, id });
 
-        console.log("navigating?");
-        console.log(level);
-        console.log(maxLevel);
-
         if (level === maxLevel) {
-            navigate(`dashboard/${id}`);
+            navigate(`station/${id}`);
         }
     };
 
