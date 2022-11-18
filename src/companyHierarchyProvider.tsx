@@ -1,12 +1,13 @@
 import { config as apiConfig } from "api";
 import { OPUsApi } from "api_client/apis/OPUsApi";
 import { SitesApi } from "api_client/apis/SitesApi";
+import { createContext, useContext, useReducer } from "react";
 import { CompanyHierarchyNode as CHNode, Site } from "types";
 
 import { LinesApi, StationsApi } from "./api_client";
 
 export type LevelDescriptor = {
-    index: number;
+    level: number;
     label: string;
     addFn: (name: string, parentId?: number) => Promise<CHNode>;
     getFn: (id?: number) => Promise<CHNode[]>;
@@ -16,7 +17,7 @@ export type LevelDescriptor = {
 
 export const descriptors: LevelDescriptor[] = [
     {
-        index: 0,
+        level: 0,
         label: "Sites",
         addFn: async (name) => {
             const site = await new SitesApi(apiConfig).apiEndpointsSitesCreate({
@@ -36,7 +37,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        index: 1,
+        level: 1,
         label: "OPUs",
         addFn: async (name, parentId) => {
             const opu = await new OPUsApi(apiConfig).apiEndpointsOPUsCreate({
@@ -58,7 +59,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        index: 2,
+        level: 2,
         label: "Lines",
         addFn: async (name, parentId) => {
             const line = await new LinesApi(apiConfig).apiEndpointsLinesCreate({
@@ -78,7 +79,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        index: 3,
+        level: 3,
         label: "Stations",
         addFn: async (name, parentId) => {
             const station = await new StationsApi(apiConfig).apiEndpointsStationsCreate({
@@ -109,7 +110,7 @@ export type State = {
     lastClickedId: number | null;
 };
 
-export const initialState: State = {
+const initialState: State = {
     items: Array(descriptors.length).fill([]),
     selectedIds: Array(descriptors.length).fill(null),
     highestShownLevel: 0,
@@ -124,7 +125,7 @@ export type Action =
     | { type: "SetSelectedId"; level: number; id: number | null }
     | { type: "Reset" };
 
-export default function reducer(state: State, action: Action): State {
+function reducer(state: State, action: Action): State {
     switch (action.type) {
         case "SetItems": {
             const newState = { ...state };
@@ -169,10 +170,6 @@ export default function reducer(state: State, action: Action): State {
             }
             newState.selectedIds[action.level] = sameIdSelected ? null : action.id;
 
-            // console.log('================');
-            // console.log(`${JSON.stringify(action)}`);
-            // console.log(`${JSON.stringify(newState)}`);
-
             return newState;
         }
         case "Reset": {
@@ -181,4 +178,16 @@ export default function reducer(state: State, action: Action): State {
         default:
             return state;
     }
+}
+
+const Context = createContext<{ state: State; dispatch: React.Dispatch<Action> }>(null!);
+
+export function CompanyHierarchyProvider({ children }: { children: React.ReactNode }) {
+    const [state, dispatch] = useReducer(reducer, initialState);
+
+    return <Context.Provider value={{ state, dispatch }}>{children}</Context.Provider>;
+}
+
+export default function useCHState() {
+    return useContext(Context);
 }

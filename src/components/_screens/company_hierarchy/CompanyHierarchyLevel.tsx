@@ -1,6 +1,7 @@
-import { LevelDescriptor, State as CHState, Action as CHAction } from "companyHierarchy";
+import useCHState, { LevelDescriptor, descriptors } from "companyHierarchyProvider";
 import { bindPopover, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
-import { ChangeEvent, ChangeEventHandler, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
@@ -13,22 +14,18 @@ import Typography from "@mui/material/Typography";
 
 import { default as CHNode } from "./CompanyHierarchyNode";
 
-type Props = LevelDescriptor & {
-    state: CHState;
-    dispatch: React.Dispatch<CHAction>;
-};
-
 export default function CompanyHierarchyLevel({
-    state,
-    dispatch,
-    index,
+    level,
     label,
     addFn,
     getFn,
     renameFn,
     deleteFn,
-}: Props) {
-    const ownSelectedId = state.selectedIds[index];
+}: LevelDescriptor) {
+    const { state, dispatch } = useCHState();
+    const navigate = useNavigate();
+    const ownSelectedId = state.selectedIds[level];
+    const maxLevel = descriptors.length - 1;
 
     const [newItemName, setNewItemName] = useState("");
 
@@ -37,41 +34,49 @@ export default function CompanyHierarchyLevel({
     // fetch for first level
     useEffect(() => {
         const fetchData = async () => {
-            if (index !== 0) return;
+            if (level !== 0) return;
 
             const data = await getFn();
             console.log("Level 0 fetch");
-            dispatch({ type: "SetItems", level: index, items: data });
+            dispatch({ type: "SetItems", level: level, items: data });
         };
 
         fetchData();
-    }, [index]);
+    }, [level]);
 
     // fetch for all other levels
     useEffect(() => {
         const fetchData = async () => {
-            const previousLevelId = state.selectedIds[index - 1];
+            const previousLevelId = state.selectedIds[level - 1];
             if (previousLevelId === null || previousLevelId === undefined) return;
 
             const data = await getFn(previousLevelId);
             console.log(`Level 1 fetch, data len: ${data.length}`);
-            dispatch({ type: "SetItems", level: index, items: data });
+            dispatch({ type: "SetItems", level: level, items: data });
         };
 
-        if (index > state.highestShownLevel) {
-            dispatch({ type: "SetItems", level: index, items: [] });
-            dispatch({ type: "SetSelectedId", level: index, id: null });
+        if (level > state.highestShownLevel) {
+            dispatch({ type: "SetItems", level: level, items: [] });
+            dispatch({ type: "SetSelectedId", level: level, id: null });
         }
 
-        if (index === state.highestShownLevel) {
-            if (state.selectedIds[index - 1] !== null) {
+        if (level === state.highestShownLevel) {
+            if (state.selectedIds[level - 1] !== null) {
                 fetchData();
             }
         }
-    }, [index, state.selectedIds[index - 1], state.highestShownLevel]);
+    }, [level, state.selectedIds[level - 1], state.highestShownLevel]);
 
     const onNodeClick = (id: number) => {
-        dispatch({ type: "SetSelectedId", level: index, id });
+        dispatch({ type: "SetSelectedId", level: level, id });
+
+        console.log("navigating?");
+        console.log(level);
+        console.log(maxLevel);
+
+        if (level === maxLevel) {
+            navigate(`dashboard/${id}`);
+        }
     };
 
     const onNewItemNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,34 +100,34 @@ export default function CompanyHierarchyLevel({
     const onNewItemSubmit = async () => {
         let newNode;
 
-        if (index === 0) {
+        if (level === 0) {
             // We're on the site level - no parentId is needed when adding a node
             const newNodeRes = await addFn(newItemName);
             newNode = { id: newNodeRes.id, name: newNodeRes.name };
         } else {
             // ...otherwise, parent id is needed, as the new node will be the child of the node
             // selected on the previous level
-            const previousSelectedId = state.selectedIds[index - 1];
+            const previousSelectedId = state.selectedIds[level - 1];
             if (previousSelectedId === null || previousSelectedId === undefined) return;
 
             const newSiteRes = await addFn(newItemName, previousSelectedId);
             newNode = { id: newSiteRes.id, name: newSiteRes.name };
         }
 
-        dispatch({ type: "AddItem", level: index, item: newNode });
+        dispatch({ type: "AddItem", level: level, item: newNode });
         setNewItemName("");
         addPopup.close();
     };
 
     const onItemRename = async (id: number, name: string) => {
         await renameFn(id, name);
-        dispatch({ type: "RenameItem", level: index, id: id, name: name });
+        dispatch({ type: "RenameItem", level: level, id: id, name: name });
         return true;
     };
 
     const onItemDelete = async (id: number) => {
         await deleteFn(id);
-        dispatch({ type: "DeleteItem", level: index, id: id });
+        dispatch({ type: "DeleteItem", level: level, id: id });
     };
 
     const addPopupElement = (
@@ -160,9 +165,9 @@ export default function CompanyHierarchyLevel({
                     {label}
                 </Typography>
                 <Divider />
-                <Box sx={{ flexGrow: 1, height: 0 }} hidden={index > state.highestShownLevel}>
+                <Box sx={{ flexGrow: 1, height: 0 }} hidden={level > state.highestShownLevel}>
                     <List sx={{ height: "100%", overflowY: "auto" }}>
-                        {state.items[index]!.map((item, i) => (
+                        {state.items[level]!.map((item, i) => (
                             <CHNode
                                 key={i}
                                 item={item}

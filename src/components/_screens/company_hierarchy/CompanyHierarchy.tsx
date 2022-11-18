@@ -1,19 +1,10 @@
-import {
-    descriptors as chLevelDescriptors,
-    State as CHState,
-    Action as CHAction,
-} from "companyHierarchy";
+import { descriptors as chLevelDescriptors } from "companyHierarchyProvider";
 
 import Grid from "@mui/material/Grid";
 
 import { default as CHLevel } from "./CompanyHierarchyLevel";
 
-type Props = {
-    state: CHState;
-    dispatch: React.Dispatch<CHAction>;
-};
-
-export default function CompanyHierarchy({ state, dispatch }: Props) {
+export default function CompanyHierarchy() {
     return (
         <Grid
             sx={{ height: "100%" }}
@@ -23,7 +14,7 @@ export default function CompanyHierarchy({ state, dispatch }: Props) {
             flexGrow={1}
         >
             {chLevelDescriptors.map((desc, i) => (
-                <CHLevel key={i} state={state} dispatch={dispatch} {...desc} />
+                <CHLevel key={i} {...desc} />
             ))}
         </Grid>
     );

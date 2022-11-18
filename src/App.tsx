@@ -1,17 +1,15 @@
-import { default as chStateReducer, initialState as chInitialState } from "companyHierarchy";
 import { useSnackbar } from "notistack";
-import { useEffect, useReducer } from "react";
+import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
 import { Box } from "@mui/material";
 
 import "./App.css";
 import { setupInterceptors } from "./api";
 import NavBar from "./components/NavBar";
-import CompanyHierarchy from "./components/_screens/company_hierarchy/CompanyHierarchy";
 
 export default function App() {
     const { enqueueSnackbar } = useSnackbar();
-    const [chState, dispatchChState] = useReducer(chStateReducer, chInitialState);
 
     useEffect(() => {
         setupInterceptors({
@@ -46,7 +44,7 @@ export default function App() {
     return (
         <>
             <NavBar />
-            <CompanyHierarchy state={chState} dispatch={dispatchChState} />
+            <Outlet />
         </>
     );
 }

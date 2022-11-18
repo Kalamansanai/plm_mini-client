@@ -1,5 +1,5 @@
-import { type Template } from "./types";
-import { bifilter } from "./utils/bifilter";
+import { type Template } from "../types";
+import { bifilter } from "./bifilter";
 
 const TEMPLATE_COLOR = "#ff0";
 const TEMPLATE_DASH_COLOR = "#fff";

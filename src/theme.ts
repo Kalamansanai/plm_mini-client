@@ -2,12 +2,21 @@ import { createTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 
-export const drawerWidth = 240;
-export const shape = {
-    borderRadius: 8,
-};
+declare module "@mui/material/styles" {
+    interface Theme {
+        drawerWidth: number;
+        borderRadius: number;
+    }
+
+    interface ThemeOptions {
+        drawerWidth?: number;
+        borderRadius?: number;
+    }
+}
 
 const theme = createTheme({
+    drawerWidth: 240,
+    borderRadius: 8,
     palette: {
         primary: {
             main: "#00457E",
