@@ -1,8 +1,11 @@
+import { addLocationAction } from "components/_screens/dashboard/StationMenu";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
     BrowserRouter,
+    createBrowserRouter,
+    createRoutesFromElements,
     isRouteErrorResponse,
     Navigate,
     Route,
@@ -18,7 +21,8 @@ import Typography from "@mui/material/Typography";
 import App from "./App";
 import { CompanyHierarchyProvider } from "./companyHierarchyProvider";
 import CompanyHierarchy from "./components/_screens/company_hierarchy/CompanyHierarchy";
-import Dashboard from "./components/_screens/dashboard/Dashboard";
+import Dashboard, { loader as dashboardLoader } from "./components/_screens/dashboard/Dashboard";
+import DashboardMain from "./components/_screens/dashboard/DashboardMain";
 import StationMenu from "./components/_screens/dashboard/StationMenu";
 import theme from "./theme";
 
@@ -38,23 +42,28 @@ function ErrorPage() {
     }
 }
 
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <>
+            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/" element={<App />} errorElement={<ErrorPage />}>
+                <Route index element={<CompanyHierarchy />} />
+                <Route loader={dashboardLoader} path="station/:station_id" element={<Dashboard />}>
+                    <Route path="location/new" action={addLocationAction} />
+                    <Route path="location/:location_id" element={<DashboardMain />} />
+                </Route>
+            </Route>
+        </>
+    )
+);
+
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <SnackbarProvider maxSnack={3}>
                 <CompanyHierarchyProvider>
                     <CssBaseline />
-                    <BrowserRouter>
-                        <Routes>
-                            <Route path="*" element={<Navigate to="/" replace />} />
-                            <Route path="/" element={<App />} errorElement={<ErrorPage />}>
-                                <Route index element={<CompanyHierarchy />} />
-                                <Route path="station/:station_id" element={<StationMenu />}>
-                                    <Route path="location/:location_id" element={<Dashboard />} />
-                                </Route>
-                            </Route>
-                        </Routes>
-                    </BrowserRouter>
+                    <RouterProvider router={router} />
                 </CompanyHierarchyProvider>
             </SnackbarProvider>
         </ThemeProvider>

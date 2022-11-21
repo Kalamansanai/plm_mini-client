@@ -13,7 +13,7 @@ type Props = {
 };
 
 // TODO: setting initial state might be wrong this way
-export default function RenamePopup({ popupProps, initialValue, label, handler }: Props) {
+export default function EditPopup({ popupProps, initialValue, label, handler }: Props) {
     const [input, setInput] = useState(initialValue);
 
     const onKeyboardSubmit = (e: React.KeyboardEvent) => {

@@ -2,14 +2,19 @@ import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 import "./App.css";
 import { setupInterceptors } from "./api";
 import NavBar from "./components/NavBar";
 
+const breakpoint = "md";
+
 export default function App() {
     const { enqueueSnackbar } = useSnackbar();
+    const theme = useTheme();
+    const notLargeScreen = useMediaQuery(theme.breakpoints.down(breakpoint));
 
     useEffect(() => {
         setupInterceptors({
@@ -40,6 +45,26 @@ export default function App() {
             },
         });
     }, []);
+
+    if (notLargeScreen) {
+        return (
+            <Box
+                sx={{
+                    color: "white",
+                    fontFamily: "monospace",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100vh",
+                    backgroundColor: "black",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Box>The screen is too small!</Box>
+                <Box>Minimum width: {theme.breakpoints.values[breakpoint]}px</Box>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>

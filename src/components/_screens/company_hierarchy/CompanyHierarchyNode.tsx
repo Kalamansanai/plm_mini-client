@@ -1,4 +1,4 @@
-import RenamePopup from "components/popups/RenamePopup";
+import EditPopup from "components/popups/EditPopup";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useRef } from "react";
 import { CompanyHierarchyNode as CHNode } from "types";
@@ -79,7 +79,7 @@ export default function CompanyHierarchyNode({
                     </Tooltip>
                 </ListItemButton>
             </ListItem>
-            <RenamePopup
+            <EditPopup
                 popupProps={renamePopup}
                 initialValue={item.name}
                 label="Name"

@@ -8,7 +8,7 @@ import { default as CHLevel } from "./CompanyHierarchyLevel";
 
 export default function CompanyHierarchy() {
     const theme = useTheme();
-    console.log(theme.mixins.toolbar);
+
     return (
         <Paper elevation={8} sx={{ height: "100%" }}>
             <Grid

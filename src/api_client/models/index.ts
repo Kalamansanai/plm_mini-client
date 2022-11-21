@@ -37,6 +37,20 @@ export interface DetectorCommandDetectorCommand {
      */
     isPauseDetection?: boolean;
 }
+
+/**
+ * 
+ * @export
+ */
+export const DetectorState = {
+    Off: 'Off',
+    Standby: 'Standby',
+    Streaming: 'Streaming',
+    Monitoring: 'Monitoring',
+    Locating: 'Locating'
+} as const;
+export type DetectorState = typeof DetectorState[keyof typeof DetectorState];
+
 /**
  * 
  * @export
@@ -773,6 +787,37 @@ export interface StationsGetByIdRes {
 /**
  * 
  * @export
+ * @interface StationsGetByIdResDetectorRes
+ */
+export interface StationsGetByIdResDetectorRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof StationsGetByIdResDetectorRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof StationsGetByIdResDetectorRes
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof StationsGetByIdResDetectorRes
+     */
+    macAddress?: string | null;
+    /**
+     * 
+     * @type {DetectorState}
+     * @memberof StationsGetByIdResDetectorRes
+     */
+    state?: DetectorState;
+}
+/**
+ * 
+ * @export
  * @interface StationsGetByIdResLocationRes
  */
 export interface StationsGetByIdResLocationRes {
@@ -788,7 +833,19 @@ export interface StationsGetByIdResLocationRes {
      * @memberof StationsGetByIdResLocationRes
      */
     name?: string | null;
+    /**
+     * 
+     * @type {StationsGetByIdResLocationResDetector}
+     * @memberof StationsGetByIdResLocationRes
+     */
+    detector?: StationsGetByIdResLocationResDetector | null;
 }
+/**
+ * @type StationsGetByIdResLocationResDetector
+ * 
+ * @export
+ */
+export type StationsGetByIdResLocationResDetector = StationsGetByIdResDetectorRes;
 /**
  * 
  * @export
