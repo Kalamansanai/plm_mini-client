@@ -43,6 +43,7 @@ export default function RenamePopup({ popupProps, initialValue, label, handler }
     return (
         <Popover
             {...popoverProps}
+            anchorReference="anchorPosition"
             onClose={() => {
                 popoverProps.onClose();
                 setInput(initialValue);

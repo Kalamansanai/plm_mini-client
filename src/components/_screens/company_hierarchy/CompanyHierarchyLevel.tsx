@@ -128,7 +128,7 @@ export default function CompanyHierarchyLevel({
     };
 
     const addPopupElement = (
-        <Popover {...bindPopover(addPopup)}>
+        <Popover {...bindPopover(addPopup)} anchorReference="anchorPosition">
             <TextField
                 label="Name"
                 variant="filled"
@@ -183,7 +183,9 @@ export default function CompanyHierarchyLevel({
                             <Tooltip title={`Add ${labelSingular}`}>
                                 <IconButton
                                     sx={{ color: "primary.light", mx: "auto" }}
-                                    {...bindTrigger(addPopup)}
+                                    onClick={(e: React.MouseEvent) => {
+                                        addPopup.open(e);
+                                    }}
                                 >
                                     <AddIcon />
                                 </IconButton>

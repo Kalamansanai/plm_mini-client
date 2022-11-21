@@ -29,11 +29,6 @@ export default function CompanyHierarchyNode({
 
     const listItemRef = useRef(null);
 
-    if (listItemRef.current !== null) {
-        renamePopup.setAnchorEl(listItemRef.current);
-        deletePopup.setAnchorEl(listItemRef.current);
-    }
-
     const onClick = (e: React.MouseEvent) => {
         e.preventDefault();
         clickHandler(item.id);
@@ -41,8 +36,7 @@ export default function CompanyHierarchyNode({
 
     const onRenameSubmit = async (input: string) => {
         if (input != item.name) {
-            const success = await renameHandler(item.id, input);
-            return success;
+            return await renameHandler(item.id, input);
         }
 
         return false;
@@ -63,9 +57,9 @@ export default function CompanyHierarchyNode({
                         <IconButton
                             sx={{ color: "secondary.light", p: 0 }}
                             className="hidden-icon"
-                            onClick={(e) => {
+                            onClick={(e: React.MouseEvent) => {
                                 e.stopPropagation();
-                                renamePopup.open(listItemRef.current);
+                                renamePopup.open(e);
                             }}
                         >
                             <EditIcon />
@@ -77,7 +71,7 @@ export default function CompanyHierarchyNode({
                             className="hidden-icon"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                deletePopup.open(listItemRef.current);
+                                deletePopup.open(e);
                             }}
                         >
                             <DeleteIcon />

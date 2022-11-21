@@ -12,7 +12,7 @@ type Props = {
 
 export default function ConfirmPopup({ popupProps, text, handler }: Props) {
     return (
-        <Popover {...bindPopover(popupProps)}>
+        <Popover {...bindPopover(popupProps)} anchorReference="anchorPosition">
             <Typography sx={{ m: 2 }}>{text}. Are you sure?</Typography>
             <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
                 <Button variant="text" sx={{ color: "greys.main" }} onClick={popupProps.close}>
