@@ -1,6 +1,6 @@
 import { descriptors as chLevelDescriptors } from "companyHierarchyProvider";
 
-import { useTheme } from "@mui/material";
+import { Container, useTheme } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 
@@ -10,17 +10,19 @@ export default function CompanyHierarchy() {
     const theme = useTheme();
 
     return (
-        <Paper elevation={8} sx={{ height: "100%" }}>
-            <Grid
-                container
-                alignItems="flex-start"
-                justifyContent="space-around"
-                sx={{ height: "100%" }}
-            >
-                {chLevelDescriptors.map((desc, i) => (
-                    <CHLevel key={i} {...desc} />
-                ))}
-            </Grid>
-        </Paper>
+        <Container sx={{ height: "100%" }}>
+            <Paper elevation={8} sx={{ height: "100%" }}>
+                <Grid
+                    container
+                    alignItems="flex-start"
+                    justifyContent="space-around"
+                    sx={{ height: "100%" }}
+                >
+                    {chLevelDescriptors.map((desc, i) => (
+                        <CHLevel key={i} {...desc} />
+                    ))}
+                </Grid>
+            </Paper>
+        </Container>
     );
 }

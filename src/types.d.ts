@@ -12,18 +12,9 @@ export type CompanyHierarchyNode = {
     name: string;
 };
 
-export type Site = CompanyHierarchyNode & {
-    opus: Array<OPU>;
-};
-
-export type OPU = CompanyHierarchyNode & {
-    lines: Array<Line>;
-};
-
-export type Line = CompanyHierarchyNode & {
-    stations: Array<Station>;
-};
-
+export type Site = CompanyHierarchyNode;
+export type OPU = CompanyHierarchyNode;
+export type Line = CompanyHierarchyNode;
 export type Station = CompanyHierarchyNode & {
     locations: Array<Location>;
 };

@@ -165,15 +165,24 @@ function reducer(state: State, action: Action): State {
             return newState;
         }
         case "SetSelectedId": {
+            const newState = { ...state };
+
             const sameIdSelected = state.selectedIds[action.level] === action.id;
 
-            const newState = { ...state };
+            // on Station level, we don't want to deselect the Station when we click on one the
+            // second time (which means we don't want to do anything)
+            if (sameIdSelected && action.level == descriptors.length - 1) return newState;
+
             if (action.id !== null) {
                 newState.highestShownLevel = sameIdSelected
                     ? action.level
                     : Math.min(action.level + 1, descriptors.length);
             }
             newState.selectedIds[action.level] = sameIdSelected ? null : action.id;
+
+            for (let i = action.level + 1; i < descriptors.length; i++) {
+                newState.selectedIds[i] = null;
+            }
 
             return newState;
         }
