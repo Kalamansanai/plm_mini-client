@@ -13,7 +13,7 @@ type Props = {
     item: CHNode;
     selected: boolean;
     clickHandler: (id: number) => void;
-    renameHandler: (id: number, name: string) => Promise<boolean>;
+    renameHandler: (id: number, name: string) => Promise<void>;
     deleteHandler: (id: number) => Promise<void>;
 };
 
@@ -36,10 +36,11 @@ export default function CompanyHierarchyNode({
 
     const onRenameSubmit = async (input: string) => {
         if (input != item.name) {
-            return await renameHandler(item.id, input);
+            await renameHandler(item.id, input);
+            return { close: true, resetText: false };
         }
 
-        return false;
+        return { close: true, resetText: false };
     };
 
     const onDeleteConfirm = async (e: React.MouseEvent) => {

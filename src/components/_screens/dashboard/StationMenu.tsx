@@ -41,7 +41,7 @@ export default function StationMenu({ station }: { station: Station }) {
     const onAddSubmit = async (input: string) => {
         // TODO(rg): this should be a relative URL
         fetcher.submit({ name: input }, { method: "post", action: "/station/1/location/new" });
-        return true;
+        return { close: true, resetText: true };
     };
 
     return (

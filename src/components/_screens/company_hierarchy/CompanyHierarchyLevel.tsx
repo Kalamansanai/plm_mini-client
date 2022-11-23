@@ -117,7 +117,6 @@ export default function CompanyHierarchyLevel({
     const onItemRename = async (id: number, name: string) => {
         await renameFn(id, name);
         dispatch({ type: "RenameItem", level: level, id: id, name: name });
-        return true;
     };
 
     const onItemDelete = async (id: number) => {

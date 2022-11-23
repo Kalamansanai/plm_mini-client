@@ -5,14 +5,18 @@ import { useEffect, useState } from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { IconButton, Popover, TextField } from "@mui/material";
 
+export type EditPopupResult = {
+    close: boolean;
+    resetText: boolean;
+};
+
 type Props = {
     popupProps: PopupState;
     initialValue: string;
     label: string;
-    handler: (input: string) => Promise<boolean>;
+    handler: (input: string) => Promise<EditPopupResult>;
 };
 
-// TODO: setting initial state might be wrong this way
 export default function EditPopup({ popupProps, initialValue, label, handler }: Props) {
     const [input, setInput] = useState(initialValue);
 
@@ -31,9 +35,13 @@ export default function EditPopup({ popupProps, initialValue, label, handler }: 
     };
 
     const onSubmit = async () => {
-        const ok = await handler(input);
+        const { close, resetText } = await handler(input);
 
-        if (ok) {
+        if (resetText) {
+            setInput("");
+        }
+
+        if (close) {
             popupProps.close();
         }
     };
