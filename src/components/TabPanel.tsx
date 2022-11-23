@@ -8,8 +8,9 @@ type Props = {
 };
 
 export default function TabPanel({ children, currentIndex, index, ...boxProps }: Props) {
+    console.log(`index ${index}: ${currentIndex === index}`);
     return (
-        <Box hidden={currentIndex !== index} {...boxProps}>
+        <Box display={currentIndex === index ? "flex" : "none"} {...boxProps}>
             {children}
         </Box>
     );

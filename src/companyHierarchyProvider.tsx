@@ -6,6 +6,16 @@ import { CompanyHierarchyNode as CHNode, Site } from "types";
 
 import { LinesApi, StationsApi } from "./api_client";
 
+export const Level = {
+    Site: 0,
+    OPU: 1,
+    Line: 2,
+    Station: 3,
+    Location: 4,
+} as const;
+
+export type Level = typeof Level[keyof typeof Level];
+
 export type LevelDescriptor = {
     level: number;
     label: string;
@@ -18,7 +28,7 @@ export type LevelDescriptor = {
 
 export const descriptors: LevelDescriptor[] = [
     {
-        level: 0,
+        level: Level.Site,
         label: "Sites",
         labelSingular: "Site",
         addFn: async (name) => {
@@ -39,7 +49,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        level: 1,
+        level: Level.OPU,
         label: "OPUs",
         labelSingular: "OPU",
         addFn: async (name, parentId) => {
@@ -62,7 +72,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        level: 2,
+        level: Level.Line,
         label: "Lines",
         labelSingular: "Line",
         addFn: async (name, parentId) => {
@@ -83,7 +93,7 @@ export const descriptors: LevelDescriptor[] = [
         },
     },
     {
-        level: 3,
+        level: Level.Station,
         label: "Stations",
         labelSingular: "Station",
         addFn: async (name, parentId) => {
@@ -116,8 +126,8 @@ export type State = {
 };
 
 const initialState: State = {
-    items: Array(descriptors.length).fill([]),
-    selectedIds: Array(descriptors.length).fill(null),
+    items: Array(Object.entries(Level).length).fill([]),
+    selectedIds: Array(Object.entries(Level).length).fill(null),
     highestShownLevel: 0,
     lastClickedId: null,
 };
@@ -171,7 +181,7 @@ function reducer(state: State, action: Action): State {
 
             // on Station level, we don't want to deselect the Station when we click on one the
             // second time (which means we don't want to do anything)
-            if (sameIdSelected && action.level == descriptors.length - 1) return newState;
+            if (sameIdSelected && action.level == Level.Station) return newState;
 
             if (action.id !== null) {
                 newState.highestShownLevel = sameIdSelected
@@ -184,6 +194,7 @@ function reducer(state: State, action: Action): State {
                 newState.selectedIds[i] = null;
             }
 
+            console.log(newState);
             return newState;
         }
         case "Reset": {

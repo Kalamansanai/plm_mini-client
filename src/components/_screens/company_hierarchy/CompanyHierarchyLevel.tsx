@@ -1,4 +1,4 @@
-import useCHState, { LevelDescriptor, descriptors } from "companyHierarchyProvider";
+import useCHState, { LevelDescriptor, Level } from "companyHierarchyProvider";
 import { bindPopover, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ export default function CompanyHierarchyLevel({
     const { state, dispatch } = useCHState();
     const navigate = useNavigate();
     const ownSelectedId = state.selectedIds[level];
-    const maxLevel = descriptors.length - 1;
+    const maxLevel: Level = Level.Station;
 
     const [newItemName, setNewItemName] = useState("");
 
@@ -38,7 +38,6 @@ export default function CompanyHierarchyLevel({
             if (level !== 0) return;
 
             const data = await getFn();
-            console.log("Level 0 fetch");
             dispatch({ type: "SetItems", level: level, items: data });
         };
 
@@ -52,7 +51,6 @@ export default function CompanyHierarchyLevel({
             if (previousLevelId === null || previousLevelId === undefined) return;
 
             const data = await getFn(previousLevelId);
-            console.log(`Level 1 fetch, data len: ${data.length}`);
             dispatch({ type: "SetItems", level: level, items: data });
         };
 

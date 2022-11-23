@@ -1,5 +1,5 @@
 import { config as apiConfig } from "api";
-import useCHState, { State as CHState } from "companyHierarchyProvider";
+import useCHState, { Level, State as CHState } from "companyHierarchyProvider";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useState } from "react";
 import { Params, useFetcher, useNavigate, useNavigation } from "react-router-dom";
@@ -15,6 +15,7 @@ import Typography from "@mui/material/Typography";
 import { LocationsApi } from "../../../api_client";
 import TabPanel from "../../TabPanel";
 import EditPopup from "../../popups/EditPopup";
+import LocationCard from "./LocationCard";
 
 export async function addLocationAction({ request, params }: { request: any; params: Params }) {
     const stationId = params["station_id"] as any as number;
@@ -35,11 +36,7 @@ export default function StationMenu({ station }: { station: Station }) {
 
     const detectors = locations.filter((l) => !!l.detector).map((l) => l.detector!);
 
-    const cards = locations.map((loc, i) => (
-        <Card key={i} square elevation={0} sx={{ backgroundColor: "rgba(0, 0, 0, 0.05)", p: 1 }}>
-            {loc.name}
-        </Card>
-    ));
+    const cards = locations.map((loc, i) => <LocationCard key={i} location={loc} />);
 
     const onAddSubmit = async (input: string) => {
         // TODO(rg): this should be a relative URL
@@ -64,10 +61,9 @@ export default function StationMenu({ station }: { station: Station }) {
                 <TabPanel
                     currentIndex={tab}
                     index={0}
-                    display="flex"
                     flexDirection="column"
                     gap={1}
-                    sx={{ p: 1 }}
+                    sx={{ p: 1, flexGrow: 1, height: 0, overflowY: "auto" }}
                 >
                     {cards}
                     <Box display="flex" justifyContent="center">
@@ -76,10 +72,9 @@ export default function StationMenu({ station }: { station: Station }) {
                         </IconButton>
                     </Box>
                 </TabPanel>
-                <TabPanel currentIndex={tab} index={1}>
-                    <div>dingdong chungus</div>
+                <TabPanel currentIndex={tab} index={1} sx={{ p: 1, flexGrow: 1 }}>
+                    <div>something</div>
                 </TabPanel>
-                <Box display="flex" sx={{ flexGrow: 1 }} flexDirection="column" gap={1} p={1}></Box>
                 <Divider />
                 <Box>
                     <IconButton>
