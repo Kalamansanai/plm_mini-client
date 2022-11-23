@@ -28,6 +28,7 @@ export async function addLocationAction({ request, params }: { request: any; par
 
 export default function StationMenu({ station }: { station: Station }) {
     const [tab, setTab] = useState(0);
+    const { state: chState, dispatch: chDispatch } = useCHState();
     const navigate = useNavigate();
     const addPopup = usePopupState({ variant: "popover", popupId: "add-location" });
     const fetcher = useFetcher();
@@ -44,11 +45,16 @@ export default function StationMenu({ station }: { station: Station }) {
         return { close: true, resetText: true };
     };
 
+    const onBack = () => {
+        chDispatch({ type: "SetSelectedId", level: Level.Location, id: null });
+        navigate("/");
+    };
+
     return (
         <>
             <Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
                 <Box display="flex" alignItems="center" sx={{ p: 1 }}>
-                    <IconButton onClick={() => navigate(-1)} sx={{ mr: 1 }}>
+                    <IconButton onClick={onBack} sx={{ mr: 1 }}>
                         <ArrowBackIcon />
                     </IconButton>
                     <Typography variant="h5">{station.name}</Typography>
