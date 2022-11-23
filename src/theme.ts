@@ -8,6 +8,11 @@ declare module "@mui/material/styles" {
         borderRadius: number;
     }
 
+    interface TypeBackground {
+        muted: string;
+        subtle: string;
+    }
+
     interface ThemeOptions {
         drawerWidth?: number;
         borderRadius?: number;
@@ -19,11 +24,15 @@ const theme = createTheme({
     borderRadius: 8,
     palette: {
         primary: {
-            main: "#00457E",
+            dark: "#00457E",
+            main: "#1d6aa8",
+            light: "#8bc6f7",
         },
         background: {
-            default: "#dddddd",
+            default: "#c3c3c3",
             paper: "#f0f0f0",
+            muted: "#d8d8d8",
+            subtle: "#e6e6e6",
         },
         text: {
             primary: grey[800],
@@ -65,10 +74,10 @@ const theme = createTheme({
         MuiCard: {
             styleOverrides: {
                 root: {
-                    "& .hidden-icon": {
+                    "& .hover": {
                         display: "none",
                     },
-                    "&:hover .hidden-icon": {
+                    "&:hover .hover": {
                         display: "flex",
                     },
                 },
@@ -77,10 +86,10 @@ const theme = createTheme({
         MuiListItem: {
             styleOverrides: {
                 root: {
-                    "& .hidden-icon": {
+                    "& .hover": {
                         display: "none",
                     },
-                    "&:hover .hidden-icon": {
+                    "&:hover .hover": {
                         display: "flex",
                     },
                 },

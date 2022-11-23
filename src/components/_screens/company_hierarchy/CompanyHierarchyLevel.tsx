@@ -179,7 +179,7 @@ export default function CompanyHierarchyLevel({
                         <ListItem disablePadding sx={{ pt: 1 }}>
                             <Tooltip title={`Add ${labelSingular}`}>
                                 <IconButton
-                                    sx={{ color: "primary.light", mx: "auto" }}
+                                    sx={{ color: "primary.main", mx: "auto" }}
                                     onClick={(e: React.MouseEvent) => {
                                         addPopup.open(e);
                                     }}

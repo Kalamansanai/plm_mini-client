@@ -57,7 +57,7 @@ export default function CompanyHierarchyNode({
                     <Tooltip title="Rename" followCursor>
                         <IconButton
                             sx={{ color: "secondary.light", p: 0 }}
-                            className="hidden-icon"
+                            className="hover"
                             onClick={(e: React.MouseEvent) => {
                                 e.stopPropagation();
                                 renamePopup.open(e);
@@ -69,7 +69,7 @@ export default function CompanyHierarchyNode({
                     <Tooltip title="Delete" followCursor>
                         <IconButton
                             sx={{ color: "error.light", p: 0 }}
-                            className="hidden-icon"
+                            className="hover"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 deletePopup.open(e);

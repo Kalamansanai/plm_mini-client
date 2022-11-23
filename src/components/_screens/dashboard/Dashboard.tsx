@@ -24,12 +24,14 @@ export default function Dashboard() {
 
     return (
         <Grid container columnSpacing={2} rowSpacing={isSm ? 2 : 0} sx={{ height: "100%" }}>
-            <Grid item order={0} xs={6} sm={6} md={3} sx={{ height: "100%" }}>
-                <Paper elevation={8} sx={{ height: "100%" }}>
+            <Grid item xs={12} sm={12} md={3} sx={{ height: "100%" }}>
+                <Paper square elevation={16} sx={{ height: "100%" }}>
                     <StationMenu station={station} />
                 </Paper>
             </Grid>
-            <Outlet />
+            <Grid container item xs={12} sm={12} md={9} spacing={0}>
+                <Outlet />
+            </Grid>
         </Grid>
     );
 }

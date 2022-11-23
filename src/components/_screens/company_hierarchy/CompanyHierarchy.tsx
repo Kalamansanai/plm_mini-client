@@ -11,7 +11,7 @@ export default function CompanyHierarchy() {
 
     return (
         <Container sx={{ height: "100%" }}>
-            <Paper elevation={8} sx={{ height: "100%" }}>
+            <Paper elevation={8} sx={{ height: "calc(100% - 32px)", m: 2 }}>
                 <Grid
                     container
                     alignItems="flex-start"

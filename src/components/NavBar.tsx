@@ -20,7 +20,10 @@ export default function NavBar() {
 
     return (
         <>
-            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <AppBar
+                position="fixed"
+                sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "primary.dark" }}
+            >
                 <Toolbar>
                     <IconButton color="inherit" onClick={toggleDrawer}>
                         {drawerOpen ? (

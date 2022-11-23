@@ -23,9 +23,19 @@ export type Location = CompanyHierarchyNode & {
     detector?: Detector;
 };
 
+export const DetectorState = {
+    Off: "Off",
+    Standby: "Standby",
+    Streaming: "Streaming",
+    Monitoring: "Monitoring",
+    Locating: "Locating",
+} as const;
+
+export type DetectorState = typeof DetectorState[keyof typeof DetectorState];
+
 export type Detector = {
     id: number;
     name: string;
     macAddress: string;
-    state: "Off" | "Standby" | "Streaming" | "Monitoring" | "Locating";
+    state: Array<DetectorState>;
 };
