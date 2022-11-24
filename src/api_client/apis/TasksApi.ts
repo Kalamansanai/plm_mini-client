@@ -19,7 +19,7 @@ import type {
   TasksCreateRes,
   TasksDeleteReq,
   TasksGetByIdRes,
-  TasksGetInstanceRes,
+  TasksGetCurrentInstanceRes,
   TasksGetObjectsAndStepsRes,
   TasksUpdateReq,
 } from '../models';
@@ -37,7 +37,7 @@ export interface ApiEndpointsTasksGetByIdRequest {
     id: number;
 }
 
-export interface ApiEndpointsTasksGetInstanceRequest {
+export interface ApiEndpointsTasksGetCurrentInstanceRequest {
     id: string;
     taskId: number;
 }
@@ -152,13 +152,13 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetInstanceRaw(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksGetInstanceRes>> {
+    async apiEndpointsTasksGetCurrentInstanceRaw(requestParameters: ApiEndpointsTasksGetCurrentInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TasksGetCurrentInstanceRes>> {
         if (requestParameters.id === null || requestParameters.id === undefined) {
-            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksGetInstance.');
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsTasksGetCurrentInstance.');
         }
 
         if (requestParameters.taskId === null || requestParameters.taskId === undefined) {
-            throw new runtime.RequiredError('taskId','Required parameter requestParameters.taskId was null or undefined when calling apiEndpointsTasksGetInstance.');
+            throw new runtime.RequiredError('taskId','Required parameter requestParameters.taskId was null or undefined when calling apiEndpointsTasksGetCurrentInstance.');
         }
 
         const queryParameters: any = {};
@@ -181,8 +181,8 @@ export class TasksApi extends runtime.BaseAPI {
 
     /**
      */
-    async apiEndpointsTasksGetInstance(requestParameters: ApiEndpointsTasksGetInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksGetInstanceRes> {
-        const response = await this.apiEndpointsTasksGetInstanceRaw(requestParameters, initOverrides);
+    async apiEndpointsTasksGetCurrentInstance(requestParameters: ApiEndpointsTasksGetCurrentInstanceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TasksGetCurrentInstanceRes> {
+        const response = await this.apiEndpointsTasksGetCurrentInstanceRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

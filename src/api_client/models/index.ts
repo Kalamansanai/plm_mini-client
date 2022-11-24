@@ -3,66 +3,83 @@
 /**
  * 
  * @export
- * @interface DetectorCommandDetectorCommand
- */
-export interface DetectorCommandDetectorCommand {
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isRestart?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isStartDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isStopDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isResumeDetection?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof DetectorCommandDetectorCommand
-     */
-    isPauseDetection?: boolean;
-}
-
-/**
- * 
- * @export
- */
-export const DetectorState = {
-    Off: 'Off',
-    Standby: 'Standby',
-    Streaming: 'Streaming',
-    Monitoring: 'Monitoring',
-    Locating: 'Locating'
-} as const;
-export type DetectorState = typeof DetectorState[keyof typeof DetectorState];
-
-/**
- * 
- * @export
  * @interface DetectorsCommandReq
  */
 export interface DetectorsCommandReq {
     /**
      * 
-     * @type {DetectorCommandDetectorCommand}
+     * @type {object}
      * @memberof DetectorsCommandReq
      */
-    command?: DetectorCommandDetectorCommand;
+    command?: object;
+}
+/**
+ * 
+ * @export
+ * @interface DetectorsGetByIdRes
+ */
+export interface DetectorsGetByIdRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof DetectorsGetByIdRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsGetByIdRes
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsGetByIdRes
+     */
+    macAddress?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsGetByIdRes
+     */
+    ipAddress?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsGetByIdRes
+     */
+    state?: string;
+    /**
+     * 
+     * @type {DetectorsGetByIdResLocation}
+     * @memberof DetectorsGetByIdRes
+     */
+    location?: DetectorsGetByIdResLocation | null;
+}
+/**
+ * @type DetectorsGetByIdResLocation
+ * 
+ * @export
+ */
+export type DetectorsGetByIdResLocation = DetectorsGetByIdResResLocation;
+/**
+ * 
+ * @export
+ * @interface DetectorsGetByIdResResLocation
+ */
+export interface DetectorsGetByIdResResLocation {
+    /**
+     * 
+     * @type {number}
+     * @memberof DetectorsGetByIdResResLocation
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsGetByIdResResLocation
+     */
+    name?: string | null;
 }
 /**
  * 
@@ -130,6 +147,74 @@ export interface DetectorsIdentifyReqCalibrationCoordsReq {
 /**
  * 
  * @export
+ * @interface DetectorsListRes
+ */
+export interface DetectorsListRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof DetectorsListRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsListRes
+     */
+    name?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsListRes
+     */
+    macAddress?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsListRes
+     */
+    ipAddress?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsListRes
+     */
+    state?: string;
+    /**
+     * 
+     * @type {DetectorsListResLocation}
+     * @memberof DetectorsListRes
+     */
+    location?: DetectorsListResLocation | null;
+}
+/**
+ * @type DetectorsListResLocation
+ * 
+ * @export
+ */
+export type DetectorsListResLocation = DetectorsListResResLocation;
+/**
+ * 
+ * @export
+ * @interface DetectorsListResResLocation
+ */
+export interface DetectorsListResResLocation {
+    /**
+     * 
+     * @type {number}
+     * @memberof DetectorsListResResLocation
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DetectorsListResResLocation
+     */
+    name?: string | null;
+}
+/**
+ * 
+ * @export
  * @interface ErrorResponse
  */
 export interface ErrorResponse {
@@ -175,13 +260,13 @@ export interface EventsCreateReq {
      * @type {boolean}
      * @memberof EventsCreateReq
      */
-    eventResult?: boolean;
+    success?: boolean;
     /**
      * 
      * @type {string}
      * @memberof EventsCreateReq
      */
-    failureReason?: string;
+    failureReason?: string | null;
 }
 /**
  * 
@@ -810,10 +895,10 @@ export interface StationsGetByIdResDetectorRes {
     macAddress?: string | null;
     /**
      * 
-     * @type {DetectorState}
+     * @type {string}
      * @memberof StationsGetByIdResDetectorRes
      */
-    state?: DetectorState;
+    state?: string;
 }
 /**
  * 
@@ -975,100 +1060,162 @@ export interface TasksGetByIdRes {
      * @memberof TasksGetByIdRes
      */
     state?: TaskState;
-}
-/**
- * 
- * @export
- * @interface TasksGetInstanceRes
- */
-export interface TasksGetInstanceRes {
     /**
      * 
-     * @type {TasksGetInstanceResResTaskInstance}
-     * @memberof TasksGetInstanceRes
+     * @type {TasksGetByIdResLatestInstance}
+     * @memberof TasksGetByIdRes
      */
-    instance?: TasksGetInstanceResResTaskInstance;
+    latestInstance?: TasksGetByIdResLatestInstance | null;
+}
+/**
+ * @type TasksGetByIdResLatestInstance
+ * 
+ * @export
+ */
+export type TasksGetByIdResLatestInstance = TasksGetByIdResResInstance;
+/**
+ * 
+ * @export
+ * @interface TasksGetByIdResResEvent
+ */
+export interface TasksGetByIdResResEvent {
+    /**
+     * 
+     * @type {string}
+     * @memberof TasksGetByIdResResEvent
+     */
+    timestamp?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof TasksGetByIdResResEvent
+     */
+    success?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof TasksGetByIdResResEvent
+     */
+    failureReason?: string | null;
 }
 /**
  * 
  * @export
- * @interface TasksGetInstanceResResEvent
+ * @interface TasksGetByIdResResInstance
  */
-export interface TasksGetInstanceResResEvent {
+export interface TasksGetByIdResResInstance {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetByIdResResInstance
+     */
+    id?: number;
+    /**
+     * 
+     * @type {TasksGetByIdResResInstanceFinalState}
+     * @memberof TasksGetByIdResResInstance
+     */
+    finalState?: TasksGetByIdResResInstanceFinalState | null;
+    /**
+     * 
+     * @type {Array<TasksGetByIdResResEvent>}
+     * @memberof TasksGetByIdResResInstance
+     */
+    events?: Array<TasksGetByIdResResEvent> | null;
+}
+/**
+ * @type TasksGetByIdResResInstanceFinalState
+ * 
+ * @export
+ */
+export type TasksGetByIdResResInstanceFinalState = TaskInstanceFinalState;
+/**
+ * 
+ * @export
+ * @interface TasksGetCurrentInstanceRes
+ */
+export interface TasksGetCurrentInstanceRes {
+    /**
+     * 
+     * @type {TasksGetCurrentInstanceResResTaskInstance}
+     * @memberof TasksGetCurrentInstanceRes
+     */
+    instance?: TasksGetCurrentInstanceResResTaskInstance;
+}
+/**
+ * 
+ * @export
+ * @interface TasksGetCurrentInstanceResResEvent
+ */
+export interface TasksGetCurrentInstanceResResEvent {
+    /**
+     * 
+     * @type {number}
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     timeStamp?: string;
     /**
      * 
      * @type {boolean}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     eventResultSuccess?: boolean;
     /**
      * 
      * @type {string}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     failureReason?: string | null;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     stepId?: number;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResEvent
+     * @memberof TasksGetCurrentInstanceResResEvent
      */
     taskInstanceId?: number;
 }
 /**
  * 
  * @export
- * @interface TasksGetInstanceResResTaskInstance
+ * @interface TasksGetCurrentInstanceResResTaskInstance
  */
-export interface TasksGetInstanceResResTaskInstance {
+export interface TasksGetCurrentInstanceResResTaskInstance {
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @memberof TasksGetCurrentInstanceResResTaskInstance
      */
     id?: number;
     /**
      * 
-     * @type {TasksGetInstanceResResTaskInstanceFinalState}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @type {TasksGetByIdResResInstanceFinalState}
+     * @memberof TasksGetCurrentInstanceResResTaskInstance
      */
-    finalState?: TasksGetInstanceResResTaskInstanceFinalState | null;
+    finalState?: TasksGetByIdResResInstanceFinalState | null;
     /**
      * 
-     * @type {Array<TasksGetInstanceResResEvent>}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @type {Array<TasksGetCurrentInstanceResResEvent>}
+     * @memberof TasksGetCurrentInstanceResResTaskInstance
      */
-    events?: Array<TasksGetInstanceResResEvent> | null;
+    events?: Array<TasksGetCurrentInstanceResResEvent> | null;
     /**
      * 
      * @type {number}
-     * @memberof TasksGetInstanceResResTaskInstance
+     * @memberof TasksGetCurrentInstanceResResTaskInstance
      */
     taskId?: number;
 }
-/**
- * @type TasksGetInstanceResResTaskInstanceFinalState
- * 
- * @export
- */
-export type TasksGetInstanceResResTaskInstanceFinalState = TaskInstanceFinalState;
 /**
  * 
  * @export

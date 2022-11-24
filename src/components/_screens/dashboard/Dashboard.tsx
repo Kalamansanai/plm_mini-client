@@ -8,16 +8,27 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
-import { Station } from "../../../types";
+import { Station, parseDetectorState } from "../../../types";
 import DashboardMain from "./DashboardMain";
 import StationMenu from "./StationMenu";
 
 export async function loader({ params }: { params: Params }) {
     const id = params["station_id"]! as any as number;
-    return await new StationsApi(apiConfig).apiEndpointsStationsGetById({ id });
+    // NOTE(rg): this is kind of a hack; These types mostly look the same, except for the
+    // DetectorState
+    let station = (await new StationsApi(apiConfig).apiEndpointsStationsGetById({ id })) as Station;
+
+    station.locations.forEach((l) => {
+        if (!l.detector) return;
+
+        l.detector.state = parseDetectorState(l.detector.state as unknown as string);
+    });
+
+    return station;
 }
 
 export default function Dashboard() {
+    // NOTE(rg): this is a hack.
     const station = useLoaderData() as Station;
     const theme = useTheme();
     const isSm = useMediaQuery(theme.breakpoints.down("md"));

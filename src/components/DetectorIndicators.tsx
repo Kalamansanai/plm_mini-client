@@ -1,37 +1,57 @@
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import ModeStandbyIcon from "@mui/icons-material/ModeStandby";
 import QrCodeIcon from "@mui/icons-material/QrCode";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, Chip } from "@mui/material";
+import { Box, Chip, ChipTypeMap } from "@mui/material";
 
 import { DetectorState } from "../types";
 
-type StateIndicatorProps = { state: DetectorState };
+type StateIndicatorProps = { state: Array<DetectorState> };
 
-const stateIndicatorIcons: { [state: string]: React.ReactElement } = {};
-stateIndicatorIcons[DetectorState.Off] = <HighlightOffIcon />;
-stateIndicatorIcons[DetectorState.Standby] = <ModeStandbyIcon />;
-stateIndicatorIcons[DetectorState.Streaming] = <VideocamIcon />;
-stateIndicatorIcons[DetectorState.Monitoring] = <VisibilityIcon />;
-stateIndicatorIcons[DetectorState.Locating] = <QrCodeIcon />;
+const stateIndicatorMap: {
+    [state: string]: { icon: React.ReactElement; color: ChipTypeMap["props"]["color"] };
+} = {};
+stateIndicatorMap[DetectorState.Off] = { icon: <HighlightOffIcon />, color: "default" };
+stateIndicatorMap[DetectorState.Standby] = { icon: <ModeStandbyIcon />, color: "primary" };
+stateIndicatorMap[DetectorState.Streaming] = { icon: <VideocamIcon />, color: "secondary" };
+stateIndicatorMap[DetectorState.Monitoring] = { icon: <VisibilityIcon />, color: "success" };
+stateIndicatorMap[DetectorState.Locating] = { icon: <QrCodeIcon />, color: "info" };
 
-const splitDetectorStates = (states: DetectorState): Array<DetectorState> => {
-    // TODO(rg): types are messed up. DetectorState is a bitfield on the API, and it sends the
-    // items in a comma-separated string. Our API client however gets a single DetectorState...
-    return states.split(",").map((s) => s.trim());
-};
-
-export function StateIndicator({ state }: StateIndicatorProps) {
-    const individualStates = splitDetectorStates(state);
-
+// TODO(rg): detector health indicator based on detector heartbeat and possible errors reported by
+// the detector or the backend
+function HealthIndicator() {
     return (
-        <Box display="flex" gap={1}>
-            {individualStates.map((s, i) => (
-                <Chip key={i} label={s} />
-            ))}
-        </Box>
+        <Chip
+            icon={<FavoriteIcon />}
+            sx={{
+                bgcolor: "error.main",
+                "& .MuiSvgIcon-root": { color: "white" },
+                "& .MuiChip-label": { pl: "0px" },
+            }}
+        />
     );
 }
 
-export function HealthIndicator() {}
+export function StateIndicator({ state }: StateIndicatorProps) {
+    return (
+        <Box display="flex" gap={1}>
+            {state.find((s) => s !== DetectorState.Off) ? <HealthIndicator /> : null}
+            {state.map((s, i) => {
+                // All DetectorStates are covered so this should never be undefined
+                const { icon, color } = stateIndicatorMap[s]!;
+
+                return (
+                    <Chip
+                        key={i}
+                        label={s}
+                        icon={icon}
+                        color={color}
+                        sx={{ filter: "brightness(150%)" }}
+                    />
+                );
+            })}
+        </Box>
+    );
+}

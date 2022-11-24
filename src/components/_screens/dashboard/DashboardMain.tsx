@@ -1,7 +1,10 @@
 import useResizeObserver from "@react-hook/resize-observer";
-import { useEffect, useRef } from "react";
+import { LabeledValue } from "components/LabeledValue";
+import { useEffect, useRef, useState } from "react";
+import { randomBetween } from "utils/random";
 
-import { Box, Grid, Paper, useMediaQuery, useTheme } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { Box, Divider, Grid, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 function Stream() {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -36,8 +39,8 @@ function Stream() {
     const realVideo = <source src="http://127.0.0.1:3000/stream" type="video/x-motion-jpeg" />;
 
     return (
-        <Paper sx={{ m: 2, p: 2, flexGrow: 1 }}>
-            <Box ref={containerRef}>
+        <Paper sx={{ m: 2, p: 2, display: "flex", flexDirection: "column", flexGrow: 1 }}>
+            <Box display="flex" justifyContent="center" alignItems="center" ref={containerRef}>
                 <Box
                     component="video"
                     ref={videoRef}
@@ -57,7 +60,61 @@ function Stream() {
 }
 
 function Controls() {
-    return <div>"controls"</div>;
+    // Testing LabeledValue flash animation with random changes
+    const [value, setValue] = useState<number>(0);
+
+    useEffect(() => {
+        const nextDelay = randomBetween(1, 3);
+
+        setTimeout(() => {
+            setValue(value + 1);
+        }, nextDelay * 1000);
+    }, [value]);
+    return (
+        <Grid container flexGrow={1}>
+            <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                item
+                xs={12}
+                xl={4}
+            >
+                <Typography fontSize="1.2em" variant="overline">
+                    Stream
+                </Typography>
+                <Box display="flex" gap={2}>
+                    <LabeledValue value={60} label="FPS" />
+                    <LabeledValue value="Running" label="Status" />
+                </Box>
+            </Grid>
+            <Grid
+                display="flex"
+                flexDirection="column"
+                justifyContent="space-between"
+                alignItems="flex-start"
+                item
+                xs={12}
+                xl={8}
+            >
+                <Typography fontSize="1.2em" variant="overline">
+                    Detection
+                </Typography>
+                <Box display="flex" flexDirection="column" gap={2}>
+                    <Box display="flex" gap={2}>
+                        <LabeledValue value="KB1123Q-4B" label="Task" />
+                        <LabeledValue value={value} label="Step" animate />
+                    </Box>
+                    <Box display="flex" gap={2}>
+                        <LabeledValue value="00:49" label="Total time" icon={<AccessTimeIcon />} />
+                        <LabeledValue value="00:11" label="Current time" />
+                        <LabeledValue value="5 / 16" label="Progress" />
+                    </Box>
+                </Box>
+            </Grid>
+        </Grid>
+    );
 }
 
 function Events() {

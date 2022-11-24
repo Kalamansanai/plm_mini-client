@@ -1,5 +1,8 @@
 import useCHState, { Level } from "companyHierarchyProvider";
-import { StateIndicator as DetectorStateIndicator } from "components/DetectorIndicators";
+import {
+    HealthIndicator,
+    StateIndicator as DetectorStateIndicator,
+} from "components/DetectorIndicators";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useFetcher, useNavigate } from "react-router-dom";
 import { Location } from "types";
@@ -40,7 +43,7 @@ export default function LocationCardsGrid({ locations }: { locations: Array<Loca
 
     return (
         <>
-            <Grid container flexGrow={1} spacing={1}>
+            <Grid container flexGrow={1} spacing={1} alignContent="flex-start">
                 {cards}
                 <Grid item xs={6} sm={6} md={12}>
                     <Box
@@ -127,7 +130,9 @@ function LocationCard({ location }: Props) {
                                     </Typography>
                                 </Box>
                             </Box>
-                            <DetectorStateIndicator state={location.detector.state} />
+                            <Box display="flex" gap={1}>
+                                <DetectorStateIndicator state={location.detector.state} />
+                            </Box>
                         </>
                     ) : null}
                 </CardActionArea>

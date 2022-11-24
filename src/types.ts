@@ -39,3 +39,13 @@ export type Detector = {
     macAddress: string;
     state: Array<DetectorState>;
 };
+
+export const parseDetectorState = (state: string): Array<DetectorState> => {
+    const parsedState = state
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s in DetectorState)
+        .map((s) => s as DetectorState);
+
+    return parsedState;
+};

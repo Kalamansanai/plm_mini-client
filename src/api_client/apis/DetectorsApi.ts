@@ -16,8 +16,10 @@
 import * as runtime from '../runtime';
 import type {
   DetectorsCommandReq,
+  DetectorsGetByIdRes,
   DetectorsHeartBeatReq,
   DetectorsIdentifyReq,
+  DetectorsListRes,
 } from '../models';
 
 export interface ApiEndpointsDetectorsAttachRequest {
@@ -32,6 +34,10 @@ export interface ApiEndpointsDetectorsCommandRequest {
 
 export interface ApiEndpointsDetectorsDetachRequest {
     locationId: number;
+}
+
+export interface ApiEndpointsDetectorsGetByIdRequest {
+    id: number;
 }
 
 export interface ApiEndpointsDetectorsHeartBeatRequest {
@@ -154,6 +160,34 @@ export class DetectorsApi extends runtime.BaseAPI {
 
     /**
      */
+    async apiEndpointsDetectorsGetByIdRaw(requestParameters: ApiEndpointsDetectorsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DetectorsGetByIdRes>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsDetectorsGetById.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/detectors/{id}`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     */
+    async apiEndpointsDetectorsGetById(requestParameters: ApiEndpointsDetectorsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DetectorsGetByIdRes> {
+        const response = await this.apiEndpointsDetectorsGetByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async apiEndpointsDetectorsHeartBeatRaw(requestParameters: ApiEndpointsDetectorsHeartBeatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.macAddress === null || requestParameters.macAddress === undefined) {
             throw new runtime.RequiredError('macAddress','Required parameter requestParameters.macAddress was null or undefined when calling apiEndpointsDetectorsHeartBeat.');
@@ -219,6 +253,30 @@ export class DetectorsApi extends runtime.BaseAPI {
      */
     async apiEndpointsDetectorsIdentify(requestParameters: ApiEndpointsDetectorsIdentifyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
         const response = await this.apiEndpointsDetectorsIdentifyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiEndpointsDetectorsListRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<DetectorsListRes>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/detectors`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     */
+    async apiEndpointsDetectorsList(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<DetectorsListRes>> {
+        const response = await this.apiEndpointsDetectorsListRaw(initOverrides);
         return await response.value();
     }
 
