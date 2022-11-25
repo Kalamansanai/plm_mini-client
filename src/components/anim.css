@@ -1,8 +1,9 @@
-.labeled-value-exit {
-    opacity: 1 !important;
+.labeled-value-flash-in {
+    background-color: #8bc6f7 !important;
+    transition: none !important;
 }
 
-.labeled-value-exit-active {
-    opacity: 0 !important;
-    transition: opacity 200ms !important;
+.labeled-value-flash-out {
+    transition: background-color 0.5s ease-out !important;
+    background-color: #e6e6e6 !important;
 }

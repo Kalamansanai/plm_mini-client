@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 import { Box, Typography } from "@mui/material";
 
@@ -9,33 +8,31 @@ type Props = {
     value: any;
     label: string;
     icon?: React.ReactElement;
-    color?: string;
     animate?: boolean;
 };
 
-export function LabeledValue({ value, label, icon, color, animate }: Props) {
+export function LabeledValue({ value, label, icon, animate }: Props) {
     const ref = useRef<HTMLElement | null>(null);
-    const colorRef = useRef<string>(color ? color : "background.subtle");
 
     if (ref.current && animate) {
-        colorRef.current = "primary.light";
-        ref.current.style.transition = "background-color 300ms ease-in-out";
+        ref.current.classList.remove("labeled-value-flash-out");
+        ref.current.classList.add("labeled-value-flash-in");
     }
 
     setTimeout(() => {
         if (ref.current && animate) {
-            colorRef.current = "secondary.main";
-            ref.current.style.transition = "";
+            ref.current.classList.remove("labeled-value-flash-in");
+            ref.current.classList.add("labeled-value-flash-out");
         }
-    }, 300);
+    }, 50);
 
     return (
         <Box
-            display="flex"
             ref={ref}
+            display="flex"
             alignItems="center"
+            bgcolor="background.subtle"
             sx={{
-                bgcolor: colorRef.current,
                 p: 1,
                 borderRadius: "8px",
             }}

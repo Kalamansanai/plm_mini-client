@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { randomBetween } from "utils/random";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import HandymanIcon from "@mui/icons-material/Handyman";
 import { Box, Divider, Grid, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 function Stream() {
@@ -103,7 +104,7 @@ function Controls() {
                 </Typography>
                 <Box display="flex" flexDirection="column" gap={2}>
                     <Box display="flex" gap={2}>
-                        <LabeledValue value="KB1123Q-4B" label="Task" />
+                        <LabeledValue value="KB1123Q-4B" label="Task" icon={<HandymanIcon />} />
                         <LabeledValue value={value} label="Step" animate />
                     </Box>
                     <Box display="flex" gap={2}>
