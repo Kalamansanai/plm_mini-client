@@ -1,6 +1,8 @@
-import EditPopup from "components/popups/EditPopup";
+import useCHState, { Level } from "companyHierarchyProvider";
+import SingleInputPopup from "components/popups/SingleInputPopup";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useRef } from "react";
+import { useNavigate, useSubmit } from "react-router-dom";
 import { CompanyHierarchyNode as CHNode } from "types";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,50 +12,30 @@ import { IconButton, ListItem, ListItemButton, ListItemText, Tooltip } from "@mu
 import ConfirmPopup from "../../popups/ConfirmPopup";
 
 type Props = {
-    item: CHNode;
+    node: CHNode;
+    labelSingular: string;
     selected: boolean;
-    clickHandler: (id: number) => void;
-    renameHandler: (id: number, name: string) => Promise<void>;
-    deleteHandler: (id: number) => Promise<void>;
+    level: Level;
 };
 
-export default function CompanyHierarchyNode({
-    item,
-    selected,
-    clickHandler,
-    renameHandler,
-    deleteHandler,
-}: Props) {
+export default function CompanyHierarchyNode({ node, labelSingular, selected, level }: Props) {
+    const { dispatch } = useCHState();
+    const submit = useSubmit();
+    const navigate = useNavigate();
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-item" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-item" });
 
     const listItemRef = useRef(null);
 
-    const onClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        clickHandler(item.id);
-    };
-
-    const onRenameSubmit = async (input: string) => {
-        if (input != item.name) {
-            await renameHandler(item.id, input);
-            return { close: true, resetText: false };
-        }
-
-        return { close: true, resetText: false };
-    };
-
-    const onDeleteConfirm = async (e: React.MouseEvent) => {
-        e.stopPropagation();
-        await deleteHandler(item.id);
-        deletePopup.close();
+    const onClick = () => {
+        dispatch({ type: "Select", level: level, id: node.id, submitFn: submit, navFn: navigate });
     };
 
     return (
         <>
             <ListItem disablePadding ref={listItemRef}>
                 <ListItemButton selected={selected} onClick={onClick}>
-                    <ListItemText>{item.name}</ListItemText>
+                    <ListItemText>{node.name}</ListItemText>
                     <Tooltip title="Rename" followCursor>
                         <IconButton
                             sx={{ color: "secondary.light", p: 0 }}
@@ -80,21 +62,29 @@ export default function CompanyHierarchyNode({
                     </Tooltip>
                 </ListItemButton>
             </ListItem>
-            <EditPopup
+            <SingleInputPopup
                 popupProps={renamePopup}
-                initialValue={item.name}
                 label="Name"
-                handler={onRenameSubmit}
-            />
+                initialValue={node.name}
+                method="post"
+                action="edit"
+            >
+                <input readOnly hidden name="level" value={level} />
+                <input readOnly hidden name="id" value={node.id} />
+            </SingleInputPopup>
             <ConfirmPopup
                 popupProps={deletePopup}
                 text={
                     <>
-                        Deleting <i>{item.name}</i>
+                        Deleting {labelSingular} <i>{node.name}</i>
                     </>
                 }
-                handler={onDeleteConfirm}
-            />
+                method="post"
+                action="delete"
+            >
+                <input readOnly hidden name="level" value={level} />
+                <input readOnly hidden name="id" value={node.id} />
+            </ConfirmPopup>
         </>
     );
 }

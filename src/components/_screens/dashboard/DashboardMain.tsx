@@ -124,7 +124,6 @@ function Events() {
 
 export default function DashboardMain() {
     const theme = useTheme();
-    const isSm = useMediaQuery(theme.breakpoints.down("md"));
 
     return (
         <>

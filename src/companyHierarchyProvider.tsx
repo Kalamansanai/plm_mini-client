@@ -2,9 +2,10 @@ import { config as apiConfig } from "api";
 import { OPUsApi } from "api_client/apis/OPUsApi";
 import { SitesApi } from "api_client/apis/SitesApi";
 import { createContext, useContext, useReducer } from "react";
+import { NavigateFunction, SubmitFunction } from "react-router-dom";
 import { CompanyHierarchyNode as CHNode, Site } from "types";
 
-import { LinesApi, StationsApi } from "./api_client";
+import { LinesApi, LocationsApi, StationsApi } from "./api_client";
 
 export const Level = {
     Site: 0,
@@ -17,7 +18,7 @@ export const Level = {
 export type Level = typeof Level[keyof typeof Level];
 
 export type LevelDescriptor = {
-    level: number;
+    level: Level;
     label: string;
     labelSingular: string;
     addFn: (name: string, parentId?: number) => Promise<CHNode>;
@@ -116,85 +117,118 @@ export const descriptors: LevelDescriptor[] = [
             await new StationsApi(apiConfig).apiEndpointsStationsDelete({ id });
         },
     },
+    {
+        level: Level.Location,
+        label: "Locations",
+        labelSingular: "Location",
+        addFn: async (name, parentId) => {
+            const location = await new LocationsApi(apiConfig).apiEndpointsLocationsCreate({
+                locationsCreateReq: { parentStationId: parentId, name },
+            });
+            return { id: location.id!, name: location.name! };
+        },
+        getFn: async (id) => {
+            const parentStation = await new StationsApi(apiConfig).apiEndpointsStationsGetById({
+                id: id!,
+            });
+            return parentStation.locations!.map((l) => ({ id: l.id!, name: l.name! }));
+        },
+        renameFn: async (id, name) => {
+            await new LocationsApi(apiConfig).apiEndpointsLocationsRename({
+                id,
+                locationsRenameReq: { name },
+            });
+        },
+        deleteFn: async (id) => {
+            await new LocationsApi(apiConfig).apiEndpointsLocationsDelete({ id });
+        },
+    },
 ];
 
 export type State = {
-    items: Array<CHNode[]>;
+    nodes: Array<CHNode[]>;
     selectedIds: Array<number | null>;
     highestShownLevel: number;
-    lastClickedId: number | null;
 };
 
 const initialState: State = {
-    items: Array(Object.entries(Level).length).fill([]),
-    selectedIds: Array(Object.entries(Level).length).fill(null),
+    nodes: Array(descriptors.length).fill([]),
+    selectedIds: Array(descriptors.length).fill(null),
     highestShownLevel: 0,
-    lastClickedId: null,
+};
+
+export const decodeSelectedIds = (selectedIdsString: string | null): Array<number> | null => {
+    if (selectedIdsString === null || selectedIdsString.length === 0)
+        return Array(descriptors.length).fill(null);
+
+    let extractedIds = selectedIdsString.split(".").map((n) => Number(n));
+
+    // Array length should always equal to the number of level descriptors (for consistency)
+    const padding = Array(descriptors.length - extractedIds.length).fill(null);
+    extractedIds.push(...padding);
+
+    return extractedIds;
+};
+
+export const encodeSelectedIds = (selectedIds: Array<number | null>): string => {
+    // We're not encoding Stations and Locations into the query string
+    // (they belong to the Dashboard)
+    const selectedIdsUntilStation = selectedIds.slice(0, Level.Location);
+
+    let firstNullIndex = selectedIdsUntilStation.indexOf(null);
+    if (firstNullIndex === -1) firstNullIndex = Level.Location;
+
+    return selectedIdsUntilStation
+        .slice(0, firstNullIndex)
+        .map((n) => n!.toString())
+        .join(".");
 };
 
 export type Action =
-    | { type: "SetItems"; level: number; items: CHNode[] }
-    | { type: "AddItem"; level: number; item: CHNode }
-    | { type: "RenameItem"; level: number; id: number; name: string }
-    | { type: "DeleteItem"; level: number; id: number }
-    | { type: "SetSelectedId"; level: number; id: number | null }
+    | { type: "Initialize"; state: State }
+    | {
+          type: "Select";
+          level: number;
+          id: number;
+          submitFn?: SubmitFunction;
+          navFn?: NavigateFunction;
+      }
     | { type: "Reset" };
 
 function reducer(state: State, action: Action): State {
     switch (action.type) {
-        case "SetItems": {
-            const newState = { ...state };
-            newState.items[action.level] = action.items;
-            return newState;
+        case "Initialize": {
+            return action.state;
         }
-        case "AddItem": {
-            const newState = { ...state };
-            newState.items[action.level] = [...newState.items[action.level]!, action.item];
-            return newState;
-        }
-        case "RenameItem": {
-            const newItems = [...state.items[action.level]!];
-            const renamedItem = newItems.find((i) => i.id === action.id)!;
-            renamedItem.name = action.name;
-
-            const newState = { ...state };
-            newState.items[action.level] = newItems;
-            return newState;
-        }
-        case "DeleteItem": {
-            const newItems = [
-                ...state.items[action.level]!.filter((item) => item.id !== action.id),
-            ];
-            const newState = { ...state };
-            newState.items[action.level] = newItems;
-
-            if (action.id === state.selectedIds[action.level]) {
-                newState.highestShownLevel = action.level;
-            }
-
-            return newState;
-        }
-        case "SetSelectedId": {
+        case "Select": {
             const newState = { ...state };
 
-            const sameIdSelected = state.selectedIds[action.level] === action.id;
+            const sameIdSelected =
+                state.selectedIds[action.level] === action.id && action.level !== Level.Station;
 
-            // on Station level, we don't want to deselect the Station when we click on one the
-            // second time (which means we don't want to do anything)
-            if (sameIdSelected && action.level == Level.Station) return newState;
-
-            if (action.id !== null) {
-                newState.highestShownLevel = sameIdSelected
-                    ? action.level
-                    : Math.min(action.level + 1, descriptors.length);
-            }
+            newState.highestShownLevel = sameIdSelected
+                ? action.level
+                : Math.min(action.level + 1, descriptors.length);
             newState.selectedIds[action.level] = sameIdSelected ? null : action.id;
 
             for (let i = action.level + 1; i < descriptors.length; i++) {
                 newState.selectedIds[i] = null;
             }
 
-            console.log(newState);
+            if (action.level < Level.Station) {
+                let formData = new FormData();
+                formData.append("sel", encodeSelectedIds(newState.selectedIds));
+                action.submitFn!(formData);
+            } else if (action.level === Level.Station) {
+                action.navFn!("/dashboard/" + action.id);
+            } else if (action.level === Level.Location) {
+                if (sameIdSelected) {
+                    action.navFn!("..", { relative: "path" });
+                } else {
+                    action.navFn!(action.id.toString());
+                }
+            }
+
             return newState;
         }
         case "Reset": {

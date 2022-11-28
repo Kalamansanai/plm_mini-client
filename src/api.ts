@@ -6,9 +6,16 @@ export type ApiExceptionResponse = {
     errors?: string[];
 };
 
+export class DetailedError extends Error {
+    override name: "DetailedError" = "DetailedError";
+    constructor(public help: React.ReactNode, msg?: string) {
+        super(msg);
+    }
+}
+
 export type Interceptors = {
     onBadRequest: (res: ApiExceptionResponse) => void;
-    onNotFound: () => void;
+    onNotFound: (text: string) => void;
     onUnauthorized: () => void;
     onForbidden: () => void;
     onServerError: (res: ApiExceptionResponse) => void;
@@ -33,7 +40,7 @@ class ErrorHandlerMiddleware implements Middleware {
                     this.interceptors?.onForbidden();
                     break;
                 case 404:
-                    this.interceptors?.onNotFound();
+                    this.interceptors?.onNotFound(context.response.statusText);
                     break;
                 case 500: {
                     const res = (await context.response.json()) as ApiExceptionResponse;

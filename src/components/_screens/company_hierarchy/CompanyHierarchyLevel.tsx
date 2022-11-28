@@ -1,7 +1,7 @@
-import useCHState, { LevelDescriptor, Level } from "companyHierarchyProvider";
-import { bindPopover, bindTrigger, usePopupState } from "material-ui-popup-state/hooks";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useCHState, { Level } from "companyHierarchyProvider";
+import { bindPopover, usePopupState } from "material-ui-popup-state/hooks";
+import { useState } from "react";
+import { useFetcher } from "react-router-dom";
 
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
@@ -14,65 +14,20 @@ import Typography from "@mui/material/Typography";
 
 import { default as CHNode } from "./CompanyHierarchyNode";
 
-export default function CompanyHierarchyLevel({
-    level,
-    label,
-    labelSingular,
-    addFn,
-    getFn,
-    renameFn,
-    deleteFn,
-}: LevelDescriptor) {
+type Props = {
+    level: Level;
+    label: string;
+    labelSingular: string;
+};
+
+export default function CompanyHierarchyLevel({ level, label, labelSingular }: Props) {
     const { state, dispatch } = useCHState();
-    const navigate = useNavigate();
     const ownSelectedId = state.selectedIds[level];
-    const maxLevel: Level = Level.Station;
+    const fetcher = useFetcher();
 
     const [newItemName, setNewItemName] = useState("");
 
     const addPopup = usePopupState({ variant: "popover", popupId: "add-item" });
-
-    // fetch for first level
-    useEffect(() => {
-        const fetchData = async () => {
-            if (level !== 0) return;
-
-            const data = await getFn();
-            dispatch({ type: "SetItems", level: level, items: data });
-        };
-
-        fetchData();
-    }, [level]);
-
-    // fetch for all other levels
-    useEffect(() => {
-        const fetchData = async () => {
-            const previousLevelId = state.selectedIds[level - 1];
-            if (previousLevelId === null || previousLevelId === undefined) return;
-
-            const data = await getFn(previousLevelId);
-            dispatch({ type: "SetItems", level: level, items: data });
-        };
-
-        if (level > state.highestShownLevel) {
-            dispatch({ type: "SetItems", level: level, items: [] });
-            dispatch({ type: "SetSelectedId", level: level, id: null });
-        }
-
-        if (level === state.highestShownLevel) {
-            if (state.selectedIds[level - 1] !== null) {
-                fetchData();
-            }
-        }
-    }, [level, state.selectedIds[level - 1], state.highestShownLevel]);
-
-    const onNodeClick = (id: number) => {
-        dispatch({ type: "SetSelectedId", level: level, id });
-
-        if (level === maxLevel) {
-            navigate(`station/${id}`);
-        }
-    };
 
     const onNewItemNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewItemName(e.target.value);
@@ -93,54 +48,37 @@ export default function CompanyHierarchyLevel({
     };
 
     const onNewItemSubmit = async () => {
-        let newNode;
-
-        if (level === 0) {
-            // We're on the site level - no parentId is needed when adding a node
-            const newNodeRes = await addFn(newItemName);
-            newNode = { id: newNodeRes.id, name: newNodeRes.name };
-        } else {
-            // ...otherwise, parent id is needed, as the new node will be the child of the node
-            // selected on the previous level
-            const previousSelectedId = state.selectedIds[level - 1];
-            if (previousSelectedId === null || previousSelectedId === undefined) return;
-
-            const newSiteRes = await addFn(newItemName, previousSelectedId);
-            newNode = { id: newSiteRes.id, name: newSiteRes.name };
-        }
-
-        dispatch({ type: "AddItem", level: level, item: newNode });
-        setNewItemName("");
         addPopup.close();
-    };
-
-    const onItemRename = async (id: number, name: string) => {
-        await renameFn(id, name);
-        dispatch({ type: "RenameItem", level: level, id: id, name: name });
-    };
-
-    const onItemDelete = async (id: number) => {
-        await deleteFn(id);
-        dispatch({ type: "DeleteItem", level: level, id: id });
     };
 
     const addPopupElement = (
         <Popover {...bindPopover(addPopup)} anchorReference="anchorPosition">
-            <TextField
-                label="Name"
-                variant="filled"
-                autoFocus
-                onChange={onNewItemNameChange}
-                onKeyUp={onNewItemKeyboardSubmit}
-                onClick={(e) => e.stopPropagation()}
-            />
-            <IconButton
-                sx={{ color: "success.light" }}
-                disabled={!newItemName}
-                onClick={onNewItemMouseSubmit}
-            >
-                <CheckIcon />
-            </IconButton>
+            <fetcher.Form method="post" action="new">
+                <TextField
+                    name="name"
+                    label="Name"
+                    variant="filled"
+                    autoFocus
+                    onChange={onNewItemNameChange}
+                    onKeyUp={onNewItemKeyboardSubmit}
+                    onClick={(e) => e.stopPropagation()}
+                />
+                <input readOnly hidden name="level" value={level} />
+                <input
+                    readOnly
+                    hidden
+                    name="parentId"
+                    value={state.selectedIds[level - 1] ?? undefined}
+                />
+                <IconButton
+                    type="submit"
+                    sx={{ color: "success.light" }}
+                    disabled={!newItemName}
+                    onClick={onNewItemMouseSubmit}
+                >
+                    <CheckIcon />
+                </IconButton>
+            </fetcher.Form>
         </Popover>
     );
 
@@ -166,14 +104,13 @@ export default function CompanyHierarchyLevel({
                         sx={{ height: "100%", overflowY: "auto", flex: 1 }}
                         hidden={level > state.highestShownLevel}
                     >
-                        {state.items[level]!.map((item, i) => (
+                        {state.nodes[level]!.map((node, i) => (
                             <CHNode
                                 key={i}
-                                item={item}
-                                selected={item.id === ownSelectedId}
-                                clickHandler={onNodeClick}
-                                renameHandler={onItemRename}
-                                deleteHandler={onItemDelete}
+                                node={node}
+                                labelSingular={labelSingular}
+                                selected={node.id === ownSelectedId}
+                                level={level}
                             />
                         ))}
                         <ListItem disablePadding sx={{ pt: 1 }}>

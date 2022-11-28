@@ -1,31 +1,20 @@
-import { config as apiConfig } from "api";
-import useCHState, { Level, State as CHState } from "companyHierarchyProvider";
+import useCHState, { encodeSelectedIds } from "companyHierarchyProvider";
 import { useState } from "react";
-import { Params, useFetcher, useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Station } from "types";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, Button, Card, IconButton, Tab, Tabs } from "@mui/material";
+import { Box, IconButton, Tab, Tabs } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
-import { LocationsApi } from "../../../api_client";
 import TabPanel from "../../TabPanel";
 import LocationCardsGrid from "./LocationCard";
 
-export async function addLocationAction({ request, params }: { request: any; params: Params }) {
-    const stationId = params["station_id"] as any as number;
-    const data = await request.formData();
-    const name = data.get("name");
-    await new LocationsApi(apiConfig).apiEndpointsLocationsCreate({
-        locationsCreateReq: { parentStationId: stationId, name },
-    });
-}
-
 export default function StationMenu({ station }: { station: Station }) {
     const [tab, setTab] = useState(0);
-    const { state: chState, dispatch: chDispatch } = useCHState();
+    const { state: chState } = useCHState();
     const navigate = useNavigate();
 
     const locations = station.locations;
@@ -33,8 +22,8 @@ export default function StationMenu({ station }: { station: Station }) {
     const detectors = locations.filter((l) => !!l.detector).map((l) => l.detector!);
 
     const onBack = () => {
-        chDispatch({ type: "SetSelectedId", level: Level.Location, id: null });
-        navigate("/");
+        const sel = encodeSelectedIds(chState.selectedIds);
+        navigate({ pathname: "/hierarchy", search: "sel=" + sel });
     };
 
     return (
@@ -46,7 +35,7 @@ export default function StationMenu({ station }: { station: Station }) {
                 <Typography variant="h5">{station.name}</Typography>
             </Box>
             <Divider />
-            <Tabs value={tab} onChange={(e, value) => setTab(value)} variant="fullWidth">
+            <Tabs value={tab} onChange={(_e, value) => setTab(value)} variant="fullWidth">
                 <Tab label="Locations" />
                 <Tab label="Detectors" />
             </Tabs>

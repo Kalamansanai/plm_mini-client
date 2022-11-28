@@ -36,7 +36,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "target": "ES6",
-    "lib": ["DOM", "ESNext"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "jsx": "react-jsx",
     "skipLibCheck": true,
     "composite": true

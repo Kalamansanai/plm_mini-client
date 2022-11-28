@@ -31,7 +31,9 @@ export default function App() {
                     enqueueSnackbar(res.description, { variant: "error", preventDuplicate: true });
                 }
             },
-            onNotFound: () => {},
+            onNotFound: (text: string) => {
+                enqueueSnackbar(text, { variant: "error", preventDuplicate: true });
+            },
             onUnauthorized: () => {},
             onForbidden: () => {},
             onServerError: (res) => {

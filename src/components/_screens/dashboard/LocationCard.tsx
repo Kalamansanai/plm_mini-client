@@ -1,10 +1,9 @@
 import useCHState, { Level } from "companyHierarchyProvider";
-import {
-    HealthIndicator,
-    StateIndicator as DetectorStateIndicator,
-} from "components/DetectorIndicators";
+import { StateIndicator as DetectorStateIndicator } from "components/DetectorIndicators";
+import ConfirmPopup from "components/popups/ConfirmPopup";
+import SingleInputPopup from "components/popups/SingleInputPopup";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { useFetcher, useNavigate } from "react-router-dom";
+import { useFetcher, useMatch, useMatches, useNavigate } from "react-router-dom";
 import { Location } from "types";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -24,22 +23,14 @@ import {
     Typography,
 } from "@mui/material";
 
-import EditPopup from "../../popups/EditPopup";
-
 type Props = {
     location: Location;
 };
 
 export default function LocationCardsGrid({ locations }: { locations: Array<Location> }) {
-    const cards = locations.map((loc, i) => <LocationCard key={i} location={loc} />);
     const addPopup = usePopupState({ variant: "popover", popupId: "add-location" });
-    const fetcher = useFetcher();
 
-    const onAddSubmit = async (input: string) => {
-        // TODO(rg): this should be a relative URL
-        fetcher.submit({ name: input }, { method: "post", action: "/station/1/location/new" });
-        return { close: true, resetText: true };
-    };
+    const cards = locations.map((loc, i) => <LocationCard key={i} location={loc} />);
 
     return (
         <>
@@ -66,7 +57,13 @@ export default function LocationCardsGrid({ locations }: { locations: Array<Loca
                     </Box>
                 </Grid>
             </Grid>
-            <EditPopup popupProps={addPopup} initialValue="" label="Name" handler={onAddSubmit} />
+            <SingleInputPopup
+                popupProps={addPopup}
+                initialValue=""
+                label="Name"
+                method="post"
+                action="new"
+            />
         </>
     );
 }
@@ -74,83 +71,109 @@ export default function LocationCardsGrid({ locations }: { locations: Array<Loca
 function LocationCard({ location }: Props) {
     const { state: chState, dispatch: chDispatch } = useCHState();
     const navigate = useNavigate();
+    const match = useMatch("/dashboard/:station_id/:location_id");
+    const matchedLocationId = match ? Number(match.params.location_id) : null;
 
-    const isSelected = chState.selectedIds[Level.Location] === location.id;
+    const renamePopup = usePopupState({ variant: "popover", popupId: "rename-location" });
+    const deletePopup = usePopupState({ variant: "popover", popupId: "delete-location" });
+
+    const isSelected = matchedLocationId === location.id;
 
     const onClick = () => {
-        if (chState.selectedIds[Level.Location] === location.id) {
-            navigate("../..", { relative: "path" });
-        } else {
-            navigate(`location/${location.id}`);
-        }
-        chDispatch({ type: "SetSelectedId", level: Level.Location, id: location.id });
+        chDispatch({ type: "Select", level: Level.Location, id: location.id, navFn: navigate });
     };
 
     return (
-        <Grid item xs={6} sm={6} md={12}>
-            <Card
-                elevation={0}
-                sx={{
-                    // Enough height to fit the button column - my first attempt was setting the
-                    // button column width to 0, but that caused weird artifacts on the border
-                    // (probably some pixels of the icon buttons were shown somewhy)
-                    height: "120px",
-                    flexShrink: 0,
-                    display: "flex",
-                    border: "1px solid",
-                    borderColor: isSelected ? "primary.main" : "divider",
-                    boxShadow: 1,
-                }}
-            >
-                <CardActionArea
+        <>
+            <Grid item xs={6} sm={6} md={12}>
+                <Card
+                    elevation={0}
                     sx={{
+                        // Enough height to fit the button column - my first attempt was setting the
+                        // button column width to 0, but that caused weird artifacts on the border
+                        // (probably some pixels of the icon buttons were shown somewhy)
+                        height: "120px",
+                        flexShrink: 0,
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-start",
-                        alignItems: "flex-start",
-                        p: 1,
-                        bgcolor: isSelected ? "primary.light" : "default",
+                        border: "1px solid",
+                        borderColor: isSelected ? "primary.main" : "divider",
+                        boxShadow: 1,
                     }}
-                    onClick={onClick}
                 >
-                    <Typography variant="h5">{location.name}</Typography>
-                    {location.detector ? (
-                        <>
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                justifyContent="space-between"
-                                alignItems="flex-start"
-                                sx={{ flexGrow: 1 }}
-                            >
-                                <Box display="flex" alignItems="center">
-                                    <VideocamIcon sx={{ mr: 1, color: "text.secondary" }} />
-                                    <Typography color="text.secondary" sx={{ fontSize: "1.2em" }}>
-                                        {location.detector.name}
-                                    </Typography>
+                    <CardActionArea
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            alignItems: "flex-start",
+                            p: 1,
+                            bgcolor: isSelected ? "primary.light" : "default",
+                        }}
+                        onClick={onClick}
+                    >
+                        <Typography variant="h5">{location.name}</Typography>
+                        {location.detector ? (
+                            <>
+                                <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    justifyContent="space-between"
+                                    alignItems="flex-start"
+                                    sx={{ flexGrow: 1 }}
+                                >
+                                    <Box display="flex" alignItems="center">
+                                        <VideocamIcon sx={{ mr: 1, color: "text.secondary" }} />
+                                        <Typography
+                                            color="text.secondary"
+                                            sx={{ fontSize: "1.2em" }}
+                                        >
+                                            {location.detector.name}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                            <Box display="flex" gap={1}>
-                                <DetectorStateIndicator state={location.detector.state} />
-                            </Box>
-                        </>
-                    ) : null}
-                </CardActionArea>
-                <Box sx={{ display: isSelected ? "flex" : "flex" }} className="hover">
-                    <Divider orientation="vertical" flexItem sx={{ bgcolor: "primary.main" }} />
-                    <Box display="flex" flexDirection="column" sx={{ height: "120px" }}>
-                        <IconButton>
-                            <PowerOffIcon />
-                        </IconButton>
-                        <IconButton>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton>
-                            <DeleteIcon />
-                        </IconButton>
+                                <Box display="flex" gap={1}>
+                                    <DetectorStateIndicator state={location.detector.state} />
+                                </Box>
+                            </>
+                        ) : null}
+                    </CardActionArea>
+                    <Box sx={{ display: isSelected ? "flex" : "flex" }} className="hover">
+                        <Divider orientation="vertical" flexItem sx={{ bgcolor: "primary.main" }} />
+                        <Box display="flex" flexDirection="column" sx={{ height: "120px" }}>
+                            <IconButton color="info">
+                                <PowerOffIcon />
+                            </IconButton>
+                            <IconButton color="secondary" onClick={renamePopup.open}>
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton color="error" onClick={deletePopup.open}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
                     </Box>
-                </Box>
-            </Card>
-        </Grid>
+                </Card>
+            </Grid>
+            <SingleInputPopup
+                popupProps={renamePopup}
+                label="Name"
+                initialValue={location.name}
+                method="post"
+                action="edit"
+            >
+                <input readOnly hidden name="id" value={location.id} />
+            </SingleInputPopup>
+            <ConfirmPopup
+                popupProps={deletePopup}
+                text={
+                    <>
+                        Deleting Location <i>{location.name}</i>
+                    </>
+                }
+                method="post"
+                action="delete"
+            >
+                <input readOnly hidden name="id" value={location.id} />
+            </ConfirmPopup>
+        </>
     );
 }
