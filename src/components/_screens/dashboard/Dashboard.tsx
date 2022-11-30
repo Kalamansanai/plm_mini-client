@@ -59,14 +59,21 @@ export default function Dashboard() {
     const isSm = useMediaQuery(theme.breakpoints.down("md"));
 
     return (
-        <Grid container columnSpacing={2} rowSpacing={isSm ? 2 : 0} sx={{ height: "100%" }}>
-            <Grid item xs={12} sm={12} md={3} lg={2} sx={{ height: "100%" }}>
+        <Grid
+            container
+            columnSpacing={2}
+            rowSpacing={isSm ? 2 : 0}
+            sx={{ height: isSm ? "auto" : "100%" }}
+        >
+            <Grid item xs={12} sm={12} md={3} lg={2} sx={{ height: isSm ? "480px" : "100%" }}>
                 <Paper square elevation={16} sx={{ height: "100%" }}>
                     <StationMenu station={station} />
                 </Paper>
             </Grid>
-            <Grid container item xs={12} sm={12} md={9} lg={10} spacing={0}>
-                <Outlet />
+            <Grid item xs={12} sm={12} md={9} lg={10}>
+                <Box sx={{ height: "100%", mt: 2, mx: 2, pb: 2 }}>
+                    <Outlet />
+                </Box>
             </Grid>
         </Grid>
     );

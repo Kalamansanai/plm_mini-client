@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { Box, Typography } from "@mui/material";
 
@@ -14,17 +14,19 @@ type Props = {
 export function LabeledValue({ value, label, icon, animate }: Props) {
     const ref = useRef<HTMLElement | null>(null);
 
-    if (ref.current && animate) {
-        ref.current.classList.remove("labeled-value-flash-out");
-        ref.current.classList.add("labeled-value-flash-in");
-    }
-
-    setTimeout(() => {
+    useEffect(() => {
         if (ref.current && animate) {
-            ref.current.classList.remove("labeled-value-flash-in");
-            ref.current.classList.add("labeled-value-flash-out");
+            ref.current.classList.remove("labeled-value-flash-out");
+            ref.current.classList.add("labeled-value-flash-in");
         }
-    }, 50);
+
+        setTimeout(() => {
+            if (ref.current && animate) {
+                ref.current.classList.remove("labeled-value-flash-in");
+                ref.current.classList.add("labeled-value-flash-out");
+            }
+        }, 50);
+    }, [value]);
 
     return (
         <Box
@@ -44,7 +46,7 @@ export function LabeledValue({ value, label, icon, animate }: Props) {
                 justifyContent="flex-start"
                 sx={{ ml: icon ? 1 : 0 }}
             >
-                <Typography fontSize="1.1em">{value}</Typography>
+                <Typography fontSize="1.2em">{value}</Typography>
                 <Typography sx={{ lineHeight: 1.25, color: "text.secondary" }} variant="overline">
                     {label}
                 </Typography>

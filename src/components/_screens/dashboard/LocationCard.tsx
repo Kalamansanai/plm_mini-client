@@ -107,6 +107,8 @@ function LocationCard({ location }: Props) {
                             justifyContent: "flex-start",
                             alignItems: "flex-start",
                             p: 1,
+                            width: 0,
+                            flexGrow: 1,
                             bgcolor: isSelected ? "primary.light" : "default",
                         }}
                         onClick={onClick}
