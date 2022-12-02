@@ -41,6 +41,23 @@ export const TaskState = {
 
 export type TaskState = typeof TaskState[keyof typeof TaskState];
 
+export const TaskInstanceFinalState = {
+    Completed: "Completed",
+    Abandoned: "Abandoned",
+} as const;
+
+export type TaskInstanceFinalState =
+    typeof TaskInstanceFinalState[keyof typeof TaskInstanceFinalState];
+
+export const ObjectState = {
+    Present: "Present",
+    Missing: "Missing",
+    Uncertain: "Uncertain",
+    UnknownObject: "UnknownObject",
+} as const;
+
+export type ObjectState = typeof ObjectState[keyof typeof ObjectState];
+
 export type Detector = {
     id: number;
     name: string;
@@ -56,4 +73,35 @@ export const parseDetectorState = (state: string): Array<DetectorState> => {
         .map((s) => s as DetectorState);
 
     return parsedState;
+};
+
+export type TaskInstance = {
+    id: number;
+    finalState?: TaskInstanceFinalState;
+    events: Array<Event>;
+};
+
+export type Event = {
+    id: number;
+    timestamp: Date;
+    success: boolean;
+    failureReason?: string;
+    step: Step;
+};
+
+export type Step = {
+    id: number;
+    orderNum?: number;
+    exInitState: ObjectState;
+    exSubsState: ObjectState;
+    object: Object;
+};
+
+export type Object = {
+    id: number;
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 };
