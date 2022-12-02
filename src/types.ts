@@ -33,6 +33,14 @@ export const DetectorState = {
 
 export type DetectorState = typeof DetectorState[keyof typeof DetectorState];
 
+export const TaskState = {
+    Active: "Active",
+    Paused: "Paused",
+    Inactive: "Inactive",
+} as const;
+
+export type TaskState = typeof TaskState[keyof typeof TaskState];
+
 export type Detector = {
     id: number;
     name: string;

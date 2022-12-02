@@ -1,5 +1,4 @@
-import { DetailedError, HelpfulError } from "api";
-import CompanyHierarchyNode from "components/_screens/company_hierarchy/CompanyHierarchyNode";
+import { DetailedError } from "api";
 import deleteLocationAction from "components/_screens/dashboard/deleteLocation";
 import editLocationAction from "components/_screens/dashboard/editLocation";
 import newLocationAction from "components/_screens/dashboard/newLocation";
@@ -7,14 +6,11 @@ import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
 import {
-    BrowserRouter,
     createBrowserRouter,
     createRoutesFromElements,
-    isRouteErrorResponse,
     Navigate,
     Route,
     RouterProvider,
-    Routes,
     useRouteError,
 } from "react-router-dom";
 
@@ -30,9 +26,10 @@ import CompanyHierarchy, {
 import deleteCHNodeAction from "./components/_screens/company_hierarchy/delete";
 import editCHNodeAction from "./components/_screens/company_hierarchy/edit";
 import newCHNodeAction from "./components/_screens/company_hierarchy/new";
-import Dashboard, { loader as dashboardLoader } from "./components/_screens/dashboard/Dashboard";
-import DashboardMain from "./components/_screens/dashboard/DashboardMain";
-import StationMenu from "./components/_screens/dashboard/StationMenu";
+import Dashboard from "./components/_screens/dashboard/Dashboard";
+import DashboardContainer, {
+    loader as dashboardLoader,
+} from "./components/_screens/dashboard/index";
 import theme from "./theme";
 
 function ErrorPage() {
@@ -73,13 +70,13 @@ const router = createBrowserRouter(
                 <Route
                     loader={dashboardLoader}
                     path="dashboard/:station_id"
-                    element={<Dashboard />}
+                    element={<DashboardContainer />}
                     errorElement={<ErrorPage />}
                 >
                     <Route path="new" action={newLocationAction} />
                     <Route path="edit" action={editLocationAction} />
                     <Route path="delete" action={deleteLocationAction} />
-                    <Route path=":location_id" element={<DashboardMain />} />
+                    <Route path=":location_id" element={<Dashboard />} />
                 </Route>
             </Route>
         </>
