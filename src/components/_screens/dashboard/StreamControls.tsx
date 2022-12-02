@@ -27,7 +27,7 @@ export default function StreamControls({
                 display="flex"
                 alignItems="flex-start"
                 justifyContent="space-between"
-                sx={{ width: "100%", pb: 3 }}
+                sx={{ width: "100%" }}
             >
                 <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
                     Stream

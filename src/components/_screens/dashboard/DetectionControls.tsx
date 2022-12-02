@@ -2,6 +2,7 @@ import { LabeledValue } from "components/LabeledValue";
 import { useState } from "react";
 import { TaskState } from "types";
 
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -27,7 +28,7 @@ export default function DetectionControls() {
                 display="flex"
                 alignItems="flex-start"
                 justifyContent="space-between"
-                sx={{ width: "100%", pb: 3 }}
+                sx={{ width: "100%" }}
             >
                 <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
                     Detection
@@ -62,14 +63,33 @@ export default function DetectionControls() {
                     ) : null}
                 </Box>
             </Box>
-            <Box display="flex" gap={2}>
-                <LabeledValue value={taskState} label="Status" />
-                {taskState !== TaskState.Inactive ? (
-                    <>
-                        <LabeledValue value="KB1123Q" label="Job" icon={<HandymanIcon />} />
-                        <LabeledValue value="4B" label="Task" icon={<HandymanIcon />} />
-                    </>
-                ) : null}
+            <Box display="flex" flexDirection="column" gap={1}>
+                <Box display="flex" flexWrap="wrap" gap={2}>
+                    <LabeledValue value={taskState} label="Status" />
+                    {taskState !== TaskState.Inactive ? (
+                        <>
+                            <LabeledValue
+                                value="KB1123Q"
+                                label="Job"
+                                icon={<HandymanIcon fontSize="large" />}
+                            />
+                            <LabeledValue value="4B" label="Task" />
+                        </>
+                    ) : null}
+                </Box>
+                <Box display="flex" flexWrap="wrap" gap={2}>
+                    {taskState !== TaskState.Inactive ? (
+                        <>
+                            <LabeledValue
+                                value="00:49"
+                                label="Total time"
+                                icon={<AccessTimeIcon fontSize="large" />}
+                            />
+                            <LabeledValue value="00:11" label="Current step time" />
+                            <LabeledValue value="5 / 16" label="Progress" />
+                        </>
+                    ) : null}
+                </Box>
             </Box>
         </Paper>
     );
