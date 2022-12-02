@@ -46,7 +46,7 @@ export function LabeledValue({ value, label, icon, animate }: Props) {
                 justifyContent="flex-start"
                 sx={{ ml: icon ? 1 : 0 }}
             >
-                <Typography fontSize="1.2em">{value}</Typography>
+                <Typography fontSize="1.3em">{value}</Typography>
                 <Typography sx={{ lineHeight: 1.25, color: "text.secondary" }} variant="overline">
                     {label}
                 </Typography>
