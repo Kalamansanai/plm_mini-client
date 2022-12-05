@@ -2,18 +2,14 @@ import { useSnackbar } from "notistack";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
-import { Box, useMediaQuery, useTheme } from "@mui/material";
-import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
 
 import "./App.css";
 import { setupInterceptors } from "./api";
 import NavBar from "./components/NavBar";
 
-const breakpoint = "md";
-
 export default function App() {
     const { enqueueSnackbar } = useSnackbar();
-    const theme = useTheme();
 
     useEffect(() => {
         setupInterceptors({
@@ -31,18 +27,10 @@ export default function App() {
                     enqueueSnackbar(res.description, { variant: "error", preventDuplicate: true });
                 }
             },
-            onNotFound: (text: string) => {
-                enqueueSnackbar(text, { variant: "error", preventDuplicate: true });
-            },
             onUnauthorized: () => {},
             onForbidden: () => {},
             onServerError: (res) => {
                 enqueueSnackbar(res.description, { variant: "error", preventDuplicate: true });
-            },
-            onUnknownError: (url: string, status: number, statusText: string, body: string) => {
-                const formattedError = `${status} (${statusText}) while accessing '${url}'; ${body}`;
-                console.error(formattedError);
-                enqueueSnackbar(formattedError, { variant: "error", preventDuplicate: true });
             },
         });
     }, []);

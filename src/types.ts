@@ -21,6 +21,8 @@ export type Station = CompanyHierarchyNode & {
 
 export type Location = CompanyHierarchyNode & {
     detector?: Detector;
+    hasSnapshot: boolean;
+    ongoingTask: OngoingTask | null;
 };
 
 export const DetectorState = {
@@ -32,6 +34,14 @@ export const DetectorState = {
 } as const;
 
 export type DetectorState = typeof DetectorState[keyof typeof DetectorState];
+
+export const TaskType = {
+    ToolKit: "ToolKit",
+    ItemKit: "ItemKit",
+    QA: "QA",
+} as const;
+
+export type TaskType = typeof TaskType[keyof typeof TaskType];
 
 export const TaskState = {
     Active: "Active",
@@ -75,10 +85,28 @@ export const parseDetectorState = (state: string): Array<DetectorState> => {
     return parsedState;
 };
 
-export type TaskInstance = {
+export type Job = {
+    id: number;
+    name: string;
+};
+
+export type OngoingTask = {
+    id: number;
+    name: string;
+    type: TaskType;
+    state: TaskState;
+    job: Job;
+    taskInstance: OngoingTaskInstance;
+    steps: Array<Step>;
+    maxOrderNum: number;
+};
+
+export type OngoingTaskInstance = {
     id: number;
     finalState?: TaskInstanceFinalState;
     events: Array<Event>;
+    currentOrderNum: number;
+    currentOrderNumRemainingSteps: Array<Step>;
 };
 
 export type Event = {

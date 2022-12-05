@@ -120,29 +120,10 @@ export interface DetectorsIdentifyReq {
     macAddress?: string;
     /**
      * 
-     * @type {Array<DetectorsIdentifyReqCalibrationCoordsReq>}
+     * @type {Array<number>}
      * @memberof DetectorsIdentifyReq
      */
-    coordinates?: Array<DetectorsIdentifyReqCalibrationCoordsReq>;
-}
-/**
- * 
- * @export
- * @interface DetectorsIdentifyReqCalibrationCoordsReq
- */
-export interface DetectorsIdentifyReqCalibrationCoordsReq {
-    /**
-     * 
-     * @type {number}
-     * @memberof DetectorsIdentifyReqCalibrationCoordsReq
-     */
-    x?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof DetectorsIdentifyReqCalibrationCoordsReq
-     */
-    y?: number;
+    qrCoordinates?: Array<number>;
 }
 /**
  * 
@@ -236,6 +217,25 @@ export interface ErrorResponse {
      * @memberof ErrorResponse
      */
     errors?: { [key: string]: Array<string>; };
+}
+/**
+ * 
+ * @export
+ * @interface EventResult
+ */
+export interface EventResult {
+    /**
+     * 
+     * @type {boolean}
+     * @memberof EventResult
+     */
+    success?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof EventResult
+     */
+    failureReason?: string | null;
 }
 /**
  * 
@@ -529,36 +529,239 @@ export interface LocationsGetByIdRes {
     name?: string;
     /**
      * 
-     * @type {LocationsGetByIdResDetector}
+     * @type {boolean}
      * @memberof LocationsGetByIdRes
      */
-    detector?: LocationsGetByIdResDetector | null;
+    hasSnapshot?: boolean;
+    /**
+     * 
+     * @type {LocationsGetByIdResOngoingTask}
+     * @memberof LocationsGetByIdRes
+     */
+    ongoingTask?: LocationsGetByIdResOngoingTask | null;
 }
 /**
- * @type LocationsGetByIdResDetector
  * 
  * @export
+ * @interface LocationsGetByIdResEventRes
  */
-export type LocationsGetByIdResDetector = LocationsGetByIdResDetectorRes;
-/**
- * 
- * @export
- * @interface LocationsGetByIdResDetectorRes
- */
-export interface LocationsGetByIdResDetectorRes {
+export interface LocationsGetByIdResEventRes {
     /**
      * 
      * @type {number}
-     * @memberof LocationsGetByIdResDetectorRes
+     * @memberof LocationsGetByIdResEventRes
      */
     id?: number;
     /**
      * 
      * @type {string}
-     * @memberof LocationsGetByIdResDetectorRes
+     * @memberof LocationsGetByIdResEventRes
+     */
+    timestamp?: string;
+    /**
+     * 
+     * @type {LocationsGetByIdResEventResResult}
+     * @memberof LocationsGetByIdResEventRes
+     */
+    result?: LocationsGetByIdResEventResResult | null;
+    /**
+     * 
+     * @type {LocationsGetByIdResEventResStep}
+     * @memberof LocationsGetByIdResEventRes
+     */
+    step?: LocationsGetByIdResEventResStep | null;
+}
+/**
+ * @type LocationsGetByIdResEventResResult
+ * 
+ * @export
+ */
+export type LocationsGetByIdResEventResResult = EventResult;
+/**
+ * @type LocationsGetByIdResEventResStep
+ * 
+ * @export
+ */
+export type LocationsGetByIdResEventResStep = LocationsGetByIdResStepRes;
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResObjectRes
+ */
+export interface LocationsGetByIdResObjectRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResObjectRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResObjectRes
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {TasksGetObjectsAndStepsResResObjectCoordinates}
+     * @memberof LocationsGetByIdResObjectRes
+     */
+    coords?: TasksGetObjectsAndStepsResResObjectCoordinates | null;
+}
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResOngoingJobRes
+ */
+export interface LocationsGetByIdResOngoingJobRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResOngoingJobRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResOngoingJobRes
      */
     name?: string | null;
 }
+/**
+ * @type LocationsGetByIdResOngoingTask
+ * 
+ * @export
+ */
+export type LocationsGetByIdResOngoingTask = LocationsGetByIdResOngoingTaskRes;
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResOngoingTaskInstanceRes
+ */
+export interface LocationsGetByIdResOngoingTaskInstanceRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResOngoingTaskInstanceRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {TasksGetByIdResResInstanceFinalState}
+     * @memberof LocationsGetByIdResOngoingTaskInstanceRes
+     */
+    finalState?: TasksGetByIdResResInstanceFinalState | null;
+    /**
+     * 
+     * @type {Array<LocationsGetByIdResEventRes>}
+     * @memberof LocationsGetByIdResOngoingTaskInstanceRes
+     */
+    events?: Array<LocationsGetByIdResEventRes> | null;
+}
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResOngoingTaskRes
+ */
+export interface LocationsGetByIdResOngoingTaskRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {TaskType}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    type?: TaskType;
+    /**
+     * 
+     * @type {TaskState}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    state?: TaskState;
+    /**
+     * 
+     * @type {LocationsGetByIdResOngoingTaskResJob}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    job?: LocationsGetByIdResOngoingTaskResJob | null;
+    /**
+     * 
+     * @type {LocationsGetByIdResOngoingTaskResTaskInstance}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    taskInstance?: LocationsGetByIdResOngoingTaskResTaskInstance | null;
+    /**
+     * 
+     * @type {Array<LocationsGetByIdResStepRes>}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    steps?: Array<LocationsGetByIdResStepRes> | null;
+}
+/**
+ * @type LocationsGetByIdResOngoingTaskResJob
+ * 
+ * @export
+ */
+export type LocationsGetByIdResOngoingTaskResJob = LocationsGetByIdResOngoingJobRes;
+/**
+ * @type LocationsGetByIdResOngoingTaskResTaskInstance
+ * 
+ * @export
+ */
+export type LocationsGetByIdResOngoingTaskResTaskInstance = LocationsGetByIdResOngoingTaskInstanceRes;
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResStepRes
+ */
+export interface LocationsGetByIdResStepRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResStepRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResStepRes
+     */
+    orderNum?: number | null;
+    /**
+     * 
+     * @type {TemplateState}
+     * @memberof LocationsGetByIdResStepRes
+     */
+    exInitState?: TemplateState;
+    /**
+     * 
+     * @type {TemplateState}
+     * @memberof LocationsGetByIdResStepRes
+     */
+    exSubsState?: TemplateState;
+    /**
+     * 
+     * @type {LocationsGetByIdResStepResObject}
+     * @memberof LocationsGetByIdResStepRes
+     */
+    object?: LocationsGetByIdResStepResObject | null;
+}
+/**
+ * @type LocationsGetByIdResStepResObject
+ * 
+ * @export
+ */
+export type LocationsGetByIdResStepResObject = LocationsGetByIdResObjectRes;
 /**
  * 
  * @export
@@ -918,6 +1121,12 @@ export interface StationsGetByIdResLocationRes {
      * @memberof StationsGetByIdResLocationRes
      */
     name?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof StationsGetByIdResLocationRes
+     */
+    hasSnapshot?: boolean;
     /**
      * 
      * @type {StationsGetByIdResLocationResDetector}

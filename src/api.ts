@@ -1,4 +1,10 @@
-import { Configuration, ErrorContext, Middleware, ResponseContext } from "./api_client";
+import {
+    Configuration,
+    ErrorContext,
+    Middleware,
+    ResponseContext,
+    ResponseError,
+} from "./api_client";
 
 // Mirror of the ApiExceptionResponse class on the backend
 export type ApiExceptionResponse = {
@@ -8,18 +14,17 @@ export type ApiExceptionResponse = {
 
 export class DetailedError extends Error {
     override name: "DetailedError" = "DetailedError";
-    constructor(public help: React.ReactNode, msg?: string) {
-        super(msg);
+
+    constructor(public innerError: ResponseError | null, public help?: React.ReactNode) {
+        super();
     }
 }
 
 export type Interceptors = {
     onBadRequest: (res: ApiExceptionResponse) => void;
-    onNotFound: (text: string) => void;
     onUnauthorized: () => void;
     onForbidden: () => void;
     onServerError: (res: ApiExceptionResponse) => void;
-    onUnknownError: (url: string, status: number, statusText: string, body: string) => void;
 };
 
 class ErrorHandlerMiddleware implements Middleware {
@@ -39,22 +44,12 @@ class ErrorHandlerMiddleware implements Middleware {
                 case 403:
                     this.interceptors?.onForbidden();
                     break;
-                case 404:
-                    this.interceptors?.onNotFound(context.response.statusText);
-                    break;
                 case 500: {
                     const res = (await context.response.json()) as ApiExceptionResponse;
                     this.interceptors?.onServerError(res);
                     break;
                 }
                 default:
-                    const text = await context.response.text();
-                    this.interceptors?.onUnknownError(
-                        context.url,
-                        context.response.status,
-                        context.response.statusText,
-                        text
-                    );
                     break;
             }
         }

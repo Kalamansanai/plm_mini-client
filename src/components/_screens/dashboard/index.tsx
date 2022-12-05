@@ -19,27 +19,42 @@ export async function loader({ params }: { params: Params }) {
     } catch (err) {
         if (err instanceof ResponseError) {
             throw new DetailedError(
+                err,
                 (
-                    <>
-                        <Typography fontSize="1.2em">Station not found</Typography>
-                        <Typography>
-                            Select a valid Station <Link to="/hierarchy">here</Link>.
-                        </Typography>
-                    </>
-                ),
-                err.message
+                    <Typography fontSize="1em">
+                        Select a valid Station <Link to="/hierarchy">here</Link>.
+                    </Typography>
+                )
             );
         }
         throw err;
     }
 
-    station.locations.forEach((l) => {
+    station!.locations.forEach((l) => {
         if (!l.detector) return;
 
         l.detector.state = parseDetectorState(l.detector.state as unknown as string);
     });
 
     return station;
+}
+
+export function DashboardNoStation() {
+    // TODO(rg): this is a hack. Without the if statement, the return is recognized as unreachable.
+    // I want to use the ErrorPage view to display the error, so I have to immediately throw here.
+    // I'm sure there's a better way of doing this
+    if (1)
+        throw new DetailedError(
+            null,
+            (
+                <Typography fontSize="1em">
+                    No station is selected. Please select a station{" "}
+                    <Link to="/hierarchy">here.</Link>
+                </Typography>
+            )
+        );
+
+    return null;
 }
 
 export default function DashboardContainer() {
@@ -60,7 +75,16 @@ export default function DashboardContainer() {
                 </Paper>
             </Grid>
             <Grid item xs={12} sm={12} md={9} lg={10}>
-                <Box sx={{ height: "100%", mt: 2, mx: 2, pb: 2 }}>
+                <Box
+                    sx={{
+                        height: "100%",
+                        mx: 2,
+                        py: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
+                >
                     <Outlet />
                 </Box>
             </Grid>

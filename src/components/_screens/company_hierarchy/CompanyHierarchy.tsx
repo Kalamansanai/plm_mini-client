@@ -6,7 +6,7 @@ import useCHState, {
     State,
 } from "companyHierarchyProvider";
 import { useEffect } from "react";
-import { redirect, useLoaderData, useSearchParams } from "react-router-dom";
+import { redirect, useLoaderData } from "react-router-dom";
 
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -29,6 +29,7 @@ export async function loader({ request }: { request: Request }) {
     let selectedIds = decodeSelectedIds(selectedIdsString);
 
     if (selectedIds !== null) {
+        // Load levels and select nodes below Site according to selectedIds
         for (let i = Level.OPU; i < Level.Location; i++) {
             const id = selectedIds[i - 1];
 
@@ -38,6 +39,9 @@ export async function loader({ request }: { request: Request }) {
                 nodes[i] = await chLevelDescriptors[i]!.getFn(id);
                 highestShownLevel += 1;
             } catch (ex) {
+                // If a node cannot be selected (because it doesn't exist), we need to:
+                //  - only select up until the *previous* level
+                //  - update the search string to reflect this
                 selectedIds = selectedIds.slice(0, i - 1);
                 const slicedSelectedIds = encodeSelectedIds(selectedIds);
                 return redirect("/hierarchy?sel=" + slicedSelectedIds);

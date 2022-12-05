@@ -1,6 +1,4 @@
 import { LabeledValue } from "components/LabeledValue";
-import { useEffect, useState } from "react";
-import { randomBetween } from "utils/random";
 
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
 import { Box, Button, Divider, Paper, Typography } from "@mui/material";

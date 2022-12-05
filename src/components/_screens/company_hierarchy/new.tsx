@@ -1,6 +1,5 @@
 import { descriptors } from "companyHierarchyProvider";
 
-// TODO(rg): nicer error handling
 export default async function action({ request }: { request: Request }) {
     const formData = await request.formData();
 
@@ -10,5 +9,9 @@ export default async function action({ request }: { request: Request }) {
 
     if (level === null || parentId === null || name === undefined) return;
 
+    // try {
     await descriptors[Number(level)]!.addFn(name, Number(parentId));
+    // } catch (_err) {
+    //     // noop
+    // }
 }

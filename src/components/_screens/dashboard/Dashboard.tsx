@@ -1,6 +1,10 @@
+import { config as apiConfig, DetailedError } from "api";
+import { LocationsApi, ResponseError } from "api_client";
 import { useState } from "react";
+import { Params, useLoaderData, useRouteLoaderData } from "react-router-dom";
+import { Location, Station } from "types";
 
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import DetectionControls from "./DetectionControls";
 import NextStepGuide from "./NextStepGuide";
@@ -8,11 +12,55 @@ import Stream from "./Stream";
 import StreamControls from "./StreamControls";
 import TaskInstance from "./TaskInstance";
 
+export async function loader({ params }: { params: Params }) {
+    console.log(params);
+    const id = params["location_id"]! as any as number;
+    let location = null;
+
+    try {
+        location = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
+            id,
+        })) as Location;
+        console.log(location);
+    } catch (err) {
+        console.log("err");
+        if (err instanceof ResponseError) {
+            throw new DetailedError(
+                err,
+                (
+                    <Typography fontSize="1em">
+                        Location not found. Please select a Location from the menu on the left.
+                    </Typography>
+                )
+            );
+        }
+    }
+
+    return location;
+}
+
 export default function Dashboard() {
+    const station = useRouteLoaderData("dashboard-container") as Station;
+    const location = useLoaderData() as Location;
+
+    if (!station.locations.find((l) => l.id === location.id)) {
+        throw new DetailedError(
+            null,
+            (
+                <Typography fontSize="1em">
+                    The selected Location is not part of the selected Station.
+                </Typography>
+            )
+        );
+    }
+
     const theme = useTheme();
     const [playing, setPlaying] = useState(false);
 
     const isBelowXl = useMediaQuery(theme.breakpoints.down("xl"));
+
+    const steps = location.ongoingTask?.steps ?? null;
+    const instance = location.ongoingTask?.taskInstance ?? null;
 
     return (
         <Grid container spacing={2} height="100%">
@@ -29,7 +77,7 @@ export default function Dashboard() {
                 {isBelowXl ? (
                     <Grid container spacing={2}>
                         <Grid item xs={4}>
-                            <NextStepGuide />
+                            <NextStepGuide steps={steps} />
                         </Grid>
                         <Grid item xs={8}>
                             <TaskInstance />
@@ -39,7 +87,7 @@ export default function Dashboard() {
             </Grid>
             {!isBelowXl ? (
                 <Grid display="flex" item xl={3} height="100%" flexDirection="column" gap={2}>
-                    <NextStepGuide />
+                    <NextStepGuide steps={steps} />
                     <Box flexGrow={1}>
                         <TaskInstance />
                     </Box>
