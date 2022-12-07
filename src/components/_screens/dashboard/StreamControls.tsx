@@ -1,16 +1,30 @@
 import { LabeledValue } from "components/LabeledValue";
+import { Detector, DetectorState } from "types";
 
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
-import { Box, Fab, Paper, Typography } from "@mui/material";
+import { Box, Fab, Paper, Tooltip, Typography } from "@mui/material";
 
-export default function StreamControls({
-    playing,
-    setPlaying,
-}: {
+type Props = {
     playing: boolean;
     setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+    detector?: Detector;
+};
+
+export default function StreamControls({ playing, setPlaying, detector }: Props) {
+    let noDetector = detector === null;
+    let detectorIsOff = !!detector && !!detector.state.find((s) => s === DetectorState.Off);
+
+    let disabled = noDetector || detectorIsOff;
+
+    let tooltip = noDetector
+        ? "No detector is attached to the location"
+        : detectorIsOff
+        ? "Detector is offline"
+        : playing
+        ? "Stop stream"
+        : "Start stream";
+
     return (
         <Paper
             sx={{
@@ -32,13 +46,18 @@ export default function StreamControls({
                 <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
                     Stream
                 </Typography>
-                <Fab
-                    size="medium"
-                    color={playing ? "error" : "success"}
-                    onClick={() => setPlaying(!playing)}
-                >
-                    {playing ? <StopIcon /> : <PlayArrowIcon />}
-                </Fab>
+                <Tooltip title={tooltip}>
+                    <Box>
+                        <Fab
+                            size="medium"
+                            color={playing ? "error" : "success"}
+                            disabled={disabled}
+                            onClick={() => setPlaying(!playing)}
+                        >
+                            {playing ? <StopIcon /> : <PlayArrowIcon />}
+                        </Fab>
+                    </Box>
+                </Tooltip>
             </Box>
             <Box display="flex" gap={2}>
                 <LabeledValue value="Active" label="Status" />

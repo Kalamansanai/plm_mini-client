@@ -221,25 +221,6 @@ export interface ErrorResponse {
 /**
  * 
  * @export
- * @interface EventResult
- */
-export interface EventResult {
-    /**
-     * 
-     * @type {boolean}
-     * @memberof EventResult
-     */
-    success?: boolean;
-    /**
-     * 
-     * @type {string}
-     * @memberof EventResult
-     */
-    failureReason?: string | null;
-}
-/**
- * 
- * @export
  * @interface EventsCreateReq
  */
 export interface EventsCreateReq {
@@ -535,10 +516,47 @@ export interface LocationsGetByIdRes {
     hasSnapshot?: boolean;
     /**
      * 
+     * @type {LocationsGetByIdResDetector}
+     * @memberof LocationsGetByIdRes
+     */
+    detector?: LocationsGetByIdResDetector | null;
+    /**
+     * 
      * @type {LocationsGetByIdResOngoingTask}
      * @memberof LocationsGetByIdRes
      */
     ongoingTask?: LocationsGetByIdResOngoingTask | null;
+}
+/**
+ * @type LocationsGetByIdResDetector
+ * 
+ * @export
+ */
+export type LocationsGetByIdResDetector = LocationsGetByIdResDetectorRes;
+/**
+ * 
+ * @export
+ * @interface LocationsGetByIdResDetectorRes
+ */
+export interface LocationsGetByIdResDetectorRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResDetectorRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResDetectorRes
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResDetectorRes
+     */
+    state?: string;
 }
 /**
  * 
@@ -560,10 +578,16 @@ export interface LocationsGetByIdResEventRes {
     timestamp?: string;
     /**
      * 
-     * @type {LocationsGetByIdResEventResResult}
+     * @type {boolean}
      * @memberof LocationsGetByIdResEventRes
      */
-    result?: LocationsGetByIdResEventResResult | null;
+    success?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetByIdResEventRes
+     */
+    failureReason?: string | null;
     /**
      * 
      * @type {LocationsGetByIdResEventResStep}
@@ -571,12 +595,6 @@ export interface LocationsGetByIdResEventRes {
      */
     step?: LocationsGetByIdResEventResStep | null;
 }
-/**
- * @type LocationsGetByIdResEventResResult
- * 
- * @export
- */
-export type LocationsGetByIdResEventResResult = EventResult;
 /**
  * @type LocationsGetByIdResEventResStep
  * 
@@ -647,16 +665,28 @@ export interface LocationsGetByIdResOngoingTaskInstanceRes {
     id?: number;
     /**
      * 
-     * @type {TasksGetByIdResResInstanceFinalState}
+     * @type {TaskInstanceState}
      * @memberof LocationsGetByIdResOngoingTaskInstanceRes
      */
-    finalState?: TasksGetByIdResResInstanceFinalState | null;
+    state?: TaskInstanceState;
     /**
      * 
      * @type {Array<LocationsGetByIdResEventRes>}
      * @memberof LocationsGetByIdResOngoingTaskInstanceRes
      */
     events?: Array<LocationsGetByIdResEventRes> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResOngoingTaskInstanceRes
+     */
+    currentOrderNum?: number;
+    /**
+     * 
+     * @type {Array<LocationsGetByIdResStepRes>}
+     * @memberof LocationsGetByIdResOngoingTaskInstanceRes
+     */
+    currentOrderNumRemainingSteps?: Array<LocationsGetByIdResStepRes> | null;
 }
 /**
  * 
@@ -684,28 +714,28 @@ export interface LocationsGetByIdResOngoingTaskRes {
     type?: TaskType;
     /**
      * 
-     * @type {TaskState}
-     * @memberof LocationsGetByIdResOngoingTaskRes
-     */
-    state?: TaskState;
-    /**
-     * 
      * @type {LocationsGetByIdResOngoingTaskResJob}
      * @memberof LocationsGetByIdResOngoingTaskRes
      */
     job?: LocationsGetByIdResOngoingTaskResJob | null;
     /**
      * 
-     * @type {LocationsGetByIdResOngoingTaskResTaskInstance}
+     * @type {LocationsGetByIdResOngoingTaskResOngoingInstance}
      * @memberof LocationsGetByIdResOngoingTaskRes
      */
-    taskInstance?: LocationsGetByIdResOngoingTaskResTaskInstance | null;
+    ongoingInstance?: LocationsGetByIdResOngoingTaskResOngoingInstance | null;
     /**
      * 
      * @type {Array<LocationsGetByIdResStepRes>}
      * @memberof LocationsGetByIdResOngoingTaskRes
      */
     steps?: Array<LocationsGetByIdResStepRes> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetByIdResOngoingTaskRes
+     */
+    maxOrderNum?: number;
 }
 /**
  * @type LocationsGetByIdResOngoingTaskResJob
@@ -714,11 +744,11 @@ export interface LocationsGetByIdResOngoingTaskRes {
  */
 export type LocationsGetByIdResOngoingTaskResJob = LocationsGetByIdResOngoingJobRes;
 /**
- * @type LocationsGetByIdResOngoingTaskResTaskInstance
+ * @type LocationsGetByIdResOngoingTaskResOngoingInstance
  * 
  * @export
  */
-export type LocationsGetByIdResOngoingTaskResTaskInstance = LocationsGetByIdResOngoingTaskInstanceRes;
+export type LocationsGetByIdResOngoingTaskResOngoingInstance = LocationsGetByIdResOngoingTaskInstanceRes;
 /**
  * 
  * @export
@@ -1158,23 +1188,13 @@ export interface StationsRenameReq {
  * 
  * @export
  */
-export const TaskInstanceFinalState = {
+export const TaskInstanceState = {
     Completed: 'Completed',
-    Abandoned: 'Abandoned'
+    Abandoned: 'Abandoned',
+    InProgress: 'InProgress',
+    Paused: 'Paused'
 } as const;
-export type TaskInstanceFinalState = typeof TaskInstanceFinalState[keyof typeof TaskInstanceFinalState];
-
-
-/**
- * 
- * @export
- */
-export const TaskState = {
-    Active: 'Active',
-    Paused: 'Paused',
-    Inactive: 'Inactive'
-} as const;
-export type TaskState = typeof TaskState[keyof typeof TaskState];
+export type TaskInstanceState = typeof TaskInstanceState[keyof typeof TaskInstanceState];
 
 
 /**
@@ -1212,6 +1232,12 @@ export interface TasksCreateReq {
      * @memberof TasksCreateReq
      */
     locationId?: number;
+    /**
+     * 
+     * @type {TaskType}
+     * @memberof TasksCreateReq
+     */
+    taskType?: TaskType;
 }
 /**
  * 
@@ -1265,23 +1291,23 @@ export interface TasksGetByIdRes {
     name?: string;
     /**
      * 
-     * @type {TaskState}
+     * @type {number}
      * @memberof TasksGetByIdRes
      */
-    state?: TaskState;
+    maxOrderNum?: number;
     /**
      * 
-     * @type {TasksGetByIdResLatestInstance}
+     * @type {TasksGetByIdResOngoingInstance}
      * @memberof TasksGetByIdRes
      */
-    latestInstance?: TasksGetByIdResLatestInstance | null;
+    ongoingInstance?: TasksGetByIdResOngoingInstance | null;
 }
 /**
- * @type TasksGetByIdResLatestInstance
+ * @type TasksGetByIdResOngoingInstance
  * 
  * @export
  */
-export type TasksGetByIdResLatestInstance = TasksGetByIdResResInstance;
+export type TasksGetByIdResOngoingInstance = TasksGetByIdResResInstance;
 /**
  * 
  * @export
@@ -1321,10 +1347,10 @@ export interface TasksGetByIdResResInstance {
     id?: number;
     /**
      * 
-     * @type {TasksGetByIdResResInstanceFinalState}
+     * @type {TaskInstanceState}
      * @memberof TasksGetByIdResResInstance
      */
-    finalState?: TasksGetByIdResResInstanceFinalState | null;
+    state?: TaskInstanceState;
     /**
      * 
      * @type {Array<TasksGetByIdResResEvent>}
@@ -1332,12 +1358,6 @@ export interface TasksGetByIdResResInstance {
      */
     events?: Array<TasksGetByIdResResEvent> | null;
 }
-/**
- * @type TasksGetByIdResResInstanceFinalState
- * 
- * @export
- */
-export type TasksGetByIdResResInstanceFinalState = TaskInstanceFinalState;
 /**
  * 
  * @export
@@ -1408,10 +1428,10 @@ export interface TasksGetCurrentInstanceResResTaskInstance {
     id?: number;
     /**
      * 
-     * @type {TasksGetByIdResResInstanceFinalState}
+     * @type {TasksGetCurrentInstanceResResTaskInstanceFinalState}
      * @memberof TasksGetCurrentInstanceResResTaskInstance
      */
-    finalState?: TasksGetByIdResResInstanceFinalState | null;
+    finalState?: TasksGetCurrentInstanceResResTaskInstanceFinalState | null;
     /**
      * 
      * @type {Array<TasksGetCurrentInstanceResResEvent>}
@@ -1425,6 +1445,12 @@ export interface TasksGetCurrentInstanceResResTaskInstance {
      */
     taskId?: number;
 }
+/**
+ * @type TasksGetCurrentInstanceResResTaskInstanceFinalState
+ * 
+ * @export
+ */
+export type TasksGetCurrentInstanceResResTaskInstanceFinalState = TaskInstanceState;
 /**
  * 
  * @export

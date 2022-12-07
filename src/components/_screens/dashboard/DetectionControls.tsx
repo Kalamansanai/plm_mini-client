@@ -1,16 +1,31 @@
 import { LabeledValue } from "components/LabeledValue";
 import { useState } from "react";
-import { TaskState } from "types";
+import { Detector, DetectorState, TaskState } from "types";
 
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
-import { Box, Fab, Paper, Typography } from "@mui/material";
+import { Box, Fab, Paper, Tooltip, Typography } from "@mui/material";
 
-export default function DetectionControls() {
+type Props = {
+    detector?: Detector;
+};
+
+export default function DetectionControls({ detector }: Props) {
     const [taskState, setTaskState] = useState<TaskState>(TaskState.Inactive);
+
+    let noDetector = detector === null;
+    let detectorIsOff = !!detector && !!detector.state.find((s) => s === DetectorState.Off);
+
+    let disabled = noDetector || detectorIsOff;
+
+    let tooltip = noDetector
+        ? "No detector is attached to the location"
+        : detectorIsOff
+        ? "Detector is offline"
+        : "Start detection";
 
     return (
         <Paper
@@ -35,31 +50,40 @@ export default function DetectionControls() {
                 </Typography>
                 <Box display="flex" gap={2}>
                     {taskState !== TaskState.Active ? (
-                        <Fab
-                            size="medium"
-                            color={"success"}
-                            onClick={() => setTaskState(TaskState.Active)}
-                        >
-                            <PlayArrowIcon />
-                        </Fab>
+                        <Tooltip title={tooltip}>
+                            <Box>
+                                <Fab
+                                    size="medium"
+                                    color={"success"}
+                                    disabled={disabled}
+                                    onClick={() => setTaskState(TaskState.Active)}
+                                >
+                                    <PlayArrowIcon />
+                                </Fab>
+                            </Box>
+                        </Tooltip>
                     ) : null}
                     {taskState === TaskState.Active ? (
-                        <Fab
-                            size="medium"
-                            color={"warning"}
-                            onClick={() => setTaskState(TaskState.Paused)}
-                        >
-                            <PauseIcon />
-                        </Fab>
+                        <Tooltip title={"Pause detection"}>
+                            <Fab
+                                size="medium"
+                                color={"warning"}
+                                onClick={() => setTaskState(TaskState.Paused)}
+                            >
+                                <PauseIcon />
+                            </Fab>
+                        </Tooltip>
                     ) : null}
                     {taskState !== TaskState.Inactive ? (
-                        <Fab
-                            size="medium"
-                            color={"error"}
-                            onClick={() => setTaskState(TaskState.Inactive)}
-                        >
-                            <StopIcon />
-                        </Fab>
+                        <Tooltip title="Stop detection">
+                            <Fab
+                                size="medium"
+                                color={"error"}
+                                onClick={() => setTaskState(TaskState.Inactive)}
+                            >
+                                <StopIcon />
+                            </Fab>
+                        </Tooltip>
                     ) : null}
                 </Box>
             </Box>

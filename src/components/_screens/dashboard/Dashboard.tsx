@@ -2,7 +2,7 @@ import { config as apiConfig, DetailedError } from "api";
 import { LocationsApi, ResponseError } from "api_client";
 import { useState } from "react";
 import { Params, useLoaderData, useRouteLoaderData } from "react-router-dom";
-import { Location, Station } from "types";
+import { Location, parseDetectorState, Station } from "types";
 
 import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
@@ -13,7 +13,6 @@ import StreamControls from "./StreamControls";
 import TaskInstance from "./TaskInstance";
 
 export async function loader({ params }: { params: Params }) {
-    console.log(params);
     const id = params["location_id"]! as any as number;
     let location = null;
 
@@ -21,9 +20,13 @@ export async function loader({ params }: { params: Params }) {
         location = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
             id,
         })) as Location;
-        console.log(location);
+
+        if (location.detector) {
+            location.detector.state = parseDetectorState(
+                location.detector.state as unknown as string
+            );
+        }
     } catch (err) {
-        console.log("err");
         if (err instanceof ResponseError) {
             throw new DetailedError(
                 err,
@@ -59,8 +62,9 @@ export default function Dashboard() {
 
     const isBelowXl = useMediaQuery(theme.breakpoints.down("xl"));
 
-    const steps = location.ongoingTask?.steps ?? null;
-    const instance = location.ongoingTask?.taskInstance ?? null;
+    const task = location.ongoingTask;
+    const steps = task?.steps;
+    const instance = task?.ongoingInstance;
 
     return (
         <Grid container spacing={2} height="100%">
@@ -68,16 +72,20 @@ export default function Dashboard() {
                 <Stream />
                 <Grid container spacing={2} flexGrow={1}>
                     <Grid item xs={12} sm={12} md={12} lg={5}>
-                        <StreamControls playing={playing} setPlaying={setPlaying} />
+                        <StreamControls
+                            playing={playing}
+                            setPlaying={setPlaying}
+                            detector={location.detector}
+                        />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={7}>
-                        <DetectionControls />
+                        <DetectionControls detector={location.detector} />
                     </Grid>
                 </Grid>
                 {isBelowXl ? (
                     <Grid container spacing={2}>
                         <Grid item xs={4}>
-                            <NextStepGuide steps={steps} />
+                            <NextStepGuide instance={instance} />
                         </Grid>
                         <Grid item xs={8}>
                             <TaskInstance />
@@ -87,7 +95,7 @@ export default function Dashboard() {
             </Grid>
             {!isBelowXl ? (
                 <Grid display="flex" item xl={3} height="100%" flexDirection="column" gap={2}>
-                    <NextStepGuide steps={steps} />
+                    <NextStepGuide instance={instance} />
                     <Box flexGrow={1}>
                         <TaskInstance />
                     </Box>

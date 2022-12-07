@@ -96,7 +96,7 @@ export type OngoingTask = {
     type: TaskType;
     state: TaskState;
     job: Job;
-    taskInstance: OngoingTaskInstance;
+    ongoingInstance: OngoingTaskInstance;
     steps: Array<Step>;
     maxOrderNum: number;
 };
@@ -123,6 +123,19 @@ export type Step = {
     exInitState: ObjectState;
     exSubsState: ObjectState;
     object: Object;
+};
+
+export const GetStepActionString = (step: Step): string => {
+    if (step.exInitState === ObjectState.Present && step.exSubsState === ObjectState.Missing) {
+        return "remove";
+    } else if (
+        step.exInitState === ObjectState.Missing &&
+        step.exSubsState === ObjectState.Present
+    ) {
+        return "replace";
+    } else {
+        return `${step.exInitState} -> ${step.exSubsState}`;
+    }
 };
 
 export type Object = {
