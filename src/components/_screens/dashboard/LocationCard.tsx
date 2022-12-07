@@ -89,7 +89,6 @@ function LocationCard({ location }: Props) {
         <>
             <Grid item xs={6} sm={6} md={12}>
                 <Card
-                    elevation={0}
                     sx={{
                         // Enough height to fit the button column - my first attempt was setting the
                         // button column width to 0, but that caused weird artifacts on the border
@@ -99,7 +98,6 @@ function LocationCard({ location }: Props) {
                         display: "flex",
                         border: "1px solid",
                         borderColor: isSelected ? "primary.main" : "divider",
-                        boxShadow: 1,
                     }}
                 >
                     <CardActionArea

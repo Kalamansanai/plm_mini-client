@@ -98,19 +98,12 @@ export default function DetectionControls({ detector }: Props) {
                                 icon={<HandymanIcon fontSize="large" />}
                             />
                             <LabeledValue value="4B" label="Task" />
-                        </>
-                    ) : null}
-                </Box>
-                <Box display="flex" flexWrap="wrap" gap={2}>
-                    {taskState !== TaskState.Inactive ? (
-                        <>
                             <LabeledValue
                                 value="00:49"
-                                label="Total time"
+                                label="Total"
                                 icon={<AccessTimeIcon fontSize="large" />}
                             />
-                            <LabeledValue value="00:11" label="Current step time" />
-                            <LabeledValue value="5 / 16" label="Progress" />
+                            <LabeledValue value="00:11" label="Current step" />
                         </>
                     ) : null}
                 </Box>

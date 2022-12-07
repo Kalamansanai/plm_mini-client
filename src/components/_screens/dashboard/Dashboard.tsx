@@ -71,14 +71,14 @@ export default function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
                 <Stream />
                 <Grid container spacing={2} flexGrow={1}>
-                    <Grid item xs={12} sm={12} md={12} lg={5}>
+                    <Grid item xs={12} sm={12} md={12} lg={3}>
                         <StreamControls
                             playing={playing}
                             setPlaying={setPlaying}
                             detector={location.detector}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={12} md={12} lg={7}>
+                    <Grid item xs={12} sm={12} md={12} lg={9}>
                         <DetectionControls detector={location.detector} />
                     </Grid>
                 </Grid>
@@ -88,7 +88,7 @@ export default function Dashboard() {
                             <NextStepGuide instance={instance} />
                         </Grid>
                         <Grid item xs={8}>
-                            <TaskInstance />
+                            <TaskInstance instance={instance} maxOrderNum={task?.maxOrderNum} />
                         </Grid>
                     </Grid>
                 ) : null}
@@ -97,7 +97,7 @@ export default function Dashboard() {
                 <Grid display="flex" item xl={3} height="100%" flexDirection="column" gap={2}>
                     <NextStepGuide instance={instance} />
                     <Box flexGrow={1}>
-                        <TaskInstance />
+                        <TaskInstance instance={instance} maxOrderNum={task?.maxOrderNum} />
                     </Box>
                 </Grid>
             ) : null}

@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material";
-import { grey } from "@mui/material/colors";
+import { blue, grey, red } from "@mui/material/colors";
 import type {} from "@mui/x-data-grid/themeAugmentation";
 
 declare module "@mui/material/styles" {

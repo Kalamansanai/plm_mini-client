@@ -35,7 +35,7 @@ export function LabeledValue({ value, label, icon, animate }: Props) {
             alignItems="center"
             bgcolor="background.subtle"
             sx={{
-                p: 1.5,
+                p: 1,
                 borderRadius: "8px",
             }}
         >
