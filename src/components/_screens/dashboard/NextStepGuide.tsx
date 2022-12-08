@@ -1,4 +1,4 @@
-import { OngoingTaskInstance, Step, GetStepActionString } from "types";
+import { OngoingTaskInstance, GetStepActionString } from "types";
 
 import { Box, Paper, Typography } from "@mui/material";
 
@@ -41,14 +41,27 @@ export default function NextStepGuide({ instance }: Props) {
                         No task is running
                     </Typography>
                 ) : (
-                    instance.currentOrderNumRemainingSteps.map((s) => (
-                        <Typography fontSize="1.8em" sx={{ fontFamily: "monospace" }}>
-                            {GetStepActionString(s)}{" "}
-                            <Box component="span" sx={{ color: "primary.main" }}>
-                                {s.object.name}
-                            </Box>
-                        </Typography>
-                    ))
+                    instance.currentOrderNumRemainingSteps.map((s) => {
+                        const actionString = GetStepActionString(s);
+                        const color =
+                            actionString === "remove"
+                                ? "error.main"
+                                : actionString === "replace"
+                                ? "info.main"
+                                : "text.default";
+
+                        return (
+                            <Typography
+                                fontSize="1.8em"
+                                sx={{ fontFamily: "monospace", color: color }}
+                            >
+                                {actionString}{" "}
+                                <Box component="span" sx={{ color: "primary.main" }}>
+                                    {s.object.name}
+                                </Box>
+                            </Typography>
+                        );
+                    })
                 )}
             </Box>
         </Paper>

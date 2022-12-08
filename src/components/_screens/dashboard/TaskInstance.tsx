@@ -53,9 +53,11 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
                             }}
                         >
                             <Box display="flex" flexDirection="column" gap={1}>
-                                {instance!.events.map((e) => (
-                                    <EventCard key={e.id} event={e} />
-                                ))}
+                                {instance!.events
+                                    .sort((e1, e2) => (e1.timestamp < e2.timestamp ? 1 : -1))
+                                    .map((e) => (
+                                        <EventCard key={e.id} event={e} />
+                                    ))}
                             </Box>
                         </Box>
                     </>
