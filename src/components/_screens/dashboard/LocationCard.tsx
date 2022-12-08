@@ -77,8 +77,6 @@ function LocationCard({ location }: Props) {
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-location" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-location" });
 
-    console.log(`loc id ${location.id} snapshot: ${location.hasSnapshot}`);
-
     const isSelected = matchedLocationId === location.id;
 
     const onClick = () => {

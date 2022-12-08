@@ -22,7 +22,7 @@ export type Station = CompanyHierarchyNode & {
 export type Location = CompanyHierarchyNode & {
     detector?: Detector;
     hasSnapshot: boolean;
-    ongoingTask: OngoingTask | null;
+    ongoingTask?: OngoingTask;
 };
 
 export const DetectorState = {
@@ -43,21 +43,14 @@ export const TaskType = {
 
 export type TaskType = typeof TaskType[keyof typeof TaskType];
 
-export const TaskState = {
-    Active: "Active",
-    Paused: "Paused",
-    Inactive: "Inactive",
-} as const;
-
-export type TaskState = typeof TaskState[keyof typeof TaskState];
-
-export const TaskInstanceFinalState = {
+export const TaskInstanceState = {
     Completed: "Completed",
     Abandoned: "Abandoned",
+    InProgress: "InProgress",
+    Paused: "Paused",
 } as const;
 
-export type TaskInstanceFinalState =
-    typeof TaskInstanceFinalState[keyof typeof TaskInstanceFinalState];
+export type TaskInstanceState = typeof TaskInstanceState[keyof typeof TaskInstanceState];
 
 export const ObjectState = {
     Present: "Present",
@@ -94,16 +87,15 @@ export type OngoingTask = {
     id: number;
     name: string;
     type: TaskType;
-    state: TaskState;
     job: Job;
-    ongoingInstance: OngoingTaskInstance;
+    ongoingInstance?: OngoingTaskInstance;
     steps: Array<Step>;
     maxOrderNum: number;
 };
 
 export type OngoingTaskInstance = {
     id: number;
-    finalState?: TaskInstanceFinalState;
+    state: TaskInstanceState;
     events: Array<Event>;
     currentOrderNum: number;
     currentOrderNumRemainingSteps: Array<Step>;

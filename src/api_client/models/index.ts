@@ -795,6 +795,50 @@ export type LocationsGetByIdResStepResObject = LocationsGetByIdResObjectRes;
 /**
  * 
  * @export
+ * @interface LocationsGetTasksRes
+ */
+export interface LocationsGetTasksRes {
+    /**
+     * 
+     * @type {Array<LocationsGetTasksResTaskRes>}
+     * @memberof LocationsGetTasksRes
+     */
+    tasks?: Array<LocationsGetTasksResTaskRes>;
+}
+/**
+ * 
+ * @export
+ * @interface LocationsGetTasksResTaskRes
+ */
+export interface LocationsGetTasksResTaskRes {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocationsGetTasksResTaskRes
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetTasksResTaskRes
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationsGetTasksResTaskRes
+     */
+    jobName?: string | null;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LocationsGetTasksResTaskRes
+     */
+    active?: boolean;
+}
+/**
+ * 
+ * @export
  * @interface LocationsRenameReq
  */
 export interface LocationsRenameReq {

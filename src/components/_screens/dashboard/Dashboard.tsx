@@ -79,7 +79,7 @@ export default function Dashboard() {
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={9}>
-                        <DetectionControls detector={location.detector} />
+                        <DetectionControls detector={location.detector} task={task} />
                     </Grid>
                 </Grid>
                 {isBelowXl ? (

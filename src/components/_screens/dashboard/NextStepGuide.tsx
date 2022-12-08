@@ -41,7 +41,7 @@ export default function NextStepGuide({ instance }: Props) {
                         No task is running
                     </Typography>
                 ) : (
-                    instance.currentOrderNumRemainingSteps.map((s) => {
+                    instance.currentOrderNumRemainingSteps.map((s, i) => {
                         const actionString = GetStepActionString(s);
                         const color =
                             actionString === "remove"
@@ -52,6 +52,7 @@ export default function NextStepGuide({ instance }: Props) {
 
                         return (
                             <Typography
+                                key={i}
                                 fontSize="1.8em"
                                 sx={{ fontFamily: "monospace", color: color }}
                             >

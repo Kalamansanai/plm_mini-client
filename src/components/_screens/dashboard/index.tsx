@@ -27,7 +27,6 @@ export async function loader({ params }: { params: Params }) {
                 )
             );
         }
-        throw err;
     }
 
     station!.locations.forEach((l) => {

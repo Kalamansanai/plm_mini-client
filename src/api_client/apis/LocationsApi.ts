@@ -19,6 +19,7 @@ import type {
   LocationsCreateReq,
   LocationsCreateRes,
   LocationsGetByIdRes,
+  LocationsGetTasksRes,
   LocationsRenameReq,
 } from '../models';
 
@@ -31,6 +32,10 @@ export interface ApiEndpointsLocationsDeleteRequest {
 }
 
 export interface ApiEndpointsLocationsGetByIdRequest {
+    id: number;
+}
+
+export interface ApiEndpointsLocationsGetTasksRequest {
     id: number;
 }
 
@@ -127,6 +132,34 @@ export class LocationsApi extends runtime.BaseAPI {
      */
     async apiEndpointsLocationsGetById(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LocationsGetByIdRes> {
         const response = await this.apiEndpointsLocationsGetByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiEndpointsLocationsGetTasksRaw(requestParameters: ApiEndpointsLocationsGetTasksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<LocationsGetTasksRes>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLocationsGetTasks.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/locations/{id}/tasks`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
+    }
+
+    /**
+     */
+    async apiEndpointsLocationsGetTasks(requestParameters: ApiEndpointsLocationsGetTasksRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LocationsGetTasksRes> {
+        const response = await this.apiEndpointsLocationsGetTasksRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

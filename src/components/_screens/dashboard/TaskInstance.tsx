@@ -2,16 +2,19 @@ import { LabeledValue } from "components/LabeledValue";
 import { OngoingTaskInstance } from "types";
 
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
-import { Box, Button, Divider, Paper, Typography } from "@mui/material";
+import { Box, Button, Divider, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 
 import EventCard from "./EventCard";
 
 type Props = { instance?: OngoingTaskInstance; maxOrderNum?: number };
 
 export default function TaskInstance({ instance, maxOrderNum }: Props) {
-    let disabled = !instance;
+    const theme = useTheme();
+    const isBelowXl = useMediaQuery(theme.breakpoints.down("xl"));
 
-    let progressPercent =
+    const disabled = !instance;
+
+    const progressPercent =
         instance && maxOrderNum !== undefined
             ? Math.floor((instance.currentOrderNum * 100) / maxOrderNum)
             : 0;
@@ -47,7 +50,7 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
                             flexGrow={1}
                             sx={{
                                 p: 1,
-                                height: 0,
+                                height: isBelowXl ? "480px" : 0,
                                 overflowY: "auto",
                                 bgcolor: "background.subtle",
                             }}
@@ -66,7 +69,7 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
             <Divider />
             <Box display="flex" justifyContent="flex-end" p={1}>
                 <Button variant="outlined" size="large">
-                    List previous instances
+                    View previous instances
                 </Button>
             </Box>
         </Paper>

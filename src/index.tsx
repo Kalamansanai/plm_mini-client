@@ -30,6 +30,7 @@ import newCHNodeAction from "./components/_screens/company_hierarchy/new";
 import Dashboard, {
     loader as dashboardLocationLoader,
 } from "./components/_screens/dashboard/Dashboard";
+import locationTasksLoader from "./components/_screens/dashboard/getLocationTasks";
 import DashboardContainer, {
     loader as dashboardLoader,
     DashboardNoStation,
@@ -134,7 +135,9 @@ const router = createBrowserRouter(
                         loader={dashboardLocationLoader}
                         path=":location_id"
                         element={<Dashboard />}
-                    />
+                    >
+                        <Route path="tasks" loader={locationTasksLoader} />
+                    </Route>
                 </Route>
             </Route>
         </>
