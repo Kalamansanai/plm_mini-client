@@ -150,6 +150,7 @@ type Props = {
 export default function DetectionControls({ detector, task }: Props) {
     const startDetectionPopup = usePopupState({ variant: "popover", popupId: "start-detection" });
     const tasksPopup = usePopupState({ variant: "popover", popupId: "tasks" });
+    const fetcher = useFetcher();
 
     const [tasksPopupLoading, setTasksPopupLoading] = useState(false);
 
@@ -172,8 +173,6 @@ export default function DetectionControls({ detector, task }: Props) {
 
     const onResume = () => {};
 
-    const onPause = () => {};
-
     return (
         <>
             <Paper
@@ -191,7 +190,7 @@ export default function DetectionControls({ detector, task }: Props) {
                     display="flex"
                     alignItems="flex-start"
                     justifyContent="space-between"
-                    sx={{ width: "100%" }}
+                    sx={{ width: "100%", mb: 2 }}
                 >
                     <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
                         Detection
@@ -230,11 +229,20 @@ export default function DetectionControls({ detector, task }: Props) {
                         ) : null}
                         {instance && instance.state === TaskInstanceState.InProgress ? (
                             <>
-                                <Tooltip title="Pause detection">
-                                    <Fab size="medium" color="warning" onClick={onPause}>
-                                        <PauseIcon />
-                                    </Fab>
-                                </Tooltip>
+                                <fetcher.Form method="post" action="send_command">
+                                    <input
+                                        readOnly
+                                        hidden
+                                        name="detector_id"
+                                        value={detector?.id}
+                                    />
+                                    <input readOnly hidden name="command" value="pause" />
+                                    <Tooltip title="Pause detection">
+                                        <Fab size="medium" color="warning" type="submit">
+                                            <PauseIcon />
+                                        </Fab>
+                                    </Tooltip>
+                                </fetcher.Form>
                                 <Tooltip title="Stop detection">
                                     <Fab size="medium" color="error" onClick={onStop}>
                                         <StopIcon />

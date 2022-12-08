@@ -41,7 +41,7 @@ export default function StreamControls({ playing, setPlaying, detector }: Props)
                 display="flex"
                 alignItems="flex-start"
                 justifyContent="space-between"
-                sx={{ width: "100%" }}
+                sx={{ width: "100%", mb: 2 }}
             >
                 <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
                     Stream

@@ -35,6 +35,7 @@ import DashboardContainer, {
     loader as dashboardLoader,
     DashboardNoStation,
 } from "./components/_screens/dashboard/index";
+import sendCommandAction from "./components/_screens/dashboard/sendCommand";
 import theme from "./theme";
 
 // TODO(rg): better error handling
@@ -137,6 +138,7 @@ const router = createBrowserRouter(
                         element={<Dashboard />}
                     >
                         <Route path="tasks" loader={locationTasksLoader} />
+                        <Route path="send_command" action={sendCommandAction} />
                     </Route>
                 </Route>
             </Route>
