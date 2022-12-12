@@ -8,11 +8,11 @@ export default function Stream() {
     const videoRef = useRef<HTMLVideoElement | null>(null);
 
     useResizeObserver(containerRef, (_) => {
-        // adjustVideoSize();
+        adjustVideoSize();
     });
 
     useEffect(() => {
-        // adjustVideoSize();
+        adjustVideoSize();
     }, []);
 
     const adjustVideoSize = () => {
@@ -22,8 +22,9 @@ export default function Stream() {
 
         console.log(`Container: ${elem.clientWidth}x${elem.clientHeight}`);
 
-        video.width = elem.clientWidth - 48;
-        video.height = elem.clientHeight - 48;
+        const newHeight = (elem.clientWidth * 9) / 16;
+
+        elem.style.height = newHeight + "px";
     };
 
     const placeholderVideo = (
@@ -36,7 +37,7 @@ export default function Stream() {
     const realVideo = <source src="http://127.0.0.1:3000/stream" type="video/x-motion-jpeg" />;
 
     return (
-        <Box display="flex" alignItems="center" ref={containerRef}>
+        <Box display="flex" alignItems="center" ref={containerRef} sx={{ bgcolor: "black" }}>
             <Box
                 component="video"
                 ref={videoRef}
