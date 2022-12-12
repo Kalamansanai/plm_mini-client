@@ -1,9 +1,18 @@
 import { LocationsGetTasksResTaskRes } from "api_client";
 import { LabeledValue } from "components/LabeledValue";
+import Title from "components/Title";
 import { bindPopover, PopupState } from "material-ui-popup-state/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useEffect, useState } from "react";
-import { Params, useFetcher, useLocation } from "react-router-dom";
+import {
+    Params,
+    useFetcher,
+    useLocation,
+    useMatch,
+    useMatches,
+    useNavigate,
+    useParams,
+} from "react-router-dom";
 import {
     Detector,
     DetectorState,
@@ -30,6 +39,7 @@ import {
     Divider,
     Fab,
     IconButton,
+    Link,
     List,
     ListItem,
     Paper,
@@ -56,12 +66,15 @@ function StartDetectionPopup({ popupProps }: StartDetectionPopupProps) {
 
 type TasksPopupProps = {
     popupProps: PopupState;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-function TasksPopup({ popupProps, setLoading }: TasksPopupProps) {
+function TasksPopup({ popupProps }: TasksPopupProps) {
     const fetcher = useFetcher();
     const location = useLocation();
+    const navigate = useNavigate();
+    const params = useParams();
+
+    const matchedLocationId = params ? Number(params["location_id"]) : null;
 
     useEffect(() => {
         if (popupProps.isOpen && fetcher.state === "idle" && !fetcher.data) {
@@ -78,11 +91,8 @@ function TasksPopup({ popupProps, setLoading }: TasksPopupProps) {
         | undefined;
 
     if (fetcher.state === "loading") {
-        setLoading(true);
         return null;
     }
-
-    setLoading(false);
 
     return (
         <Popover
@@ -104,38 +114,44 @@ function TasksPopup({ popupProps, setLoading }: TasksPopupProps) {
                 },
             }}
         >
-            <List>
-                {tasks
-                    ? tasks.map((t, i) => (
-                          <ListItem key={i} sx={{ display: "flex", alignItems: "center" }}>
-                              <Box
-                                  display="flex"
-                                  flexDirection="column"
-                                  flexGrow={1}
-                                  sx={{ mr: 3 }}
-                              >
-                                  <Typography fontSize="1.4em">{t.name}</Typography>
-                                  <Typography
-                                      fontSize="1em"
-                                      sx={{ fontStyle: "italic", color: "text.secondary" }}
-                                  >
-                                      {t.jobName}
-                                  </Typography>
-                              </Box>
-                              <Box display="flex">
-                                  <IconButton sx={{ color: "secondary.light" }}>
-                                      <EditIcon />
-                                  </IconButton>
-                                  <IconButton sx={{ color: "error.light" }}>
-                                      <DeleteIcon />
-                                  </IconButton>
-                              </Box>
-                          </ListItem>
-                      ))
-                    : null}
-            </List>
+            {tasks && tasks.length ? (
+                <List>
+                    {tasks.map((t, i) => (
+                        <ListItem key={i} sx={{ display: "flex", alignItems: "center" }}>
+                            <Box display="flex" flexDirection="column" flexGrow={1} sx={{ mr: 3 }}>
+                                <Typography fontSize="1.4em">{t.name}</Typography>
+                                <Typography
+                                    fontSize="1em"
+                                    sx={{ fontStyle: "italic", color: "text.secondary" }}
+                                >
+                                    {t.jobName}
+                                </Typography>
+                            </Box>
+                            <Box display="flex">
+                                <IconButton size="large" sx={{ color: "secondary.light" }}>
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton size="large" sx={{ color: "error.light" }}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Box>
+                        </ListItem>
+                    ))}
+                </List>
+            ) : (
+                <Typography sx={{ py: 2, fontStyle: "italic" }}>No tasks found.</Typography>
+            )}
             <Divider flexItem />
-            <Button variant="contained" color="success" sx={{ m: 1 }} startIcon={<AddIcon />}>
+            <Button
+                variant="contained"
+                color="success"
+                sx={{ m: 1 }}
+                startIcon={<AddIcon />}
+                onClick={() => {
+                    popupProps.close();
+                    navigate({ pathname: "/task/new", search: "location_id=" + matchedLocationId });
+                }}
+            >
                 Add new task
             </Button>
         </Popover>
@@ -151,8 +167,6 @@ export default function DetectionControls({ detector, task }: Props) {
     const startDetectionPopup = usePopupState({ variant: "popover", popupId: "start-detection" });
     const tasksPopup = usePopupState({ variant: "popover", popupId: "tasks" });
     const fetcher = useFetcher();
-
-    const [tasksPopupLoading, setTasksPopupLoading] = useState(false);
 
     const instance = task?.ongoingInstance;
 
@@ -192,9 +206,7 @@ export default function DetectionControls({ detector, task }: Props) {
                     justifyContent="space-between"
                     sx={{ width: "100%", mb: 2 }}
                 >
-                    <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
-                        Detection
-                    </Typography>
+                    <Title>Detection</Title>
                     <Box display="flex" gap={2}>
                         {!instance ? (
                             <Tooltip title={tooltip}>
@@ -250,9 +262,7 @@ export default function DetectionControls({ detector, task }: Props) {
                                 </Tooltip>
                             </>
                         ) : null}
-                        <LoadingButton
-                            loading={tasksPopupLoading}
-                            loadingPosition="start"
+                        <Button
                             startIcon={<FormatListBulletedIcon />}
                             sx={{ ml: 4 }}
                             variant="outlined"
@@ -260,7 +270,7 @@ export default function DetectionControls({ detector, task }: Props) {
                             onClick={(e) => tasksPopup.open(e)}
                         >
                             Tasks
-                        </LoadingButton>
+                        </Button>
                     </Box>
                 </Box>
                 <Box display="flex" flexDirection="column" gap={1}>
@@ -288,7 +298,7 @@ export default function DetectionControls({ detector, task }: Props) {
                     </Box>
                 </Box>
             </Paper>
-            <TasksPopup popupProps={tasksPopup} setLoading={setTasksPopupLoading} />
+            <TasksPopup popupProps={tasksPopup} />
         </>
     );
 }

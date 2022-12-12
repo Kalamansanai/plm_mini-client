@@ -138,3 +138,5 @@ export type Object = {
     width: number;
     height: number;
 };
+
+export type Snapshot = {};

@@ -1,3 +1,4 @@
+import Title from "components/Title";
 import { OngoingTaskInstance, GetStepActionString } from "types";
 
 import { Box, Paper, Typography } from "@mui/material";
@@ -15,13 +16,10 @@ export default function NextStepGuide({ instance }: Props) {
                 display: "flex",
                 flexDirection: "column",
                 p: 2,
-                pt: 0,
                 minHeight: "240px",
             }}
         >
-            <Typography fontSize="1.2em" variant="overline">
-                Next Step
-            </Typography>
+            <Title sx={{ pb: 1 }}>Next step</Title>
             <Box
                 sx={{
                     display: "flex",

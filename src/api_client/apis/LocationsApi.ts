@@ -35,6 +35,10 @@ export interface ApiEndpointsLocationsGetByIdRequest {
     id: number;
 }
 
+export interface ApiEndpointsLocationsGetSnapshotRequest {
+    id: number;
+}
+
 export interface ApiEndpointsLocationsGetTasksRequest {
     id: number;
 }
@@ -132,6 +136,34 @@ export class LocationsApi extends runtime.BaseAPI {
      */
     async apiEndpointsLocationsGetById(requestParameters: ApiEndpointsLocationsGetByIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<LocationsGetByIdRes> {
         const response = await this.apiEndpointsLocationsGetByIdRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async apiEndpointsLocationsGetSnapshotRaw(requestParameters: ApiEndpointsLocationsGetSnapshotRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Blob>> {
+        if (requestParameters.id === null || requestParameters.id === undefined) {
+            throw new runtime.RequiredError('id','Required parameter requestParameters.id was null or undefined when calling apiEndpointsLocationsGetSnapshot.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/locations/{id}/snapshot`.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters.id))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.BlobApiResponse(response);
+    }
+
+    /**
+     */
+    async apiEndpointsLocationsGetSnapshot(requestParameters: ApiEndpointsLocationsGetSnapshotRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Blob> {
+        const response = await this.apiEndpointsLocationsGetSnapshotRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

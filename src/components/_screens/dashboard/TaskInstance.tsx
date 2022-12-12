@@ -1,4 +1,5 @@
 import { LabeledValue } from "components/LabeledValue";
+import Title from "components/Title";
 import { OngoingTaskInstance } from "types";
 
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
@@ -22,10 +23,8 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
     return (
         <Paper sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
             <Box display="flex" flexDirection="column" flexGrow={1}>
-                <Box sx={{ p: 2, pt: 0 }}>
-                    <Typography fontSize="1.2em" variant="overline">
-                        Current Instance
-                    </Typography>
+                <Box display="flex" flexDirection="column" sx={{ p: 2 }}>
+                    <Title sx={{ pb: 2 }}>Current instance</Title>
                     {!disabled ? (
                         <Box display="flex" gap={2}>
                             <LabeledValue
@@ -42,9 +41,7 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
                 </Box>
                 {!disabled ? (
                     <>
-                        <Typography fontSize="1.2em" variant="overline" sx={{ px: 2 }}>
-                            Events
-                        </Typography>
+                        <Title sx={{ p: 2 }}>Events</Title>
                         <Divider flexItem />
                         <Box
                             flexGrow={1}

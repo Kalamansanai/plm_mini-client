@@ -3,7 +3,7 @@ import { StateIndicator as DetectorStateIndicator } from "components/DetectorInd
 import ConfirmPopup from "components/popups/ConfirmPopup";
 import SingleInputPopup from "components/popups/SingleInputPopup";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import { useFetcher, useMatch, useMatches, useNavigate } from "react-router-dom";
+import { useFetcher, useMatch, useMatches, useNavigate, useParams } from "react-router-dom";
 import { Location } from "types";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -71,8 +71,8 @@ export default function LocationCardsGrid({ locations }: { locations: Array<Loca
 function LocationCard({ location }: Props) {
     const { state: chState, dispatch: chDispatch } = useCHState();
     const navigate = useNavigate();
-    const match = useMatch("/dashboard/:station_id/:location_id");
-    const matchedLocationId = match ? Number(match.params.location_id) : null;
+    const params = useParams();
+    const matchedLocationId = params ? Number(params["location_id"]) : null;
 
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-location" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-location" });

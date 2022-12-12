@@ -2,6 +2,12 @@ import { DetailedError } from "api";
 import deleteLocationAction from "components/_screens/dashboard/deleteLocation";
 import editLocationAction from "components/_screens/dashboard/editLocation";
 import newLocationAction from "components/_screens/dashboard/newLocation";
+import NewTask, {
+    loader as newTaskLoader,
+    action as newTaskAction,
+    newJobAction,
+} from "components/_screens/task/NewTask";
+import Task from "components/_screens/task/Task";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -41,18 +47,20 @@ import theme from "./theme";
 // TODO(rg): better error handling
 
 // The current request pipeline looks like this:
-//  1. generated API client method is called (assuming the call is valid, i.e. parameters are valid)
+//  1. generated API client method is called (assuming the call is valid, i.e.
+//  parameters are valid)
 //  2. middleware.pre are called
 //  3. fetch is called
-//  4. if fetch threw errors, they are caught and middleware.onError are called; if none of them
-//  constructed a valid response then a FetchError is thrown
+//  4. if fetch threw errors, they are caught and middleware.onError are called;
+//  if none of them constructed a valid response then a FetchError is thrown
 //  5. middleware.post are called and the final response is returned
 //  6. if the response isn't a success, a ResponseError is thrown
 
-// The API returns a detailed error response body on 400 errors, containing a list of reasons why
-// the request failed (there can be multiple, e.g. validation errors on multiple fields...). Such a
-// response is also sent on 500, even though they don't contain any useful information (TODO: get
-// rid of fancy 500 errors on the backend)
+// The API returns a detailed error response body on 400 errors, containing a
+// list of reasons why the request failed (there can be multiple, e.g.
+// validation errors on multiple fields...). Such a response is also sent on
+// 500, even though they don't contain any useful information (TODO: get rid of
+// fancy 500 errors on the backend)
 function ErrorPage() {
     const error = useRouteError();
     console.error(error);
@@ -81,7 +89,7 @@ function ErrorPage() {
             );
         }
     } else {
-        content = <Typography fontSize="1em">An unknown error has occurred.</Typography>;
+        content = <Typography fontSize="1em"> An unknown error has occurred.</Typography>;
     }
 
     return (
@@ -121,6 +129,17 @@ const router = createBrowserRouter(
                     <Route path="delete" action={deleteCHNodeAction} />
                 </Route>
                 <Route path="dashboard" element={<DashboardNoStation />} />
+                <Route path="task">
+                    <Route
+                        path="new"
+                        element={<NewTask />}
+                        loader={newTaskLoader}
+                        action={newTaskAction}
+                    >
+                        <Route path="new_job" action={newJobAction} />
+                    </Route>
+                    <Route path=":task_id" element={<Task />} />
+                </Route>
                 <Route
                     id="dashboard-container"
                     loader={dashboardLoader}

@@ -1,4 +1,5 @@
 import { LabeledValue } from "components/LabeledValue";
+import Title from "components/Title";
 import { Detector, DetectorState } from "types";
 
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -43,9 +44,7 @@ export default function StreamControls({ playing, setPlaying, detector }: Props)
                 justifyContent="space-between"
                 sx={{ width: "100%", mb: 2 }}
             >
-                <Typography fontSize="1.2em" variant="overline" lineHeight={1}>
-                    Stream
-                </Typography>
+                <Title>Stream</Title>
                 <Tooltip title={tooltip}>
                     <Box>
                         <Fab
