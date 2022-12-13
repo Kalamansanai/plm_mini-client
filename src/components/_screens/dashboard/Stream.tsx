@@ -5,7 +5,8 @@ import { Box } from "@mui/material";
 
 export default function Stream() {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const videoRef = useRef<HTMLVideoElement | null>(null);
+
+    const imgSource = "https://via.placeholder.com/640x360";
 
     useResizeObserver(containerRef, (_) => {
         adjustVideoSize();
@@ -17,10 +18,7 @@ export default function Stream() {
 
     const adjustVideoSize = () => {
         const elem = containerRef.current;
-        const video = videoRef.current;
-        if (!elem || !video) return;
-
-        console.log(`Container: ${elem.clientWidth}x${elem.clientHeight}`);
+        if (!elem) return;
 
         const newHeight = (elem.clientWidth * 9) / 16;
 
@@ -38,18 +36,7 @@ export default function Stream() {
 
     return (
         <Box display="flex" alignItems="center" ref={containerRef} sx={{ bgcolor: "black" }}>
-            <Box
-                component="video"
-                ref={videoRef}
-                height="100%"
-                width="100%"
-                autoPlay
-                loop
-                controls
-                sx={{ boxShadow: 3 }}
-            >
-                {placeholderVideo}
-            </Box>
+            <Box component="img" height="100%" width="100%" src={imgSource} sx={{ boxShadow: 3 }} />
         </Box>
     );
 }

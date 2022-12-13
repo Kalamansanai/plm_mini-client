@@ -128,7 +128,13 @@ function TasksPopup({ popupProps }: TasksPopupProps) {
                                 </Typography>
                             </Box>
                             <Box display="flex">
-                                <IconButton size="large" sx={{ color: "secondary.light" }}>
+                                <IconButton
+                                    size="large"
+                                    sx={{ color: "secondary.light" }}
+                                    onClick={() => {
+                                        navigate("/task/" + t.id);
+                                    }}
+                                >
                                     <EditIcon />
                                 </IconButton>
                                 <IconButton size="large" sx={{ color: "error.light" }}>

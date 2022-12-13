@@ -1,8 +1,8 @@
 import { config as apiConfig } from "api";
-import { JobsApi, LocationsApi, TaskType } from "api_client";
+import { JobsApi, LocationsApi, TasksApi, TasksCreateRes, TaskType } from "api_client";
 import Title from "components/Title";
 import { useRef } from "react";
-import { Form, useFetcher, useLoaderData } from "react-router-dom";
+import { Form, redirect, useActionData, useFetcher, useLoaderData } from "react-router-dom";
 import { CompanyHierarchyNode, Job, Location, Snapshot } from "types";
 
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -23,20 +23,21 @@ export async function loader({ request }: { request: Request }) {
     const locationId = Number(locationIdStr);
     // TODO(rg): error if NaN
 
+    let snapshot = null;
+    try {
+        snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
+            id: locationId,
+        });
+    } catch {
+        // Location doesn't exist, or doesn't have a snapshot
+        // noop
+    }
+
     try {
         const jobs = (await new JobsApi(apiConfig).apiEndpointsJobsList()) as Array<Job>;
         const location = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
             id: locationId,
         })) as CompanyHierarchyNode;
-        // todo: snapshot
-        const snapshotRaw = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
-            id: locationId,
-        });
-        const blob = new Blob([snapshotRaw], { type: "image/jpeg" });
-        const url = URL.createObjectURL(blob);
-        console.log(url);
-
-        const snapshot = null;
 
         return { jobs, location, snapshot };
     } catch (err) {
@@ -47,13 +48,38 @@ export async function loader({ request }: { request: Request }) {
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
 
-    console.log(formData);
+    const parentJobId = formData.get("parentJobId");
+    const name = formData.get("name")?.toString();
+    const locationId = formData.get("locationId");
+    const taskType = formData.get("taskType")?.toString() as TaskType;
+
+    if (parentJobId === null || name === undefined || locationId === null || taskType === undefined)
+        return;
+
+    try {
+        const result = (await new TasksApi(apiConfig).apiEndpointsTasksCreate({
+            tasksCreateReq: {
+                parentJobId: Number(parentJobId),
+                name,
+                locationId: Number(locationId),
+                taskType,
+            },
+        })) as TasksCreateRes;
+
+        if (result && result.id) {
+            return redirect("/task/" + result.id);
+        }
+    } catch (_err) {
+        // noop
+    }
+
+    return;
 }
 
 type LoaderData = {
     jobs: Array<Job>;
     location: CompanyHierarchyNode;
-    snapshot: Snapshot | null;
+    snapshot: Blob | null;
 };
 
 export async function newJobAction({ request }: { request: Request }) {
@@ -70,15 +96,18 @@ export async function newJobAction({ request }: { request: Request }) {
     }
 }
 
-// NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
 export default function NewTask() {
     const { jobs, location, snapshot } = useLoaderData() as LoaderData;
     const fetcher = useFetcher();
-    const imgSource = "https://via.placeholder.com/640x360";
 
-    // console.log(jobs);
-    // console.log(location);
-    // console.log(snapshot);
+    const thing = useActionData();
+    console.log(thing);
+
+    let snapshotUrl = "https://via.placeholder.com/640x360";
+
+    if (snapshot) {
+        snapshotUrl = URL.createObjectURL(snapshot);
+    }
 
     const jobsSelectArray = [
         <MenuItem key={""} value={""}>
@@ -91,17 +120,23 @@ export default function NewTask() {
         )),
     ];
 
+    // NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
     return (
         <Container maxWidth="xl" sx={{ height: "calc(100% - 32px)", my: 2 }}>
-            <Paper elevation={8} sx={{ height: "auto" }}>
+            <Paper elevation={8}>
                 <Grid container height="100%">
                     <Grid item xs={12} lg={8} sx={{ p: 2 }} display="flex" flexDirection="column">
                         <Title sx={{ mb: 4 }}>Snapshot</Title>
                         <Box>
                             <Box
                                 component="img"
-                                src={imgSource}
-                                sx={{ height: "100%", width: "100%", bgcolor: "black" }}
+                                src={snapshotUrl}
+                                sx={{
+                                    height: "100%",
+                                    width: "100%",
+                                    bgcolor: "black",
+                                    boxShadow: 3,
+                                }}
                             />
                         </Box>
                         <Box display="flex" gap={2} alignSelf="center" mt={2}>
@@ -157,14 +192,15 @@ export default function NewTask() {
                                         <input
                                             readOnly
                                             hidden
-                                            name="location_id"
+                                            type="number"
+                                            name="locationId"
                                             value={location.id}
                                         />
                                         <TextField
                                             required
                                             select
                                             label="Task type"
-                                            name="type"
+                                            name="taskType"
                                             fullWidth
                                             defaultValue={""}
                                         >
@@ -178,7 +214,7 @@ export default function NewTask() {
                                             required
                                             select
                                             label="Job"
-                                            name="job_id"
+                                            name="parentJobId"
                                             fullWidth
                                             defaultValue={""}
                                         >

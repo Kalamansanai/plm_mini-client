@@ -1341,6 +1341,24 @@ export interface TasksGetByIdRes {
     maxOrderNum?: number;
     /**
      * 
+     * @type {TaskType}
+     * @memberof TasksGetByIdRes
+     */
+    taskType?: TaskType;
+    /**
+     * 
+     * @type {TasksGetByIdResResLocation}
+     * @memberof TasksGetByIdRes
+     */
+    location?: TasksGetByIdResResLocation;
+    /**
+     * 
+     * @type {TasksGetByIdResResJob}
+     * @memberof TasksGetByIdRes
+     */
+    job?: TasksGetByIdResResJob;
+    /**
+     * 
      * @type {TasksGetByIdResOngoingInstance}
      * @memberof TasksGetByIdRes
      */
@@ -1401,6 +1419,44 @@ export interface TasksGetByIdResResInstance {
      * @memberof TasksGetByIdResResInstance
      */
     events?: Array<TasksGetByIdResResEvent> | null;
+}
+/**
+ * 
+ * @export
+ * @interface TasksGetByIdResResJob
+ */
+export interface TasksGetByIdResResJob {
+    /**
+     * 
+     * @type {number}
+     * @memberof TasksGetByIdResResJob
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TasksGetByIdResResJob
+     */
+    name?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface TasksGetByIdResResLocation
+ */
+export interface TasksGetByIdResResLocation {
+    /**
+     * 
+     * @type {number}
+     * @memberof TasksGetByIdResResLocation
+     */
+    id?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TasksGetByIdResResLocation
+     */
+    name?: string | null;
 }
 /**
  * 

@@ -7,7 +7,7 @@ import NewTask, {
     action as newTaskAction,
     newJobAction,
 } from "components/_screens/task/NewTask";
-import Task from "components/_screens/task/Task";
+import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -138,7 +138,12 @@ const router = createBrowserRouter(
                     >
                         <Route path="new_job" action={newJobAction} />
                     </Route>
-                    <Route path=":task_id" element={<Task />} />
+                    <Route
+                        path=":task_id"
+                        element={<Task />}
+                        loader={taskLoader}
+                        action={taskAction}
+                    />
                 </Route>
                 <Route
                     id="dashboard-container"

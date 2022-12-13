@@ -111,32 +111,41 @@ export type Event = {
 
 export type Step = {
     id: number;
-    orderNum?: number;
-    exInitState: ObjectState;
-    exSubsState: ObjectState;
+    orderNum: number;
+    expectedInitialState: ObjectState;
+    expectedSubsequentState: ObjectState;
     object: Object;
 };
 
 export const GetStepActionString = (step: Step): string => {
-    if (step.exInitState === ObjectState.Present && step.exSubsState === ObjectState.Missing) {
+    if (
+        step.expectedInitialState === ObjectState.Present &&
+        step.expectedSubsequentState === ObjectState.Missing
+    ) {
         return "remove";
     } else if (
-        step.exInitState === ObjectState.Missing &&
-        step.exSubsState === ObjectState.Present
+        step.expectedInitialState === ObjectState.Missing &&
+        step.expectedSubsequentState === ObjectState.Present
     ) {
         return "replace";
     } else {
-        return `${step.exInitState} -> ${step.exSubsState}`;
+        return `${step.expectedInitialState} -> ${step.expectedSubsequentState}`;
     }
 };
 
 export type Object = {
     id: number;
     name: string;
+    coordinates: Coordinates;
+};
+
+export type Coordinates = {
     x: number;
     y: number;
     width: number;
     height: number;
 };
 
-export type Snapshot = {};
+export type TaskEditorSelectionType = "step" | "object";
+
+export type ExpectedStepAction = "remove" | "replace";
