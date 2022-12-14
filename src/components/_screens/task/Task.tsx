@@ -1,46 +1,41 @@
 import { config as apiConfig, DetailedError } from "api";
 import { JobsApi, LocationsApi, ResponseError, TasksApi } from "api_client";
 import Title from "components/Title";
-import { useState } from "react";
+import { usePopupState } from "material-ui-popup-state/hooks";
+import { useReducer, useState } from "react";
 import { Params, useLoaderData } from "react-router-dom";
-import {
-    CompanyHierarchyNode,
-    Job,
-    Object,
-    Step,
-    TaskType,
-    TaskEditorSelectionType as SelectionType,
-    GetStepActionString,
-} from "types";
+import { CompanyHierarchyNode, Job, Object, Step, TaskType, GetStepActionString } from "types";
+import { v4 as uuidv4 } from "uuid";
 
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import {
     Box,
     Button,
     Container,
     Divider,
     Grid,
+    IconButton,
     List,
     ListItem,
     ListItemButton,
     MenuItem,
     Paper,
     TextField,
+    Tooltip,
     Typography,
     useMediaQuery,
     useTheme,
 } from "@mui/material";
 
 import TaskComponentFields from "./TaskComponentFields";
-
-type EditedTask = {
-    id: number;
-    name: string;
-    taskType: TaskType;
-    location: CompanyHierarchyNode;
-    job: Job;
-    steps: Array<Step>;
-    objects: Array<Object>;
-};
+import reducer, {
+    State,
+    Action,
+    EditedObject,
+    EditedStep,
+    EditedTask,
+    SelectionType,
+} from "./taskEditorReducer";
 
 const resolveStepObjects = (
     steps: Array<Step & { objectId: number }>,
@@ -52,6 +47,20 @@ const resolveStepObjects = (
     });
 
     return resolvedSteps;
+};
+
+const assignTemporaryIds = (
+    _steps: Array<Step>,
+    _objects: Array<Object>
+): [Array<EditedStep>, Array<EditedObject>] => {
+    const objects = _objects.map((o) => ({ ...o, uuid: uuidv4() }));
+    const steps = _steps.map((s) => ({
+        ...s,
+        uuid: uuidv4(),
+        object: objects.find((o) => o.name === s.object.name)!,
+    }));
+
+    return [steps, objects];
 };
 
 // get task and children steps, objects
@@ -69,8 +78,10 @@ export async function loader({ params }: { params: Params }) {
         });
 
         const steps = stepsObjects.steps! as Array<Step & { objectId: number }>;
-        const objects = stepsObjects.objects! as Array<Object>;
+        const objects = stepsObjects.objects! as Array<EditedObject>;
         const resolvedSteps = resolveStepObjects(steps, objects);
+
+        const [stepsWithIds, objectsWithIds] = assignTemporaryIds(steps, objects);
 
         const editedTask: EditedTask = {
             id: task.id!,
@@ -78,8 +89,8 @@ export async function loader({ params }: { params: Params }) {
             taskType: task.taskType!,
             location: task.location! as CompanyHierarchyNode,
             job: task.job! as Job,
-            steps: resolvedSteps,
-            objects: objects,
+            steps: stepsWithIds,
+            objects: objectsWithIds,
         };
 
         return { jobs, task: editedTask, snapshot };
@@ -104,14 +115,19 @@ type LoaderData = {
 // task update
 export async function action({ request }: { request: Request }) {}
 
+// NOTE(rg): the add buttons on the object and step lists don't have tooltips on purpose. When they
+// have tooltips, hovering over the buttons and then moving the mouse away increases the height of
+// the snapshot image by a bit (?????)
 export default function Task() {
     const theme = useTheme();
-    const { jobs, task, snapshot } = useLoaderData() as LoaderData;
-    const [selection, setSelection] = useState<{ name: string; type: SelectionType } | null>(null);
+    const { jobs, task: originalTask, snapshot } = useLoaderData() as LoaderData;
+
+    const [state, dispatch] = useReducer(reducer, {
+        selection: null,
+        task: structuredClone(originalTask),
+    });
 
     const snapshotUrl = URL.createObjectURL(snapshot);
-
-    console.log(task.steps);
 
     const isBelowLg = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -126,19 +142,15 @@ export default function Task() {
         )),
     ];
 
-    type Group = { [orderNum: number]: Array<Step> };
-    const stepsGroupedByOrder = task.steps.reduce<Group>((groups: Group, step: Step) => {
+    type Groups = { [orderNum: number]: Array<Step> };
+    const stepsGroupedByOrder = state.task.steps.reduce<Groups>((groups: Groups, step: Step) => {
         groups[step.orderNum] = groups[step.orderNum] || [];
         groups[step.orderNum]!.push(step);
         return groups;
     }, {});
 
-    const select = (name: string, type: SelectionType) => {
-        if (selection && selection.name === name && selection.type === type) {
-            setSelection(null);
-        } else {
-            setSelection({ name, type });
-        }
+    const select = (uuid: string, type: SelectionType) => {
+        dispatch({ type: "Select", selection: { uuid, selectionType: type, new: false } });
     };
 
     return (
@@ -155,7 +167,7 @@ export default function Task() {
                                         label="Name"
                                         name="name"
                                         fullWidth
-                                        defaultValue={task.name}
+                                        defaultValue={state.task.name}
                                     />
                                 </Grid>
                                 <Grid item xs={12} lg={6}>
@@ -165,7 +177,7 @@ export default function Task() {
                                         label="Task type"
                                         name="taskType"
                                         fullWidth
-                                        defaultValue={task.taskType}
+                                        defaultValue={state.task.taskType}
                                     >
                                         <MenuItem value={""}>
                                             <i>None</i>
@@ -179,7 +191,7 @@ export default function Task() {
                                         required
                                         disabled
                                         label="Location"
-                                        defaultValue={task.location.name}
+                                        defaultValue={state.task.location.name}
                                         fullWidth
                                     />
                                 </Grid>
@@ -190,7 +202,7 @@ export default function Task() {
                                         label="Job"
                                         name="parentJobId"
                                         fullWidth
-                                        defaultValue={task.job.id}
+                                        defaultValue={state.task.job.id}
                                     >
                                         {jobsSelectArray}
                                     </TextField>
@@ -201,18 +213,42 @@ export default function Task() {
                         <Box display="flex" flexDirection="column" flexGrow={1}>
                             <Grid container height="100%">
                                 <Grid item xs={5} display="flex" flexDirection="column" p={2}>
-                                    <Title sx={{ mb: 2 }}>Objects</Title>
+                                    <Box
+                                        display="flex"
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        sx={{ mb: 2 }}
+                                    >
+                                        <Title>Objects</Title>
+                                        <IconButton
+                                            sx={{ color: "primary.main" }}
+                                            onClick={() =>
+                                                dispatch({
+                                                    type: "Select",
+                                                    selection: {
+                                                        uuid: null,
+                                                        selectionType: "object",
+                                                        new: true,
+                                                    },
+                                                })
+                                            }
+                                        >
+                                            <AddCircleIcon fontSize="large" />
+                                        </IconButton>
+                                    </Box>
                                     <List disablePadding>
-                                        {task.objects.map((o, i) => (
+                                        {state.task.objects.map((o, i) => (
                                             <ListItem key={i} disablePadding>
                                                 <ListItemButton
                                                     sx={{ fontSize: "1.2em" }}
                                                     selected={
-                                                        !!selection &&
-                                                        o.name === selection.name &&
-                                                        selection.type === "object"
+                                                        !!state.selection &&
+                                                        o.uuid === state.selection.uuid &&
+                                                        state.selection.selectionType ===
+                                                            "object" &&
+                                                        !state.selection.new
                                                     }
-                                                    onClick={() => select(o.name, "object")}
+                                                    onClick={() => select(o.uuid, "object")}
                                                 >
                                                     {o.name}
                                                 </ListItemButton>
@@ -225,9 +261,31 @@ export default function Task() {
                                         <Divider orientation="vertical" flexItem />
                                     ) : null}
                                     <Box display="flex" flexDirection="column" flexGrow={1} p={2}>
-                                        <Title sx={{ mb: 2 }}>Steps</Title>
+                                        <Box
+                                            display="flex"
+                                            justifyContent="space-between"
+                                            alignItems="center"
+                                            sx={{ mb: 2 }}
+                                        >
+                                            <Title>Steps</Title>
+                                            <IconButton
+                                                sx={{ color: "primary.main" }}
+                                                onClick={() =>
+                                                    dispatch({
+                                                        type: "Select",
+                                                        selection: {
+                                                            uuid: null,
+                                                            selectionType: "step",
+                                                            new: true,
+                                                        },
+                                                    })
+                                                }
+                                            >
+                                                <AddCircleIcon fontSize="large" />
+                                            </IconButton>
+                                        </Box>
                                         <List disablePadding>
-                                            {task.steps.map((s, i) => {
+                                            {state.task.steps.map((s, i) => {
                                                 const actionString = GetStepActionString(s);
                                                 const color =
                                                     actionString === "remove"
@@ -240,13 +298,13 @@ export default function Task() {
                                                     <ListItem key={i} disablePadding>
                                                         <ListItemButton
                                                             selected={
-                                                                !!selection &&
-                                                                s.object.name === selection.name &&
-                                                                selection.type === "step"
+                                                                !!state.selection &&
+                                                                s.uuid === state.selection.uuid &&
+                                                                state.selection.selectionType ===
+                                                                    "step" &&
+                                                                !state.selection.new
                                                             }
-                                                            onClick={() =>
-                                                                select(s.object.name, "step")
-                                                            }
+                                                            onClick={() => select(s.uuid, "step")}
                                                         >
                                                             <Typography
                                                                 sx={{
@@ -289,11 +347,7 @@ export default function Task() {
                                 />
                             </Box>
                             <Box display="flex" flexDirection="column" flexGrow={1}>
-                                <TaskComponentFields
-                                    selection={selection}
-                                    steps={task.steps}
-                                    objects={task.objects}
-                                />
+                                <TaskComponentFields state={state} dispatch={dispatch} />
                             </Box>
                         </Box>
                     </Grid>

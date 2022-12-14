@@ -66,8 +66,10 @@ export default function CompanyHierarchyNode({ node, labelSingular, selected, le
                 popupProps={renamePopup}
                 label="Name"
                 initialValue={node.name}
-                method="post"
-                action="edit"
+                behavior={{
+                    method: "post",
+                    action: "edit",
+                }}
             >
                 <input readOnly hidden name="level" value={level} />
                 <input readOnly hidden name="id" value={node.id} />

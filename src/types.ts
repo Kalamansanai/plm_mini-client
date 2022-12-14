@@ -146,6 +146,4 @@ export type Coordinates = {
     height: number;
 };
 
-export type TaskEditorSelectionType = "step" | "object";
-
 export type ExpectedStepAction = "remove" | "replace";

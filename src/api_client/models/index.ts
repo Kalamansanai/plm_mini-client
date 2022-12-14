@@ -772,13 +772,13 @@ export interface LocationsGetByIdResStepRes {
      * @type {TemplateState}
      * @memberof LocationsGetByIdResStepRes
      */
-    exInitState?: TemplateState;
+    expectedInitialState?: TemplateState;
     /**
      * 
      * @type {TemplateState}
      * @memberof LocationsGetByIdResStepRes
      */
-    exSubsState?: TemplateState;
+    expectedSubsequentState?: TemplateState;
     /**
      * 
      * @type {LocationsGetByIdResStepResObject}
