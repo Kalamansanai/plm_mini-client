@@ -125,6 +125,7 @@ export default function reducer(state: State, action: Action): State {
                         orderNum: action.orderNum,
                         expectedInitialState: action.expectedInitialState,
                         expectedSubsequentState: action.expectedSubsequentState,
+                        object: action.object,
                     };
 
                 return s;

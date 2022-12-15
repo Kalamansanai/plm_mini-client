@@ -2,6 +2,7 @@ import { config as apiConfig, DetailedError } from "api";
 import { JobsApi, LocationsApi, ResponseError, TasksApi } from "api_client";
 import Title from "components/Title";
 import { usePopupState } from "material-ui-popup-state/hooks";
+import React from "react";
 import { useReducer, useState } from "react";
 import { Params, useLoaderData } from "react-router-dom";
 import { CompanyHierarchyNode, Job, Object, Step, TaskType, GetStepActionString } from "types";
@@ -142,12 +143,17 @@ export default function Task() {
         )),
     ];
 
-    type Groups = { [orderNum: number]: Array<Step> };
-    const stepsGroupedByOrder = state.task.steps.reduce<Groups>((groups: Groups, step: Step) => {
-        groups[step.orderNum] = groups[step.orderNum] || [];
-        groups[step.orderNum]!.push(step);
-        return groups;
-    }, {});
+    type Groups = { [orderNum: number]: Array<EditedStep> };
+    const stepsGroupedByOrder = state.task.steps.reduce<Groups>(
+        (groups: Groups, step: EditedStep) => {
+            groups[step.orderNum] = groups[step.orderNum] || [];
+            groups[step.orderNum]!.push(step);
+            return groups;
+        },
+        {}
+    );
+
+    console.log(window.Object.entries(stepsGroupedByOrder));
 
     const select = (uuid: string, type: SelectionType) => {
         dispatch({ type: "Select", selection: { uuid, selectionType: type } });
@@ -155,8 +161,10 @@ export default function Task() {
 
     const sortedObjects = [...state.task.objects];
     sortedObjects.sort((o1, o2) => {
-        if (o1.name > o2.name) return 1;
-        else if (o1.name < o2.name) return -1;
+        const n1 = o1.name.toLowerCase();
+        const n2 = o2.name.toLowerCase();
+        if (n1 > n2) return 1;
+        else if (n1 < n2) return -1;
         else return 0;
     });
 
@@ -219,12 +227,12 @@ export default function Task() {
                         <Divider flexItem />
                         <Box display="flex" flexDirection="column" flexGrow={1}>
                             <Grid container height="100%">
-                                <Grid item xs={5} display="flex" flexDirection="column" p={2}>
+                                <Grid item xs={5} display="flex" flexDirection="column">
                                     <Box
                                         display="flex"
                                         justifyContent="space-between"
                                         alignItems="center"
-                                        sx={{ mb: 2 }}
+                                        sx={{ p: 2 }}
                                     >
                                         <Title>Objects</Title>
                                         <IconButton
@@ -242,34 +250,40 @@ export default function Task() {
                                             <AddCircleIcon fontSize="large" />
                                         </IconButton>
                                     </Box>
-                                    <List disablePadding>
-                                        {sortedObjects.map((o, i) => (
-                                            <ListItem key={i} disablePadding>
-                                                <ListItemButton
-                                                    sx={{ fontSize: "1.2em" }}
-                                                    selected={
-                                                        !!state.selection &&
-                                                        o.uuid === state.selection.uuid &&
-                                                        state.selection.selectionType === "object"
-                                                    }
-                                                    onClick={() => select(o.uuid, "object")}
-                                                >
-                                                    {o.name}
-                                                </ListItemButton>
-                                            </ListItem>
-                                        ))}
-                                    </List>
+                                    <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
+                                        <List
+                                            sx={{ height: "100%", overflowY: "auto", flex: 1 }}
+                                            disablePadding
+                                        >
+                                            {sortedObjects.map((o, i) => (
+                                                <ListItem key={i} disablePadding>
+                                                    <ListItemButton
+                                                        sx={{ fontSize: "1.2em" }}
+                                                        selected={
+                                                            !!state.selection &&
+                                                            o.uuid === state.selection.uuid &&
+                                                            state.selection.selectionType ===
+                                                                "object"
+                                                        }
+                                                        onClick={() => select(o.uuid, "object")}
+                                                    >
+                                                        {o.name}
+                                                    </ListItemButton>
+                                                </ListItem>
+                                            ))}
+                                        </List>
+                                    </Box>
                                 </Grid>
                                 <Grid item xs={7} display="flex">
                                     {!isBelowLg ? (
                                         <Divider orientation="vertical" flexItem />
                                     ) : null}
-                                    <Box display="flex" flexDirection="column" flexGrow={1} p={2}>
+                                    <Box display="flex" flexDirection="column" flexGrow={1}>
                                         <Box
                                             display="flex"
                                             justifyContent="space-between"
                                             alignItems="center"
-                                            sx={{ mb: 2 }}
+                                            sx={{ p: 2 }}
                                         >
                                             <Title>Steps</Title>
                                             <IconButton
@@ -287,49 +301,113 @@ export default function Task() {
                                                 <AddCircleIcon fontSize="large" />
                                             </IconButton>
                                         </Box>
-                                        <List disablePadding>
-                                            {state.task.steps.map((s, i) => {
-                                                const actionString = GetStepActionString(
-                                                    s.expectedInitialState,
-                                                    s.expectedSubsequentState
-                                                );
-                                                const color =
-                                                    actionString === "remove"
-                                                        ? "error.main"
-                                                        : actionString === "replace"
-                                                        ? "info.main"
-                                                        : "text.default";
-
-                                                return (
-                                                    <ListItem key={i} disablePadding>
-                                                        <ListItemButton
-                                                            selected={
-                                                                !!state.selection &&
-                                                                s.uuid === state.selection.uuid &&
-                                                                state.selection.selectionType ===
-                                                                    "step"
-                                                            }
-                                                            onClick={() => select(s.uuid, "step")}
-                                                        >
-                                                            <Typography
-                                                                sx={{
-                                                                    fontSize: "1.2em",
-                                                                    color: color,
-                                                                }}
-                                                            >
-                                                                {actionString}{" "}
-                                                                <Box
-                                                                    component="span"
-                                                                    sx={{ color: "primary.main" }}
+                                        <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
+                                            <Box
+                                                sx={{ height: "100%", overflowY: "auto", flex: 1 }}
+                                            >
+                                                {window.Object.entries(stepsGroupedByOrder).map(
+                                                    ([order, steps], i) => {
+                                                        steps.sort((s1, s2) => {
+                                                            const n1 = s1.object.name.toLowerCase();
+                                                            const n2 = s2.object.name.toLowerCase();
+                                                            if (n1 > n2) return 1;
+                                                            else if (n1 < n2) return -1;
+                                                            else return 0;
+                                                        });
+                                                        return (
+                                                            <React.Fragment key={i}>
+                                                                <Divider
+                                                                    textAlign="left"
+                                                                    sx={{
+                                                                        px: 1,
+                                                                        fontFamily: "monospace",
+                                                                        color: "text.secondary",
+                                                                        "&::before": {
+                                                                            borderColor:
+                                                                                "background.subtle",
+                                                                        },
+                                                                        "&::after": {
+                                                                            borderColor:
+                                                                                "background.subtle",
+                                                                        },
+                                                                    }}
                                                                 >
-                                                                    {s.object.name}
-                                                                </Box>
-                                                            </Typography>
-                                                        </ListItemButton>
-                                                    </ListItem>
-                                                );
-                                            })}
-                                        </List>
+                                                                    Order {order}
+                                                                </Divider>
+                                                                <List disablePadding>
+                                                                    {steps.map((s, i) => {
+                                                                        const actionString =
+                                                                            GetStepActionString(
+                                                                                s.expectedInitialState,
+                                                                                s.expectedSubsequentState
+                                                                            );
+                                                                        const color =
+                                                                            actionString ===
+                                                                            "remove"
+                                                                                ? "error.main"
+                                                                                : actionString ===
+                                                                                  "replace"
+                                                                                ? "info.main"
+                                                                                : "text.default";
+
+                                                                        return (
+                                                                            <ListItem
+                                                                                key={i}
+                                                                                disablePadding
+                                                                            >
+                                                                                <ListItemButton
+                                                                                    selected={
+                                                                                        !!state.selection &&
+                                                                                        s.uuid ===
+                                                                                            state
+                                                                                                .selection
+                                                                                                .uuid &&
+                                                                                        state
+                                                                                            .selection
+                                                                                            .selectionType ===
+                                                                                            "step"
+                                                                                    }
+                                                                                    onClick={() =>
+                                                                                        select(
+                                                                                            s.uuid,
+                                                                                            "step"
+                                                                                        )
+                                                                                    }
+                                                                                >
+                                                                                    <Typography
+                                                                                        sx={{
+                                                                                            fontSize:
+                                                                                                "1.2em",
+                                                                                            color: color,
+                                                                                        }}
+                                                                                    >
+                                                                                        {
+                                                                                            actionString
+                                                                                        }{" "}
+                                                                                        <Box
+                                                                                            component="span"
+                                                                                            sx={{
+                                                                                                color: "primary.main",
+                                                                                            }}
+                                                                                        >
+                                                                                            {
+                                                                                                s
+                                                                                                    .object
+                                                                                                    .name
+                                                                                            }
+                                                                                        </Box>
+                                                                                    </Typography>
+                                                                                </ListItemButton>
+                                                                            </ListItem>
+                                                                        );
+                                                                    })}
+                                                                </List>
+                                                            </React.Fragment>
+                                                        );
+                                                    }
+                                                )}
+                                            </Box>
+                                        </Box>
                                     </Box>
                                 </Grid>
                             </Grid>
@@ -339,7 +417,7 @@ export default function Task() {
                         {!isBelowLg ? <Divider orientation="vertical" flexItem /> : null}
                         <Box display="flex" flexDirection="column" flexGrow={1} sx={{ p: 2 }}>
                             <Title sx={{ mb: 2 }}>Location snapshot</Title>
-                            <Box flexShrink={0}>
+                            <Box flexShrink={1}>
                                 <Box
                                     component="img"
                                     src={snapshotUrl}

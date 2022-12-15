@@ -155,67 +155,61 @@ function ObjectFields({ state, dispatch }: ChildProps) {
             >
                 <TextField
                     required
+                    autoFocus
                     error={!!errors.name}
                     helperText={errors.name ?? " "}
                     label="Name"
                     name="name"
+                    sx={{ width: "180px " }}
                     value={fields.name}
                     onChange={onChange}
                 />
-                <Box display="flex" flexDirection="column" gap={2}>
-                    <TextField
-                        size="small"
-                        required
-                        error={!!errors.x}
-                        helperText={errors.x ?? " "}
-                        label="X"
-                        name="x"
-                        sx={{ width: "120px" }}
-                        value={fields.x}
-                        onChange={onChange}
-                    />
-                    <TextField
-                        size="small"
-                        required
-                        error={!!errors.width}
-                        helperText={errors.width ?? " "}
-                        label="Width"
-                        name="width"
-                        sx={{ width: "120px" }}
-                        value={fields.width}
-                        onChange={onChange}
-                    />
-                </Box>
-                <Box display="flex" flexDirection="column" gap={2}>
-                    <TextField
-                        size="small"
-                        required
-                        error={!!errors.y}
-                        helperText={errors.y ?? " "}
-                        label="Y"
-                        name="y"
-                        sx={{ width: "120px" }}
-                        value={fields.y}
-                        onChange={onChange}
-                    />
-                    <TextField
-                        size="small"
-                        required
-                        error={!!errors.height}
-                        helperText={errors.height ?? " "}
-                        label="Height"
-                        name="height"
-                        sx={{ width: "120px" }}
-                        value={fields.height}
-                        onChange={onChange}
-                    />
-                </Box>
-                <IconButton sx={{ color: "error.main" }} onClick={onDelete}>
+                <TextField
+                    required
+                    error={!!errors.x}
+                    helperText={errors.x ?? " "}
+                    label="X"
+                    name="x"
+                    sx={{ width: "100px" }}
+                    value={fields.x}
+                    onChange={onChange}
+                />
+                <TextField
+                    required
+                    error={!!errors.width}
+                    helperText={errors.width ?? " "}
+                    label="Width"
+                    name="width"
+                    sx={{ width: "100px" }}
+                    value={fields.width}
+                    onChange={onChange}
+                />
+                <TextField
+                    required
+                    error={!!errors.y}
+                    helperText={errors.y ?? " "}
+                    label="Y"
+                    name="y"
+                    sx={{ width: "100px" }}
+                    value={fields.y}
+                    onChange={onChange}
+                />
+                <TextField
+                    required
+                    error={!!errors.height}
+                    helperText={errors.height ?? " "}
+                    label="Height"
+                    name="height"
+                    sx={{ width: "100px" }}
+                    value={fields.height}
+                    onChange={onChange}
+                />
+                <IconButton sx={{ color: "error.main", mb: 3 }} onClick={onDelete}>
                     <DeleteIcon fontSize="large" />
                 </IconButton>
                 <IconButton
                     type="submit"
-                    sx={{ color: "success.main" }}
+                    sx={{ color: "success.main", mb: 3 }}
                     disabled={Object.entries(errors).length > 0}
                 >
                     <CheckIcon fontSize="large" />
@@ -279,6 +273,16 @@ function StepFields({ state, dispatch }: ChildProps) {
                 expectedSubsequentState: fields.expectedSubsequentState,
                 object: fields.object!,
             });
+        }
+
+        dispatch({ type: "Select", selection: null });
+
+        reset();
+    };
+
+    const onDelete = () => {
+        if (step) {
+            dispatch({ type: "DeleteStep", uuid: step.uuid });
         }
 
         dispatch({ type: "Select", selection: null });
@@ -375,6 +379,7 @@ function StepFields({ state, dispatch }: ChildProps) {
             >
                 <TextField
                     required
+                    autoFocus
                     error={!!errors.orderNum}
                     helperText={errors.orderNum ?? " "}
                     label="Order"
@@ -409,11 +414,11 @@ function StepFields({ state, dispatch }: ChildProps) {
                 >
                     {objectsSelectArray}
                 </TextField>
-                <IconButton sx={{ color: "error.main" }}>
+                <IconButton sx={{ color: "error.main", mb: 3 }} onClick={onDelete}>
                     <DeleteIcon fontSize="large" />
                 </IconButton>
                 <IconButton
-                    sx={{ color: "success.main" }}
+                    sx={{ color: "success.main", mb: 3 }}
                     type="submit"
                     disabled={Object.entries(errors).length > 0}
                 >
