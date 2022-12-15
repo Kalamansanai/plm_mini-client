@@ -150,8 +150,15 @@ export default function Task() {
     }, {});
 
     const select = (uuid: string, type: SelectionType) => {
-        dispatch({ type: "Select", selection: { uuid, selectionType: type, new: false } });
+        dispatch({ type: "Select", selection: { uuid, selectionType: type } });
     };
+
+    const sortedObjects = [...state.task.objects];
+    sortedObjects.sort((o1, o2) => {
+        if (o1.name > o2.name) return 1;
+        else if (o1.name < o2.name) return -1;
+        else return 0;
+    });
 
     return (
         <Container maxWidth="xl" sx={{ height: !isBelowLg ? "calc(100% - 32px)" : "auto", my: 2 }}>
@@ -228,7 +235,6 @@ export default function Task() {
                                                     selection: {
                                                         uuid: null,
                                                         selectionType: "object",
-                                                        new: true,
                                                     },
                                                 })
                                             }
@@ -237,16 +243,14 @@ export default function Task() {
                                         </IconButton>
                                     </Box>
                                     <List disablePadding>
-                                        {state.task.objects.map((o, i) => (
+                                        {sortedObjects.map((o, i) => (
                                             <ListItem key={i} disablePadding>
                                                 <ListItemButton
                                                     sx={{ fontSize: "1.2em" }}
                                                     selected={
                                                         !!state.selection &&
                                                         o.uuid === state.selection.uuid &&
-                                                        state.selection.selectionType ===
-                                                            "object" &&
-                                                        !state.selection.new
+                                                        state.selection.selectionType === "object"
                                                     }
                                                     onClick={() => select(o.uuid, "object")}
                                                 >
@@ -276,7 +280,6 @@ export default function Task() {
                                                         selection: {
                                                             uuid: null,
                                                             selectionType: "step",
-                                                            new: true,
                                                         },
                                                     })
                                                 }
@@ -286,7 +289,10 @@ export default function Task() {
                                         </Box>
                                         <List disablePadding>
                                             {state.task.steps.map((s, i) => {
-                                                const actionString = GetStepActionString(s);
+                                                const actionString = GetStepActionString(
+                                                    s.expectedInitialState,
+                                                    s.expectedSubsequentState
+                                                );
                                                 const color =
                                                     actionString === "remove"
                                                         ? "error.main"
@@ -301,8 +307,7 @@ export default function Task() {
                                                                 !!state.selection &&
                                                                 s.uuid === state.selection.uuid &&
                                                                 state.selection.selectionType ===
-                                                                    "step" &&
-                                                                !state.selection.new
+                                                                    "step"
                                                             }
                                                             onClick={() => select(s.uuid, "step")}
                                                         >
@@ -347,7 +352,11 @@ export default function Task() {
                                 />
                             </Box>
                             <Box display="flex" flexDirection="column" flexGrow={1}>
-                                <TaskComponentFields state={state} dispatch={dispatch} />
+                                <TaskComponentFields
+                                    key={state?.selection?.uuid ?? null}
+                                    state={state}
+                                    dispatch={dispatch}
+                                />
                             </Box>
                         </Box>
                     </Grid>

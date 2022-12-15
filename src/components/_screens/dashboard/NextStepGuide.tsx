@@ -40,7 +40,10 @@ export default function NextStepGuide({ instance }: Props) {
                     </Typography>
                 ) : (
                     instance.currentOrderNumRemainingSteps.map((s, i) => {
-                        const actionString = GetStepActionString(s);
+                        const actionString = GetStepActionString(
+                            s.expectedInitialState,
+                            s.expectedSubsequentState
+                        );
                         const color =
                             actionString === "remove"
                                 ? "error.main"

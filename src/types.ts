@@ -117,19 +117,13 @@ export type Step = {
     object: Object;
 };
 
-export const GetStepActionString = (step: Step): string => {
-    if (
-        step.expectedInitialState === ObjectState.Present &&
-        step.expectedSubsequentState === ObjectState.Missing
-    ) {
+export const GetStepActionString = (exInit: ObjectState, exSubs: ObjectState): string => {
+    if (exInit === ObjectState.Present && exSubs === ObjectState.Missing) {
         return "remove";
-    } else if (
-        step.expectedInitialState === ObjectState.Missing &&
-        step.expectedSubsequentState === ObjectState.Present
-    ) {
+    } else if (exInit === ObjectState.Missing && exSubs === ObjectState.Present) {
         return "replace";
     } else {
-        return `${step.expectedInitialState} -> ${step.expectedSubsequentState}`;
+        return `${exInit} -> ${exSubs}`;
     }
 };
 

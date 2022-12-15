@@ -1,12 +1,13 @@
 import { CompanyHierarchyNode, Coordinates, Job, Step, TaskType, Object } from "types";
 import { v4 as uuidv4 } from "uuid";
 
+export const SnapshotSize = { x: 640, y: 360 };
+
 export type SelectionType = "step" | "object";
 
 export type Selection = {
     uuid: string | null;
     selectionType: SelectionType;
-    new: boolean;
 };
 
 export type EditedTask = {
@@ -21,7 +22,19 @@ export type EditedTask = {
 
 export type EditedObject = Object & { uuid: string };
 
+export type EditedObjectFields = {
+    name: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
+
 export type EditedStep = Omit<Step, "object"> & { uuid: string; object: EditedObject };
+
+export type EditedStepFields = Omit<EditedStep, "id" | "uuid" | "object"> & {
+    object: EditedObject | null;
+};
 
 export type State = {
     task: EditedTask;
@@ -52,7 +65,6 @@ export default function reducer(state: State, action: Action): State {
                 newState.selection = {
                     uuid: action.selection.uuid,
                     selectionType: action.selection.selectionType,
-                    new: action.selection.new,
                 };
             }
 
@@ -75,6 +87,14 @@ export default function reducer(state: State, action: Action): State {
                     return { ...o, name: action.name, coordinates: action.coordinates };
 
                 return o;
+            });
+            newState.task.steps = newState.task.steps.map((s) => {
+                if (s.object.uuid === action.uuid) {
+                    s.object.name = action.name;
+                    s.object.coordinates = action.coordinates;
+                }
+
+                return s;
             });
             return newState;
         }

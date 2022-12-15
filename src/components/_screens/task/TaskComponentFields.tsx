@@ -1,12 +1,22 @@
 import Title from "components/Title";
 import { useEffect, useState } from "react";
-import { Coordinates, Object, Step } from "types";
+import { GetStepActionString, ObjectState } from "types";
+import { v4 as uuidv4 } from "uuid";
 
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box, IconButton, MenuItem, TextField, Tooltip } from "@mui/material";
 
-import { Action, EditedObject, EditedStep, Selection, State } from "./taskEditorReducer";
+import {
+    Action,
+    EditedObject,
+    EditedStep,
+    EditedObjectFields,
+    Selection,
+    State,
+    SnapshotSize,
+    EditedStepFields,
+} from "./taskEditorReducer";
 
 type Props = {
     state: State;
@@ -18,57 +28,81 @@ type ChildProps = {
     dispatch: React.Dispatch<Action>;
 };
 
-const defaultCoords: Coordinates = { x: 0, y: 0, width: 100, height: 100 };
+const _defaultObjectFields: EditedObjectFields = {
+    name: "",
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+};
+
+type ObjectFieldsErrors = Partial<Record<keyof EditedObjectFields, string>>;
 
 function ObjectFields({ state, dispatch }: ChildProps) {
     // The object we're currently editing. If we're not editing an object but creating a new one,
     // this is undefined.
     const object = state.task.objects.find((o) => o.uuid === state.selection.uuid);
 
-    const [error, setError] = useState<string | null>(null);
+    const [errors, setErrors] = useState<ObjectFieldsErrors>({});
 
-    const [name, setName] = useState(state.selection.new ? "" : object?.name ?? "");
-    const [coordinates, setCoordinates] = useState(
-        state.selection.new ? defaultCoords : object?.coordinates ?? defaultCoords
-    );
+    const defaultFields = object
+        ? {
+              name: object.name,
+              x: object.coordinates.x,
+              y: object.coordinates.y,
+              width: object.coordinates.width,
+              height: object.coordinates.height,
+          }
+        : _defaultObjectFields;
 
-    // NOTE(rg): I don't like this
-    useEffect(() => {
-        setName(object?.name ?? "");
-        setCoordinates(object?.coordinates ?? defaultCoords);
-    }, [state.selection]);
-
-    if (!object && !state.selection.new) {
-        // TODO: invalid state (editing an object that doesn't exist within the objects list); error handling
-        return null;
-    }
+    const [fields, setFields] = useState(defaultFields);
 
     const reset = () => {
-        setName("");
-        setCoordinates(defaultCoords);
-        setError(null);
+        setFields(defaultFields);
+        setErrors({});
     };
 
-    const onNameChange = (value: string) => {
-        let err = false;
-        if (state.selection.new) err = !!state.task.objects.find((o) => o.name === value);
-        else {
-            err = !!state.task.objects
-                .filter((o) => o.uuid !== object!.uuid)
-                .find((o) => o.name === value);
-        }
+    const validateCoords = (
+        fieldName: keyof EditedObjectFields,
+        fieldValue: number,
+        errors: ObjectFieldsErrors
+    ) => {
+        const regex = /(^\-[1-9][0-9]*$)|(^[0-9]+$)/;
 
-        if (err) {
-            setError("An other object exists with the same name");
+        if (!regex.test(fieldValue.toString())) {
+            errors[fieldName] = "Must be a number";
         } else {
-            setError(null);
+            const val = Number(fieldValue);
+            if (val < 0) {
+                errors[fieldName] = "Must be >= 0";
+            } else {
+                delete errors[fieldName];
+            }
+        }
+    };
+
+    // TODO(rg): hopefully someone that is not me will clean up the validation in the future
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newFields = { ...fields, [e.target.name]: e.target.value };
+        const newErrors = { ...errors };
+
+        if (!newFields.name.length) {
+            newErrors.name = "Name must be non-empty";
+        } else {
+            delete newErrors.name;
         }
 
-        setName(value);
+        validateCoords("x", newFields.x, newErrors);
+        validateCoords("y", newFields.y, newErrors);
+        validateCoords("width", newFields.width, newErrors);
+        validateCoords("height", newFields.height, newErrors);
+
+        setErrors(newErrors);
+        setFields(newFields);
     };
 
     const onDelete = () => {
-        if (object && !state.selection.new) {
+        if (object) {
             dispatch({ type: "DeleteObject", uuid: object.uuid });
         }
 
@@ -78,10 +112,29 @@ function ObjectFields({ state, dispatch }: ChildProps) {
     };
 
     const onSubmit = () => {
-        if (state.selection.new) {
-            dispatch({ type: "NewObject", name, coordinates });
+        if (object) {
+            dispatch({
+                type: "EditObject",
+                uuid: object.uuid,
+                name: fields.name,
+                coordinates: {
+                    x: fields.x,
+                    y: fields.y,
+                    width: fields.width,
+                    height: fields.height,
+                },
+            });
         } else {
-            dispatch({ type: "EditObject", uuid: object!.uuid, name, coordinates });
+            dispatch({
+                type: "NewObject",
+                name: fields.name,
+                coordinates: {
+                    x: fields.x,
+                    y: fields.y,
+                    width: fields.width,
+                    height: fields.height,
+                },
+            });
         }
 
         dispatch({ type: "Select", selection: null });
@@ -90,74 +143,80 @@ function ObjectFields({ state, dispatch }: ChildProps) {
     };
     return (
         <Box display="flex" flexDirection="column" gap={2} p={2} mt={2} flexGrow={1}>
-            <Title>{state.selection.new ? "New object" : "Selected object"}</Title>
-            <Box display="flex" gap={2} alignSelf="center" alignItems="center" flexGrow={1}>
+            <Title>{object ? "Selected object" : "New object"}</Title>
+            <Box
+                component="form"
+                display="flex"
+                gap={2}
+                alignSelf="center"
+                alignItems="center"
+                flexGrow={1}
+                onSubmit={onSubmit}
+            >
                 <TextField
-                    error={error != null}
-                    helperText={error}
                     required
+                    error={!!errors.name}
+                    helperText={errors.name ?? " "}
                     label="Name"
                     name="name"
-                    value={name}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        onNameChange(e.target.value)
-                    }
+                    value={fields.name}
+                    onChange={onChange}
                 />
                 <Box display="flex" flexDirection="column" gap={2}>
                     <TextField
                         size="small"
                         required
+                        error={!!errors.x}
+                        helperText={errors.x ?? " "}
                         label="X"
                         name="x"
                         sx={{ width: "120px" }}
-                        value={coordinates?.x ?? 0}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCoordinates({ ...coordinates, x: Number(e.target.value) })
-                        }
+                        value={fields.x}
+                        onChange={onChange}
                     />
                     <TextField
                         size="small"
                         required
+                        error={!!errors.width}
+                        helperText={errors.width ?? " "}
                         label="Width"
                         name="width"
                         sx={{ width: "120px" }}
-                        value={coordinates?.width ?? 0}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCoordinates({ ...coordinates, width: Number(e.target.value) })
-                        }
+                        value={fields.width}
+                        onChange={onChange}
                     />
                 </Box>
                 <Box display="flex" flexDirection="column" gap={2}>
                     <TextField
                         size="small"
                         required
+                        error={!!errors.y}
+                        helperText={errors.y ?? " "}
                         label="Y"
                         name="y"
                         sx={{ width: "120px" }}
-                        value={coordinates?.y ?? 0}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCoordinates({ ...coordinates, y: Number(e.target.value) })
-                        }
+                        value={fields.y}
+                        onChange={onChange}
                     />
                     <TextField
                         size="small"
                         required
+                        error={!!errors.height}
+                        helperText={errors.height ?? " "}
                         label="Height"
                         name="height"
                         sx={{ width: "120px" }}
-                        value={coordinates?.height ?? 0}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                            setCoordinates({ ...coordinates, height: Number(e.target.value) })
-                        }
+                        value={fields.height}
+                        onChange={onChange}
                     />
                 </Box>
                 <IconButton sx={{ color: "error.main" }} onClick={onDelete}>
                     <DeleteIcon fontSize="large" />
                 </IconButton>
                 <IconButton
+                    type="submit"
                     sx={{ color: "success.main" }}
-                    disabled={error !== null}
-                    onClick={onSubmit}
+                    disabled={Object.entries(errors).length > 0}
                 >
                     <CheckIcon fontSize="large" />
                 </IconButton>
@@ -166,12 +225,25 @@ function ObjectFields({ state, dispatch }: ChildProps) {
     );
 }
 
+const _defaultStepFields: EditedStepFields = {
+    orderNum: 1,
+    expectedInitialState: ObjectState.Present,
+    expectedSubsequentState: ObjectState.Missing,
+    object: null,
+};
+
+type StepFieldsErrors = Partial<
+    Record<keyof Omit<EditedStepFields, "expectedInitialState" | "expectedSubsequentState">, string>
+>;
+
 function StepFields({ state, dispatch }: ChildProps) {
     const step = state.task.steps.find((s) => s.uuid === state.selection.uuid);
-    if (!step) {
-        // TODO: error handling
-        return null;
-    }
+
+    const [errors, setErrors] = useState<StepFieldsErrors>({});
+
+    const defaultFields = step ? (step as EditedStepFields) : _defaultStepFields;
+
+    const [fields, setFields] = useState(defaultFields);
 
     const objectsSelectArray = [
         <MenuItem key={""} value={""}>
@@ -184,31 +256,155 @@ function StepFields({ state, dispatch }: ChildProps) {
         )),
     ];
 
+    const reset = () => {
+        setFields(defaultFields);
+        setErrors({});
+    };
+
+    const onSubmit = () => {
+        if (step) {
+            dispatch({
+                type: "EditStep",
+                uuid: step.uuid,
+                orderNum: fields.orderNum,
+                expectedInitialState: fields.expectedInitialState,
+                expectedSubsequentState: fields.expectedSubsequentState,
+                object: fields.object!,
+            });
+        } else {
+            dispatch({
+                type: "NewStep",
+                orderNum: fields.orderNum,
+                expectedInitialState: fields.expectedInitialState,
+                expectedSubsequentState: fields.expectedSubsequentState,
+                object: fields.object!,
+            });
+        }
+
+        dispatch({ type: "Select", selection: null });
+
+        reset();
+    };
+
+    const onOrderNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const regex = /^[1-9]+$/;
+
+        if (!regex.test(e.target.value)) {
+            setErrors({ ...errors, orderNum: "Order must be higher than 0" });
+        } else {
+            setErrors(() => {
+                const newErrors = { ...errors };
+                delete newErrors.orderNum;
+                return newErrors;
+            });
+        }
+
+        // NOTE(rg): `e.target.value` is a string, even if we put `type=number` on the input
+        // (which we didn't)
+        setFields({ ...fields, orderNum: e.target.value as any });
+    };
+
+    // TODO(rg): this textfield might break if the action isn't `remove` or `replace`
+    const onActionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.value === "remove") {
+            setFields({
+                ...fields,
+                expectedInitialState: ObjectState.Present,
+                expectedSubsequentState: ObjectState.Missing,
+            });
+        } else if (e.target.value === "replace") {
+            setFields({
+                ...fields,
+                expectedInitialState: ObjectState.Missing,
+                expectedSubsequentState: ObjectState.Present,
+            });
+        }
+    };
+
+    const onObjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const uuid = e.target.value;
+        if (uuid.length) {
+            const object = state.task.objects.find((o) => o.uuid === uuid);
+            if (!object) {
+                setErrors({ ...errors, object: "The step must refer to an existing object" });
+                setFields({ ...fields, object: null });
+            } else {
+                const conflicting = state.task.steps.filter((s) => {
+                    let condition = s.object.uuid === uuid && s.orderNum === fields.orderNum;
+                    if (step) condition = condition && s.uuid !== step.uuid;
+
+                    return condition;
+                });
+                // TODO(rg): validation doesn't fail here when it should. figure out why
+                if (conflicting.length) {
+                    setErrors({
+                        ...errors,
+                        object: "Multiple steps with the same order can't refer to the same object",
+                    });
+                } else {
+                    setErrors(() => {
+                        const newErrors = { ...errors };
+                        delete newErrors.object;
+                        return newErrors;
+                    });
+                }
+                setFields({ ...fields, object });
+            }
+        } else {
+            setErrors({ ...errors, object: "The step must refer to an object" });
+            setFields({ ...fields, object: null });
+        }
+    };
+
+    let action = GetStepActionString(fields.expectedInitialState, fields.expectedSubsequentState);
+    if (action !== "remove" && action !== "replace") {
+        action = "";
+    }
+
     return (
         <Box display="flex" flexDirection="column" gap={2} p={2} mt={2} flexGrow={1}>
-            <Title>{state.selection.new ? "New step" : "Selected step"}</Title>
-            <Box display="flex" gap={2} alignSelf="center" alignItems="center" flexGrow={1}>
-                <TextField required label="Order" name="orderNum" sx={{ width: "120px" }} />
+            <Title>{step ? "Selected step" : "New step"}</Title>
+            <Box
+                component="form"
+                display="flex"
+                gap={2}
+                alignSelf="center"
+                alignItems="center"
+                flexGrow={1}
+                onSubmit={onSubmit}
+            >
+                <TextField
+                    required
+                    error={!!errors.orderNum}
+                    helperText={errors.orderNum ?? " "}
+                    label="Order"
+                    name="orderNum"
+                    value={fields.orderNum}
+                    onChange={onOrderNumChange}
+                    sx={{ width: "120px" }}
+                />
                 <TextField
                     required
                     select
+                    helperText=" "
                     label="Action"
                     name="action"
-                    defaultValue={""}
+                    value={action}
+                    onChange={onActionChange}
                     sx={{ width: "240px" }}
                 >
-                    <MenuItem value={""}>
-                        <i>None</i>
-                    </MenuItem>
                     <MenuItem value={"remove"}>Remove</MenuItem>
                     <MenuItem value={"replace"}>Replace</MenuItem>
                 </TextField>
                 <TextField
                     required
+                    error={!!errors.object}
+                    helperText={errors.object ?? " "}
                     select
                     label="Object"
                     name="object"
-                    defaultValue={""}
+                    value={fields.object?.uuid ?? ""}
+                    onChange={onObjectChange}
                     sx={{ width: "240px" }}
                 >
                     {objectsSelectArray}
@@ -216,7 +412,11 @@ function StepFields({ state, dispatch }: ChildProps) {
                 <IconButton sx={{ color: "error.main" }}>
                     <DeleteIcon fontSize="large" />
                 </IconButton>
-                <IconButton sx={{ color: "success.main" }}>
+                <IconButton
+                    sx={{ color: "success.main" }}
+                    type="submit"
+                    disabled={Object.entries(errors).length > 0}
+                >
                     <CheckIcon fontSize="large" />
                 </IconButton>
             </Box>

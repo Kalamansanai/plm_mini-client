@@ -8,7 +8,10 @@ import { Box, Card, Divider, Typography } from "@mui/material";
 import { blue, red } from "@mui/material/colors";
 
 export default function EventCard({ event }: { event: Event }) {
-    const actionString = GetStepActionString(event.step);
+    const actionString = GetStepActionString(
+        event.step.expectedInitialState,
+        event.step.expectedSubsequentState
+    );
 
     const timestampDate = new Date(event.timestamp);
 
