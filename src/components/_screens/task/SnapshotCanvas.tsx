@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
-import { drawObject, editorDarkenOutsideRectangle } from "utils/canvas";
+import { useEffect, useRef, useState } from "react";
+import { CanvasAction, drawObject, editorDarkenOutsideRectangle, getAction } from "utils/canvas";
 
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
-import { EditedObject, Selection, State } from "./reducer";
+import { Action, EditedObject, Selection, State } from "./reducer";
 
 type Props = {
     snapshot: Blob;
     state: State;
+    dispatch: React.Dispatch<Action>;
 };
 
 const useResizeListener = (callback: () => void) => {
@@ -18,7 +19,9 @@ const useResizeListener = (callback: () => void) => {
     }, [callback]);
 };
 
-export default function SnapshotCanvas({ snapshot, state }: Props) {
+// TODO(rg): event handlers for touch events on canvas
+export default function SnapshotCanvas({ snapshot, state, dispatch }: Props) {
+    const [action, setAction] = useState<CanvasAction>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const theme = useTheme();
@@ -33,6 +36,22 @@ export default function SnapshotCanvas({ snapshot, state }: Props) {
         canvas.width = snapshotImage.width;
         canvas.height = snapshotImage.height;
         draw();
+    };
+
+    const getActualMouseCoords = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        // TS doesn't recognize that HTML canvas element has `offsetLeft`, etc. properties
+        const target = e.target as any;
+
+        const x_scale = canvas.width / snapshotImage.width;
+        const y_scale = canvas.height / snapshotImage.height;
+
+        const x = Math.round((e.clientX - target.offsetLeft + window.scrollX) / x_scale);
+        const y = Math.round((e.clientY - target.offsetTop + window.scrollY) / y_scale);
+
+        return [x, y];
     };
 
     const draw = () => {
@@ -88,11 +107,88 @@ export default function SnapshotCanvas({ snapshot, state }: Props) {
 
     useResizeListener(draw);
 
-    const onMouseDown = () => {};
+    const onMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        const mouse = getActualMouseCoords(e);
+        if (!mouse) return;
 
-    const onMouseMove = () => {};
+        const [x, y] = mouse;
 
-    const onMouseUp = () => {};
+        // When there are multiple intersecting objects, and one of them is selected,
+        // we presume the user wants to interact with the selected one when clicking in the
+        // intersection. Therefore, we first check the selected objects, and then the others
+        let objectsWithSelectedFirst = state.task.objects.filter(
+            (o) => state.selection?.uuid !== o.uuid
+        );
+
+        if (state.selection?.uuid) {
+            const selectedObject = state.task.objects.find((o) => state.selection!.uuid === o.uuid);
+            if (selectedObject) objectsWithSelectedFirst.splice(0, 0, selectedObject);
+        }
+
+        for (const o of objectsWithSelectedFirst) {
+            const action = getAction(x!, y!, o);
+            if (action) {
+                setAction(action);
+                if (state.selection?.uuid !== o.uuid)
+                    dispatch({
+                        type: "Select",
+                        selection: { uuid: o.uuid, selectionType: "object" },
+                    });
+
+                return;
+            }
+        }
+
+        setAction(null);
+        dispatch({ type: "Select", selection: null });
+    };
+
+    const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+        const mouse = getActualMouseCoords(e);
+        if (!mouse) return;
+
+        const [x, y] = mouse;
+
+        if (!state.selection) return;
+
+        const selectedObject = state.task.objects.find((o) => state.selection?.uuid === o.uuid);
+
+        if (!selectedObject || !action) return;
+
+        if (action.type === "Resize") {
+            const newCoords = { ...selectedObject.coordinates };
+            newCoords.width = Math.max(8, x! - newCoords.x);
+            newCoords.height = Math.max(8, y! - newCoords.y);
+            dispatch({
+                type: "EditObject",
+                name: selectedObject.name,
+                uuid: selectedObject.uuid,
+                coordinates: newCoords,
+            });
+        } else if (action.type === "Move") {
+            const newCoords = { ...selectedObject.coordinates };
+            newCoords.x = x! - action.offset_x;
+            newCoords.y = y! - action.offset_y;
+
+            if (newCoords.x < 0) newCoords.x = 0;
+            if (newCoords.y < 0) newCoords.y = 0;
+            if (newCoords.x + newCoords.width > snapshotImage.width)
+                newCoords.x = snapshotImage.width - newCoords.width;
+            if (newCoords.y + newCoords.height > snapshotImage.height)
+                newCoords.y = snapshotImage.height - newCoords.height;
+
+            dispatch({
+                type: "EditObject",
+                name: selectedObject.name,
+                uuid: selectedObject.uuid,
+                coordinates: newCoords,
+            });
+        }
+    };
+
+    const onMouseUp = () => {
+        setAction(null);
+    };
 
     return (
         <Box
@@ -111,11 +207,8 @@ export default function SnapshotCanvas({ snapshot, state }: Props) {
                 component="canvas"
                 ref={canvasRef}
                 onMouseDown={onMouseDown}
-                onTouchStart={onMouseDown}
                 onMouseMove={onMouseMove}
-                onTouchMove={onMouseMove}
                 onMouseUp={onMouseUp}
-                onTouchEnd={onMouseUp}
             />
         </Box>
     );

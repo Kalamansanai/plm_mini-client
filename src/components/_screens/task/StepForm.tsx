@@ -45,7 +45,9 @@ export default function StepForm({ state, dispatch }: Props) {
         )),
     ];
 
-    const onSubmit = () => {
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
         if (step) {
             dispatch({
                 type: "EditStep",
@@ -64,8 +66,6 @@ export default function StepForm({ state, dispatch }: Props) {
                 object: fields.object!,
             });
         }
-
-        dispatch({ type: "Select", selection: null });
     };
 
     const onDelete = () => {

@@ -43,6 +43,7 @@ export type State = {
 
 export type Action =
     | { type: "Select"; selection: Selection | null }
+    | { type: "Revert"; task: EditedTask }
     | ({ type: "NewObject" } & Omit<EditedObject, "id" | "uuid">)
     | ({ type: "EditObject" } & Omit<EditedObject, "id">)
     | { type: "DeleteObject"; uuid: string }
@@ -68,6 +69,12 @@ export default function reducer(state: State, action: Action): State {
                 };
             }
 
+            return newState;
+        }
+        case "Revert": {
+            const newState = { ...state };
+            newState.task = structuredClone(action.task);
+            newState.selection = null;
             return newState;
         }
         case "NewObject": {

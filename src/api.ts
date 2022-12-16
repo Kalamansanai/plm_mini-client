@@ -6,8 +6,6 @@ import {
     ResponseError,
 } from "./api_client";
 
-const backend = (window as any).ENV.backend;
-
 // Mirror of the ApiExceptionResponse class on the backend
 export type ApiExceptionResponse = {
     description: string;
@@ -79,6 +77,6 @@ export function setupInterceptors(interceptors: Interceptors) {
 }
 
 export const config = new Configuration({
-    basePath: backend,
+    basePath: "https://localhost:9696",
     middleware: [errorHandlerMiddleware],
 });

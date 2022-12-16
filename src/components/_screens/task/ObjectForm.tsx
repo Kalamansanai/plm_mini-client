@@ -89,17 +89,19 @@ export default function ObjectForm({ state, dispatch }: Props) {
         dispatch({ type: "Select", selection: null });
     };
 
-    const onSubmit = () => {
+    const onSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
         if (object) {
             dispatch({
                 type: "EditObject",
                 uuid: object.uuid,
                 name: fields.name,
                 coordinates: {
-                    x: fields.x,
-                    y: fields.y,
-                    width: fields.width,
-                    height: fields.height,
+                    x: Number(fields.x),
+                    y: Number(fields.y),
+                    width: Number(fields.width),
+                    height: Number(fields.height),
                 },
             });
         } else {
@@ -107,15 +109,13 @@ export default function ObjectForm({ state, dispatch }: Props) {
                 type: "NewObject",
                 name: fields.name,
                 coordinates: {
-                    x: fields.x,
-                    y: fields.y,
-                    width: fields.width,
-                    height: fields.height,
+                    x: Number(fields.x),
+                    y: Number(fields.y),
+                    width: Number(fields.width),
+                    height: Number(fields.height),
                 },
             });
         }
-
-        dispatch({ type: "Select", selection: null });
     };
 
     return (

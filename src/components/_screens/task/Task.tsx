@@ -2,7 +2,7 @@ import { config as apiConfig, DetailedError } from "api";
 import { JobsApi, LocationsApi, ResponseError, TasksApi } from "api_client";
 import Title from "components/Title";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import React from "react";
+import React, { useMemo } from "react";
 import { useReducer, useState } from "react";
 import { Params, useLoaderData } from "react-router-dom";
 import { CompanyHierarchyNode, Job, Object, Step, TaskType, GetStepActionString } from "types";
@@ -261,6 +261,73 @@ export default function Task() {
         else return 0;
     });
 
+    const onRevert = () => {
+        dispatch({ type: "Revert", task: originalTask });
+    };
+
+    const onSave = () => {
+        console.log(originalTask);
+        console.log(state.task);
+    };
+
+    const selectedObject = state.task.objects.find((o) => state.selection?.uuid === o.uuid);
+
+    const objectsList = useMemo(
+        () => (
+            <Grid item xs={5} display="flex" flexDirection="column">
+                <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    sx={{ p: 2 }}
+                >
+                    <Title>Objects</Title>
+                    <IconButton
+                        sx={{ color: "primary.main" }}
+                        onClick={() =>
+                            dispatch({
+                                type: "Select",
+                                selection: {
+                                    uuid: null,
+                                    selectionType: "object",
+                                },
+                            })
+                        }
+                    >
+                        <Tooltip title="Add object">
+                            <AddCircleIcon />
+                        </Tooltip>
+                    </IconButton>
+                </Box>
+                <Box sx={{ display: "flex", flexGrow: 1 }}>
+                    <List sx={{ height: "100%", overflowY: "auto", flex: 1 }} disablePadding>
+                        {sortedObjects.map((o, i) => (
+                            <ListItem key={i} disablePadding>
+                                <ListItemButton
+                                    sx={{ fontSize: "1.2em" }}
+                                    selected={
+                                        !!state.selection &&
+                                        o.uuid === state.selection.uuid &&
+                                        state.selection.selectionType === "object"
+                                    }
+                                    onClick={() => select(o.uuid, "object")}
+                                >
+                                    {o.name}
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
+            </Grid>
+        ),
+        [state.task.objects.map((o) => o.name)]
+    );
+
+    const groupedStepsList = useMemo(
+        () => <GroupedStepsList state={state} select={select} />,
+        [state]
+    );
+
     return (
         <Container maxWidth="xl" sx={{ height: !isBelowLg ? "calc(100% - 32px)" : "auto", my: 2 }}>
             <Paper elevation={8} sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -325,89 +392,43 @@ export default function Task() {
                             height={isLg ? "auto" : "400px"}
                         >
                             <Grid container height="100%">
-                                <Grid item xs={5} display="flex" flexDirection="column">
-                                    <Box
-                                        display="flex"
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        sx={{ p: 2 }}
-                                    >
-                                        <Title>Objects</Title>
-                                        <IconButton
-                                            sx={{ color: "primary.main" }}
-                                            onClick={() =>
-                                                dispatch({
-                                                    type: "Select",
-                                                    selection: {
-                                                        uuid: null,
-                                                        selectionType: "object",
-                                                    },
-                                                })
-                                            }
-                                        >
-                                            <Tooltip title="Add object">
-                                                <AddCircleIcon />
-                                            </Tooltip>
-                                        </IconButton>
-                                    </Box>
-                                    <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
-                                        <List
-                                            sx={{ height: "100%", overflowY: "auto", flex: 1 }}
-                                            disablePadding
-                                        >
-                                            {sortedObjects.map((o, i) => (
-                                                <ListItem key={i} disablePadding>
-                                                    <ListItemButton
-                                                        sx={{ fontSize: "1.2em" }}
-                                                        selected={
-                                                            !!state.selection &&
-                                                            o.uuid === state.selection.uuid &&
-                                                            state.selection.selectionType ===
-                                                                "object"
-                                                        }
-                                                        onClick={() => select(o.uuid, "object")}
-                                                    >
-                                                        {o.name}
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            ))}
-                                        </List>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={7} display="flex">
-                                    {!isBelowLg ? (
-                                        <Divider orientation="vertical" flexItem />
-                                    ) : null}
-                                    <Box display="flex" flexDirection="column" flexGrow={1}>
-                                        <Box
-                                            display="flex"
-                                            justifyContent="space-between"
-                                            alignItems="center"
-                                            sx={{ p: 2 }}
-                                        >
-                                            <Title>Steps</Title>
-                                            <IconButton
-                                                sx={{ color: "primary.main" }}
-                                                onClick={() =>
-                                                    dispatch({
-                                                        type: "Select",
-                                                        selection: {
-                                                            uuid: null,
-                                                            selectionType: "step",
-                                                        },
-                                                    })
-                                                }
+                                <>
+                                    {objectsList}
+                                    <Grid item xs={7} display="flex">
+                                        {!isBelowLg ? (
+                                            <Divider orientation="vertical" flexItem />
+                                        ) : null}
+                                        <Box display="flex" flexDirection="column" flexGrow={1}>
+                                            <Box
+                                                display="flex"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                sx={{ p: 2 }}
                                             >
-                                                <Tooltip title="Add step">
-                                                    <AddCircleIcon />
-                                                </Tooltip>
-                                            </IconButton>
+                                                <Title>Steps</Title>
+                                                <IconButton
+                                                    sx={{ color: "primary.main" }}
+                                                    onClick={() =>
+                                                        dispatch({
+                                                            type: "Select",
+                                                            selection: {
+                                                                uuid: null,
+                                                                selectionType: "step",
+                                                            },
+                                                        })
+                                                    }
+                                                >
+                                                    <Tooltip title="Add step">
+                                                        <AddCircleIcon />
+                                                    </Tooltip>
+                                                </IconButton>
+                                            </Box>
+                                            <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
+                                                {groupedStepsList}
+                                            </Box>
                                         </Box>
-                                        <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
-                                            <GroupedStepsList state={state} select={select} />
-                                        </Box>
-                                    </Box>
-                                </Grid>
+                                    </Grid>
+                                </>
                             </Grid>
                         </Box>
                     </Grid>
@@ -421,13 +442,20 @@ export default function Task() {
                         >
                             <Title sx={{ mb: 2 }}>Location snapshot</Title>
                             <Box flexGrow={1} flexShrink={1} width="100%">
-                                <SnapshotCanvas snapshot={snapshot} state={state} />
+                                <SnapshotCanvas
+                                    snapshot={snapshot}
+                                    state={state}
+                                    dispatch={dispatch}
+                                />
                             </Box>
                             <Box display="flex" flexDirection="column" flexGrow={0}>
                                 {state.selection ? (
                                     state.selection.selectionType === "object" ? (
                                         <ObjectForm
-                                            key={state.selection.uuid}
+                                            key={
+                                                /* TODO(rg): don't actually ever do this */
+                                                JSON.stringify(selectedObject)
+                                            }
                                             state={state as any}
                                             dispatch={dispatch}
                                         />
@@ -447,10 +475,12 @@ export default function Task() {
                 <Box display="flex" p={1} justifyContent="space-between">
                     <Box></Box>
                     <Box display="flex" gap={1}>
-                        <Button variant="contained" color="info">
+                        <Button variant="contained" color="info" onClick={onRevert}>
                             Revert
                         </Button>
-                        <Button variant="contained">Save changes</Button>
+                        <Button variant="contained" onClick={onSave}>
+                            Save changes
+                        </Button>
                     </Box>
                 </Box>
             </Paper>

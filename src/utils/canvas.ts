@@ -1,46 +1,15 @@
-import { Object, type Template } from "../types";
-import { bifilter } from "./bifilter";
+import { Object } from "../types";
 
-// const TEMPLATE_COLOR = "#ff0";
-// const SELECTED_TEMPLATE_COLOR = "#0f0";
-// const TEMPLATE_LINE_WIDTH = 2;
+export type CanvasAction =
+    | { type: "Resize" }
+    | { type: "Move"; offset_x: number; offset_y: number }
+    | null;
 
 const OBJECT_COLOR = "#ff0";
 const SELECTED_OBJECT_COLOR = "#0f0";
 const OBJECT_CIRCLE_SIZE = 12;
 const OBJECT_DASH_COLOR = "#fff";
 const OBJECT_LINE_WIDTH = 2;
-
-// export const canvasActionTypes = {
-//     none: 0,
-//     resize: 1,
-//     move: 2,
-// };
-
-// export const streamDrawTemplates = (
-//     ctx: CanvasRenderingContext2D,
-//     ts: Template[],
-//     drawLabels: boolean
-// ) => {
-//     ctx.save();
-//
-//     const [tracked, untracked] = bifilter((t) => window.Object.keys(t).includes("present"), ts);
-//
-//     ctx.lineWidth = 4;
-//     ctx.globalAlpha = 0.5;
-//     untracked.forEach((t) => {
-//         drawDashedTemplate(ctx, t, TEMPLATE_COLOR, "#444");
-//         if (drawLabels) drawLabel(ctx, t.x, t.y, t.name);
-//     });
-//
-//     ctx.globalAlpha = 1;
-//     tracked.forEach((t) => {
-//         drawDashedTemplate(ctx, t, TEMPLATE_COLOR, t.present ? "#0f0" : "#f00");
-//         if (drawLabels) drawLabel(ctx, t.x, t.y, t.name);
-//     });
-//
-//     ctx.restore();
-// };
 
 export const drawObject = (
     image: HTMLImageElement,
@@ -50,7 +19,6 @@ export const drawObject = (
     selected: boolean
 ) => {
     ctx.save();
-    console.log(`draw ${object.name}`);
 
     ctx.lineWidth = OBJECT_LINE_WIDTH;
 
@@ -137,15 +105,18 @@ const drawObjectLabel = (ctx: CanvasRenderingContext2D, object: Object) => {
     ctx.restore();
 };
 
-export const getActionForTemplate = (x: number, y: number, t: Template) => {
-    if (isInCircle(x, y, t.x + t.width, t.y + t.height, TEMPLATE_CIRCLE_SIZE)) {
-        return { type: canvasActionTypes.resize, args: null };
-    } else if (isInRectangle(x, y, t.x, t.y, t.width, t.height)) {
-        const offset_x = x - t.x;
-        const offset_y = y - t.y;
+export const getAction = (x: number, y: number, o: Object): CanvasAction => {
+    const c = o.coordinates;
+
+    if (isInCircle(x, y, c.x + c.width, c.y + c.height, OBJECT_CIRCLE_SIZE)) {
+        return { type: "Resize" };
+    } else if (isInRectangle(x, y, c.x, c.y, c.width, c.height)) {
+        const offset_x = x - c.x;
+        const offset_y = y - c.y;
         return {
-            type: canvasActionTypes.move,
-            args: { offset_x: offset_x, offset_y: offset_y },
+            type: "Move",
+            offset_x,
+            offset_y,
         };
     }
 
@@ -153,7 +124,7 @@ export const getActionForTemplate = (x: number, y: number, t: Template) => {
 };
 
 const isBetween = (x: number, x1: number, x2: number) => {
-    return x >= x1 && x <= x2;
+    return x1 <= x && x <= x2;
 };
 
 const distance = (x1: number, y1: number, x2: number, y2: number) => {
