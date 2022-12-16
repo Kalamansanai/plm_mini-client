@@ -16,7 +16,7 @@ import {
     State,
     SnapshotSize,
     EditedStepFields,
-} from "./taskEditorReducer";
+} from "./reducer";
 
 type Props = {
     state: State;

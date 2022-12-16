@@ -1,14 +1,13 @@
 import { config as apiConfig } from "api";
 import { JobsApi, LocationsApi, TasksApi, TasksCreateRes, TaskType } from "api_client";
 import Title from "components/Title";
-import { useRef } from "react";
 import { Form, redirect, useActionData, useFetcher, useLoaderData } from "react-router-dom";
-import { CompanyHierarchyNode, Job, Location, Snapshot } from "types";
+import { CompanyHierarchyNode, Job } from "types";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import SaveIcon from "@mui/icons-material/Save";
-import { Box, Button, Divider, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, MenuItem, Paper, TextField } from "@mui/material";
 import { Container } from "@mui/system";
 
 export async function loader({ request }: { request: Request }) {
