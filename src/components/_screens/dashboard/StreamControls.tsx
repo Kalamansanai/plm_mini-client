@@ -59,8 +59,8 @@ export default function StreamControls({ playing, setPlaying, detector }: Props)
                 </Tooltip>
             </Box>
             <Box display="flex" gap={2}>
-                <LabeledValue value="Active" label="Status" />
-                <LabeledValue value={60} label="FPS" />
+                <LabeledValue value={playing ? "Active" : "Inactive"} label="Status" />
+                {playing && <LabeledValue value={"???"} label="FPS" />}
             </Box>
         </Paper>
     );

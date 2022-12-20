@@ -69,7 +69,7 @@ export default function Dashboard() {
     return (
         <Grid container spacing={2} height="100%">
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
-                <Stream />
+                <Stream playing={playing} detector={location.detector} />
                 <Grid container spacing={2} flexGrow={1}>
                     <Grid item xs={12} sm={12} md={12} lg={3}>
                         <StreamControls
