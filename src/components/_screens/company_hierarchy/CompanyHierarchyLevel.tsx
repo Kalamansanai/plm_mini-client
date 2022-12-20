@@ -98,7 +98,7 @@ export default function CompanyHierarchyLevel({ level, label, labelSingular }: P
                     {label}
                 </Typography>
                 <Divider />
-                <Box sx={{ display: "flex", flexDirection: "flex-end", flexGrow: 1, height: 0 }}>
+                <Box sx={{ display: "flex", flexGrow: 1, height: 0 }}>
                     {level !== 0 && <Divider orientation="vertical" />}
                     <List
                         sx={{ height: "100%", overflowY: "auto", flex: 1 }}

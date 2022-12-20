@@ -13,10 +13,6 @@ export default function Stream({ playing, detector }: { playing: boolean; detect
             ? `${backend}/api/v1/detectors/${detector.id}/stream`
             : "https://via.placeholder.com/640x360";
 
-    console.log(playing);
-    console.log(!!detector);
-    console.log(detector!.id);
-
     useResizeObserver(containerRef, (_) => {
         adjustVideoSize();
     });
