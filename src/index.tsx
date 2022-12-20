@@ -158,7 +158,7 @@ const router = createBrowserRouter(
                     <Route
                         errorElement={<ErrorPage />}
                         loader={dashboardLocationLoader}
-                        path=":location_id"
+                        path="location/:location_id"
                         element={<Dashboard />}
                     >
                         <Route path="tasks" loader={locationTasksLoader} />

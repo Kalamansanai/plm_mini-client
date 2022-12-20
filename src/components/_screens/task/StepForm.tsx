@@ -77,7 +77,7 @@ export default function StepForm({ state, dispatch }: Props) {
     };
 
     const onOrderNumChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const regex = /^[1-9]+$/;
+        const regex = /^[1-9][0-9]*$/;
 
         if (!regex.test(e.target.value)) {
             setErrors({ ...errors, orderNum: "Order must be higher than 0" });
@@ -184,8 +184,12 @@ export default function StepForm({ state, dispatch }: Props) {
                     onChange={onActionChange}
                     sx={{ width: "240px" }}
                 >
-                    <MenuItem value={"remove"}>Remove</MenuItem>
-                    <MenuItem value={"replace"}>Replace</MenuItem>
+                    <MenuItem key="remove" value={"remove"}>
+                        Remove
+                    </MenuItem>
+                    <MenuItem key="replace" value={"replace"}>
+                        Replace
+                    </MenuItem>
                 </TextField>
                 <TextField
                     required

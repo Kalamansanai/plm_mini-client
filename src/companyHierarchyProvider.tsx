@@ -223,9 +223,9 @@ function reducer(state: State, action: Action): State {
                 action.navFn!("/dashboard/" + action.id);
             } else if (action.level === Level.Location) {
                 if (sameIdSelected) {
-                    action.navFn!("..", { relative: "path" });
+                    action.navFn!("../..", { relative: "path" });
                 } else {
-                    action.navFn!(action.id.toString());
+                    action.navFn!("location/" + action.id.toString());
                 }
             }
 

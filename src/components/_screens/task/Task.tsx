@@ -1,11 +1,19 @@
 import { config as apiConfig, DetailedError } from "api";
-import { JobsApi, LocationsApi, ResponseError, TasksApi } from "api_client";
+import { JobsApi, LocationsApi, ResponseError, TasksApi, TasksUpdateReq } from "api_client";
 import Title from "components/Title";
 import { usePopupState } from "material-ui-popup-state/hooks";
-import React, { useMemo } from "react";
+import { useSnackbar } from "notistack";
+import React, { useEffect, useMemo } from "react";
 import { useReducer, useState } from "react";
-import { Params, useLoaderData } from "react-router-dom";
+import {
+    ActionFunctionArgs,
+    Params,
+    useFetcher,
+    useLoaderData,
+    useLocation,
+} from "react-router-dom";
 import { CompanyHierarchyNode, Job, Object, Step, TaskType, GetStepActionString } from "types";
+import { bifilter } from "utils/bifilter";
 import { v4 as uuidv4 } from "uuid";
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -40,18 +48,106 @@ import reducer, {
     SelectionType,
 } from "./reducer";
 
+// Get the difference between the original object and the edited object. Called before sending the
+// update to determine what the update request should contain.
+//  - all fields inside the request are optional. This lets us only update things that've changed
+//  - NOTE(rg): we get rid of all unneeded fields before returning [...]
+const getTaskDelta = (originalTask: EditedTask, newTask: EditedTask) => {
+    const delta: TasksUpdateReq = {};
+
+    delta.parentJobId = originalTask.job.id;
+
+    if (originalTask.name !== newTask.name) {
+        delta.newName = newTask.name;
+    }
+
+    if (originalTask.taskType !== newTask.taskType) {
+        delta.newType = newTask.taskType;
+    }
+
+    let [newObjects, modifiedObjects] = bifilter((o) => o.id === 0, newTask.objects);
+    let [newSteps, modifiedSteps] = bifilter((s) => s.id === 0, newTask.steps);
+
+    const newStepsReq = newSteps.map((s) => ({
+        ...s,
+        objectName: newTask.objects.find((o) => o.uuid === s.object.uuid)!.name,
+    })); //
+
+    console.log(originalTask.objects);
+    console.log(modifiedObjects);
+
+    modifiedObjects = modifiedObjects.filter((o) => {
+        const orig = originalTask.objects.find((_o) => _o.uuid === o.uuid)!;
+        return (
+            orig.name !== o.name ||
+            orig.coordinates.x !== o.coordinates.x ||
+            orig.coordinates.y !== o.coordinates.y ||
+            orig.coordinates.width !== o.coordinates.width ||
+            orig.coordinates.height !== o.coordinates.height
+        );
+    });
+
+    const modifiedStepsReq = modifiedSteps
+        .filter((s) => {
+            const orig = originalTask.steps.find((_s) => _s.uuid === s.uuid)!;
+            return (
+                orig.object.uuid !== s.object.uuid ||
+                orig.orderNum !== s.orderNum ||
+                orig.expectedInitialState !== s.expectedInitialState ||
+                orig.expectedSubsequentState !== s.expectedSubsequentState
+            );
+        })
+        .map((s) => ({
+            ...s,
+            objectName: newTask.objects.find((o) => o.uuid == s.object.uuid)!.name,
+        })); //
+
+    const deletedObjects = originalTask.objects
+        .map((o) => o.id)
+        .filter((id) => !newTask.objects.map((o) => o.id).includes(id));
+
+    const deletedSteps = originalTask.steps
+        .map((s) => s.id)
+        .filter((id) => !newTask.steps.map((s) => s.id).includes(id));
+
+    if (newObjects.length) {
+        delta.newObjects = newObjects.map((o: any) => {
+            // delete o["id"];
+            // delete o["uuid"];
+            return o;
+        });
+    }
+
+    if (newStepsReq.length) {
+        delta.newSteps = newStepsReq;
+    }
+
+    if (modifiedObjects.length) {
+        delta.modifiedObjects = modifiedObjects;
+    }
+
+    if (modifiedStepsReq.length) {
+        delta.modifiedSteps = modifiedStepsReq;
+    }
+
+    if (deletedObjects.length) {
+        delta.deletedObjects = deletedObjects;
+    }
+
+    if (deletedSteps.length) {
+        delta.deletedSteps = deletedSteps;
+    }
+
+    return delta;
+};
+
 // The steps we get from the backend only have an `objectId` field, but we want them to contain the
 // objects themselves.
-const resolveStepObjects = (
-    steps: Array<Step & { objectId: number }>,
-    objects: Array<Object>
-): Array<Step> => {
-    const resolvedSteps = steps.map((s) => {
+const resolveStepObjects = (steps: Array<Step & { objectId: number }>, objects: Array<Object>) => {
+    steps.map((s) => {
         s.object = objects.find((o) => o.id === s.objectId)!;
         return s;
     });
-
-    return resolvedSteps;
 };
 
 // We assign temporary UUIDs to all objects and steps because we want them to have a stable
@@ -90,7 +186,7 @@ export async function loader({ params }: { params: Params }) {
 
         const steps = stepsObjects.steps! as Array<Step & { objectId: number }>;
         const objects = stepsObjects.objects! as Array<EditedObject>;
-        const resolvedSteps = resolveStepObjects(steps, objects);
+        resolveStepObjects(steps, objects);
 
         const [stepsWithIds, objectsWithIds] = assignTemporaryIds(steps, objects);
 
@@ -132,7 +228,18 @@ type LoaderData = {
 //  - new objects
 //  - modified objects
 //  - deleted objects' ids
-export async function action({ request }: { request: Request }) {}
+export async function action({ params, request }: ActionFunctionArgs) {
+    const id = params["task_id"]! as any as number;
+    const formData = await request.formData();
+
+    const delta = JSON.parse(formData.get("delta")!.toString());
+
+    try {
+        await new TasksApi(apiConfig).apiEndpointsTasksUpdate({ id, tasksUpdateReq: delta });
+    } catch (_err) {
+        // noop
+    }
+}
 
 // This component was extracted to reduce the extreme JSX nesting in Task
 function GroupedStepsList({
@@ -227,6 +334,8 @@ function GroupedStepsList({
 
 export default function Task() {
     const theme = useTheme();
+    const fetcher = useFetcher();
+    const location = useLocation();
     const { jobs, task: originalTask, snapshot } = useLoaderData() as LoaderData;
     const isLg = useMediaQuery(theme.breakpoints.up("lg"));
 
@@ -236,17 +345,6 @@ export default function Task() {
     });
 
     const isBelowLg = useMediaQuery(theme.breakpoints.down("lg"));
-
-    const jobsSelectArray = [
-        <MenuItem key={""} value={""}>
-            <i>None</i>
-        </MenuItem>,
-        ...jobs.map((j: Job) => (
-            <MenuItem key={j.id} value={j.id}>
-                {j.name}
-            </MenuItem>
-        )),
-    ];
 
     const select = (uuid: string, type: SelectionType) => {
         dispatch({ type: "Select", selection: { uuid, selectionType: type } });
@@ -261,13 +359,28 @@ export default function Task() {
         else return 0;
     });
 
+    // NOTE(rg): after a submit, the loader will run to fetch the updated originalTask, so we need
+    // to update our state
+    useEffect(() => {
+        dispatch({ type: "Initialize", task: originalTask });
+    }, [originalTask]);
+
     const onRevert = () => {
-        dispatch({ type: "Revert", task: originalTask });
+        // TODO(rg): pop up a confirm window to avoid the changes being thrown away when the user
+        // accidentally clicks Revert instead of Save
+        dispatch({ type: "Initialize", task: originalTask });
     };
 
     const onSave = () => {
-        console.log(originalTask);
-        console.log(state.task);
+        const delta = getTaskDelta(originalTask, state.task);
+
+        // NOTE(rg): this is kinda ugly. We convert the object to JSON and then the action converts
+        // it back to an object. We can't pass the object directly because we can only put strings
+        // in the FormData.
+        fetcher.submit(
+            { delta: JSON.stringify(delta) },
+            { method: "post", action: location.pathname }
+        );
     };
 
     const selectedObject = state.task.objects.find((o) => state.selection?.uuid === o.uuid);
@@ -342,7 +455,10 @@ export default function Task() {
                                         label="Name"
                                         name="name"
                                         fullWidth
-                                        defaultValue={state.task.name}
+                                        value={state.task.name}
+                                        onChange={(e) =>
+                                            dispatch({ type: "RenameTask", name: e.target.value })
+                                        }
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -352,11 +468,14 @@ export default function Task() {
                                         label="Task type"
                                         name="taskType"
                                         fullWidth
-                                        defaultValue={state.task.taskType}
+                                        value={state.task.taskType}
+                                        onChange={(e) =>
+                                            dispatch({
+                                                type: "EditTaskType",
+                                                taskType: e.target.value as TaskType,
+                                            })
+                                        }
                                     >
-                                        <MenuItem value={""}>
-                                            <i>None</i>
-                                        </MenuItem>
                                         <MenuItem value={TaskType.ToolKit}>Tool kit</MenuItem>
                                         <MenuItem value={TaskType.ItemKit}>Item kit</MenuItem>
                                     </TextField>
@@ -373,14 +492,12 @@ export default function Task() {
                                 <Grid item xs={6}>
                                     <TextField
                                         required
-                                        select
                                         label="Job"
                                         name="parentJobId"
                                         fullWidth
+                                        disabled
                                         defaultValue={state.task.job.id}
-                                    >
-                                        {jobsSelectArray}
-                                    </TextField>
+                                    />
                                 </Grid>
                             </Grid>
                         </Box>
@@ -453,7 +570,10 @@ export default function Task() {
                                     state.selection.selectionType === "object" ? (
                                         <ObjectForm
                                             key={
-                                                /* TODO(rg): don't actually ever do this */
+                                                /* TODO(rg): fix this; this has terrible
+                                                 * performance, but something like this is needed if we want the
+                                                 * object form to rerender when changes are made to
+                                                 * the current object on the snapshot canvas */
                                                 JSON.stringify(selectedObject)
                                             }
                                             state={state as any}

@@ -42,8 +42,10 @@ export type State = {
 };
 
 export type Action =
+    | { type: "Initialize"; task: EditedTask }
+    | { type: "RenameTask"; name: string }
+    | { type: "EditTaskType"; taskType: TaskType }
     | { type: "Select"; selection: Selection | null }
-    | { type: "Revert"; task: EditedTask }
     | ({ type: "NewObject" } & Omit<EditedObject, "id" | "uuid">)
     | ({ type: "EditObject" } & Omit<EditedObject, "id">)
     | { type: "DeleteObject"; uuid: string }
@@ -53,6 +55,22 @@ export type Action =
 
 export default function reducer(state: State, action: Action): State {
     switch (action.type) {
+        case "Initialize": {
+            const newState = { ...state };
+            newState.task = structuredClone(action.task);
+            newState.selection = null;
+            return newState;
+        }
+        case "RenameTask": {
+            const newState = { ...state };
+            newState.task.name = action.name;
+            return newState;
+        }
+        case "EditTaskType": {
+            const newState = { ...state };
+            newState.task.taskType = action.taskType;
+            return newState;
+        }
         case "Select": {
             const newState = { ...state };
             if (
@@ -69,12 +87,6 @@ export default function reducer(state: State, action: Action): State {
                 };
             }
 
-            return newState;
-        }
-        case "Revert": {
-            const newState = { ...state };
-            newState.task = structuredClone(action.task);
-            newState.selection = null;
             return newState;
         }
         case "NewObject": {
