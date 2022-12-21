@@ -5,8 +5,20 @@ import { Detector } from "types";
 
 import { Box } from "@mui/material";
 
-export default function Stream({ playing, detector }: { playing: boolean; detector?: Detector }) {
+type Props = {
+    playing: boolean;
+    detector?: Detector;
+    setStreamFps: React.Dispatch<React.SetStateAction<number>>;
+};
+
+export default function Stream({ playing, detector, setStreamFps }: Props) {
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const frameCountRef = useRef(0);
+
+    // TODO(rg):
+    //  - img onload increments frame count
+    //  - each second, setStreamFps is called with the current frame count; frame count is reset to
+    //  0
 
     const source =
         playing && detector && detector.id
@@ -32,7 +44,14 @@ export default function Stream({ playing, detector }: { playing: boolean; detect
 
     return (
         <Box display="flex" alignItems="center" ref={containerRef} sx={{ bgcolor: "black" }}>
-            <Box component="img" height="100%" width="100%" sx={{ boxShadow: 3 }} src={source} />
+            <Box
+                component="img"
+                height="100%"
+                width="100%"
+                sx={{ boxShadow: 3 }}
+                src={source}
+                onLoad={() => console.count("load")}
+            />
         </Box>
     );
 }

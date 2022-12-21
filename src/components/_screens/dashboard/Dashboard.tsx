@@ -46,6 +46,8 @@ export default function Dashboard() {
     const station = useRouteLoaderData("dashboard-container") as Station;
     const location = useLoaderData() as Location;
 
+    const [streamFps, setStreamFps] = useState(0);
+
     if (!station.locations.find((l) => l.id === location.id)) {
         throw new DetailedError(
             null,
@@ -69,13 +71,18 @@ export default function Dashboard() {
     return (
         <Grid container spacing={2} height="100%">
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
-                <Stream playing={playing} detector={location.detector} />
+                <Stream
+                    playing={playing}
+                    detector={location.detector}
+                    setStreamFps={setStreamFps}
+                />
                 <Grid container spacing={2} flexGrow={1}>
                     <Grid item xs={12} sm={12} md={12} lg={3}>
                         <StreamControls
                             playing={playing}
                             setPlaying={setPlaying}
                             detector={location.detector}
+                            streamFps={streamFps}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={9}>

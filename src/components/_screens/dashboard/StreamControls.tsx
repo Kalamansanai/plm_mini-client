@@ -1,5 +1,6 @@
 import { LabeledValue } from "components/LabeledValue";
 import Title from "components/Title";
+import { useState } from "react";
 import { Detector, DetectorState } from "types";
 
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -10,9 +11,10 @@ type Props = {
     playing: boolean;
     setPlaying: React.Dispatch<React.SetStateAction<boolean>>;
     detector?: Detector;
+    streamFps: number;
 };
 
-export default function StreamControls({ playing, setPlaying, detector }: Props) {
+export default function StreamControls({ playing, setPlaying, detector, streamFps }: Props) {
     let noDetector = detector === null;
     let detectorIsOff = !!detector && !!detector.state.find((s) => s === DetectorState.Off);
 
@@ -60,7 +62,7 @@ export default function StreamControls({ playing, setPlaying, detector }: Props)
             </Box>
             <Box display="flex" gap={2}>
                 <LabeledValue value={playing ? "Active" : "Inactive"} label="Status" />
-                {playing && <LabeledValue value={"???"} label="FPS" />}
+                {playing && <LabeledValue value={streamFps} label="FPS" />}
             </Box>
         </Paper>
     );
