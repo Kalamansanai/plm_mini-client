@@ -1,6 +1,6 @@
 import { backend } from "api";
 import { useEffect, useRef, useState } from "react";
-import { CanvasAction, drawObject, editorDarkenOutsideRectangle, getAction } from "utils/canvas";
+import { CanvasAction, drawObject, getAction } from "utils/canvas";
 
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
