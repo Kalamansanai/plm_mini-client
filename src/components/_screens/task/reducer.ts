@@ -1,4 +1,4 @@
-import { CompanyHierarchyNode, Coordinates, Job, Step, TaskType, Object } from "types";
+import { CompanyHierarchyNode, Coordinates, Job, Step, TaskType, Object, Location } from "types";
 import { v4 as uuidv4 } from "uuid";
 
 export const SnapshotSize = { x: 640, y: 360 };
@@ -14,7 +14,7 @@ export type EditedTask = {
     id: number;
     name: string;
     taskType: TaskType;
-    location: CompanyHierarchyNode;
+    location: Location;
     job: Job;
     steps: Array<EditedStep>;
     objects: Array<EditedObject>;

@@ -11,8 +11,17 @@ import {
     useFetcher,
     useLoaderData,
     useLocation,
+    useNavigate,
 } from "react-router-dom";
-import { CompanyHierarchyNode, Job, Object, Step, TaskType, GetStepActionString } from "types";
+import {
+    CompanyHierarchyNode,
+    Job,
+    Object,
+    Step,
+    TaskType,
+    GetStepActionString,
+    Location,
+} from "types";
 import { bifilter } from "utils/bifilter";
 import { v4 as uuidv4 } from "uuid";
 
@@ -73,8 +82,8 @@ const getTaskDelta = (originalTask: EditedTask, newTask: EditedTask) => {
         objectName: newTask.objects.find((o) => o.uuid === s.object.uuid)!.name,
     })); //
 
-    console.log(originalTask.objects);
-    console.log(modifiedObjects);
+    // console.log(originalTask.objects);
+    // console.log(modifiedObjects);
 
     modifiedObjects = modifiedObjects.filter((o) => {
         const orig = originalTask.objects.find((_o) => _o.uuid === o.uuid)!;
@@ -190,11 +199,15 @@ export async function loader({ params }: { params: Params }) {
 
         const [stepsWithIds, objectsWithIds] = assignTemporaryIds(steps, objects);
 
+        const reqLocation = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
+            id: task!.location!.id!,
+        })) as Location;
+
         const editedTask: EditedTask = {
             id: task.id!,
             name: task.name!,
             taskType: task.taskType!,
-            location: task.location! as CompanyHierarchyNode,
+            location: reqLocation,
             job: task.job! as Job,
             steps: stepsWithIds,
             objects: objectsWithIds,
@@ -338,6 +351,7 @@ export default function Task() {
     const location = useLocation();
     const { jobs, task: originalTask, snapshot } = useLoaderData() as LoaderData;
     const isLg = useMediaQuery(theme.breakpoints.up("lg"));
+    const navigate = useNavigate();
 
     const [state, dispatch] = useReducer(reducer, {
         selection: null,
@@ -381,6 +395,9 @@ export default function Task() {
             { delta: JSON.stringify(delta) },
             { method: "post", action: location.pathname }
         );
+
+        const taskLocation: Location = state.task.location as Location;
+        navigate({ pathname: `/dashboard/${taskLocation.stationId}/location/${taskLocation.id}` });
     };
 
     const selectedObject = state.task.objects.find((o) => state.selection?.uuid === o.uuid);

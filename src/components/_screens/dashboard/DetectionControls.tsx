@@ -1,6 +1,10 @@
-import { LocationsGetTasksResTaskRes } from "api_client";
+import { DetectorsApi, LocationsGetTasksResTaskRes } from "api_client";
+import { ApiEndpointsDetectorsCommandRequest } from "api_client/apis/DetectorsApi";
+import { DetectorsCommandReq } from "api_client/models/index";
 import { LabeledValue } from "components/LabeledValue";
 import Title from "components/Title";
+import NoTaskPopup from "components/popups/NoTaskPopup";
+import { TIMEOUT } from "dns";
 import { bindPopover, PopupState } from "material-ui-popup-state/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import { useEffect, useState } from "react";
@@ -66,9 +70,11 @@ function StartDetectionPopup({ popupProps }: StartDetectionPopupProps) {
 
 type TasksPopupProps = {
     popupProps: PopupState;
+    setSelected: React.Dispatch<React.SetStateAction<number>>;
+    selected: number;
 };
 
-function TasksPopup({ popupProps }: TasksPopupProps) {
+function TasksPopup({ popupProps, setSelected, selected }: TasksPopupProps) {
     const fetcher = useFetcher();
     const location = useLocation();
     const navigate = useNavigate();
@@ -128,6 +134,16 @@ function TasksPopup({ popupProps }: TasksPopupProps) {
                                 </Typography>
                             </Box>
                             <Box display="flex">
+                                <Button
+                                    disabled={selected === t.id}
+                                    onClick={() => {
+                                        popupProps.close();
+                                        //@ts-ignore
+                                        setSelected(t.id);
+                                    }}
+                                >
+                                    Select
+                                </Button>
                                 <IconButton
                                     size="large"
                                     sx={{ color: "secondary.light" }}
@@ -167,12 +183,34 @@ function TasksPopup({ popupProps }: TasksPopupProps) {
 type Props = {
     detector?: Detector;
     task?: OngoingTask;
+    setSelected: React.Dispatch<React.SetStateAction<number>>;
+    selected: number;
+    locationId: number;
+    parseDetectorState: (state: string) => Array<DetectorState>;
 };
 
-export default function DetectionControls({ detector, task }: Props) {
+export default function DetectionControls({
+    detector,
+    task,
+    setSelected,
+    selected,
+    locationId,
+    parseDetectorState,
+}: Props) {
     const startDetectionPopup = usePopupState({ variant: "popover", popupId: "start-detection" });
     const tasksPopup = usePopupState({ variant: "popover", popupId: "tasks" });
+    const noTasksPopup = usePopupState({ variant: "popover", popupId: "noTask" });
     const fetcher = useFetcher();
+
+    const [time, setTime] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTime(time + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    });
+
+    const api = new DetectorsApi();
 
     const instance = task?.ongoingInstance;
 
@@ -187,11 +225,22 @@ export default function DetectionControls({ detector, task }: Props) {
         ? "Detector is offline"
         : "Start detection";
 
-    const onStart = () => {};
+    const sendCommand = (commandMessage: string) => {
+        const command: DetectorsCommandReq = {
+            command: { msg: commandMessage, task_id: selected },
+        };
 
-    const onStop = () => {};
+        const req: ApiEndpointsDetectorsCommandRequest = {
+            id: locationId,
+            detectorsCommandReq: command,
+        };
 
-    const onResume = () => {};
+        api.apiEndpointsDetectorsCommand(req);
+
+        if (commandMessage === "start") {
+            setTime(0);
+        }
+    };
 
     return (
         <>
@@ -223,7 +272,13 @@ export default function DetectionControls({ detector, task }: Props) {
                                         variant="contained"
                                         disabled={disabled}
                                         endIcon={<MenuOpenIcon />}
-                                        onClick={onStart}
+                                        onClick={(e) => {
+                                            if (selected === -1) {
+                                                noTasksPopup.open(e);
+                                            } else {
+                                                sendCommand("start");
+                                            }
+                                        }}
                                         sx={{ borderRadius: "24px", height: "48px" }}
                                     >
                                         Start detection
@@ -234,12 +289,20 @@ export default function DetectionControls({ detector, task }: Props) {
                         {instance && instance.state === TaskInstanceState.Paused ? (
                             <>
                                 <Tooltip title="Resume detection">
-                                    <Fab size="medium" color="success" onClick={onResume}>
+                                    <Fab
+                                        size="medium"
+                                        color="success"
+                                        onClick={() => sendCommand("resume")}
+                                    >
                                         <PlayArrowIcon />
                                     </Fab>
                                 </Tooltip>
                                 <Tooltip title="Stop detection">
-                                    <Fab size="medium" color="error" onClick={onStop}>
+                                    <Fab
+                                        size="medium"
+                                        color="error"
+                                        onClick={() => sendCommand("stop")}
+                                    >
                                         <StopIcon />
                                     </Fab>
                                 </Tooltip>
@@ -256,13 +319,21 @@ export default function DetectionControls({ detector, task }: Props) {
                                     />
                                     <input readOnly hidden name="command" value="pause" />
                                     <Tooltip title="Pause detection">
-                                        <Fab size="medium" color="warning" type="submit">
+                                        <Fab
+                                            size="medium"
+                                            color="warning"
+                                            onClick={() => sendCommand("pause")}
+                                        >
                                             <PauseIcon />
                                         </Fab>
                                     </Tooltip>
                                 </fetcher.Form>
                                 <Tooltip title="Stop detection">
-                                    <Fab size="medium" color="error" onClick={onStop}>
+                                    <Fab
+                                        size="medium"
+                                        color="error"
+                                        onClick={() => sendCommand("stop")}
+                                    >
                                         <StopIcon />
                                     </Fab>
                                 </Tooltip>
@@ -292,9 +363,12 @@ export default function DetectionControls({ detector, task }: Props) {
                                     label="Job"
                                     icon={<HandymanIcon fontSize="large" />}
                                 />
-                                <LabeledValue value="4B" label="Task" />
+                                <LabeledValue value={task.name} label="Task" />
                                 <LabeledValue
-                                    value="00:49"
+                                    value={`${String(Math.floor(time / 60)).padStart(
+                                        2,
+                                        "0"
+                                    )}:${String(Math.floor(time % 60)).padStart(2, "0")}`}
                                     label="Total"
                                     icon={<AccessTimeIcon fontSize="large" />}
                                 />
@@ -304,7 +378,8 @@ export default function DetectionControls({ detector, task }: Props) {
                     </Box>
                 </Box>
             </Paper>
-            <TasksPopup popupProps={tasksPopup} />
+            <TasksPopup popupProps={tasksPopup} setSelected={setSelected} selected={selected} />
+            <NoTaskPopup popupProps={noTasksPopup} />
         </>
     );
 }

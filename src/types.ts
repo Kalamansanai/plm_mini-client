@@ -23,6 +23,7 @@ export type Location = CompanyHierarchyNode & {
     detector?: Detector;
     hasSnapshot: boolean;
     ongoingTask?: OngoingTask;
+    stationId?: number;
 };
 
 export const DetectorState = {
@@ -141,3 +142,8 @@ export type Coordinates = {
 };
 
 export type ExpectedStepAction = "remove" | "replace";
+
+export type User = {
+    name: string;
+    role: string;
+};

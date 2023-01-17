@@ -1,15 +1,20 @@
 import useCHState, { Level } from "companyHierarchyProvider";
 import { StateIndicator as DetectorStateIndicator } from "components/DetectorIndicators";
 import ConfirmPopup from "components/popups/ConfirmPopup";
+import QrPopup from "components/popups/QrPopup";
 import SingleInputPopup from "components/popups/SingleInputPopup";
 import { usePopupState } from "material-ui-popup-state/hooks";
+import React from "react";
 import { useFetcher, useMatch, useMatches, useNavigate, useParams } from "react-router-dom";
 import { Location } from "types";
 
+import { QrCode } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import GradientIcon from "@mui/icons-material/Gradient";
 import PowerOffIcon from "@mui/icons-material/PowerOff";
+import QrCodeIcon from "@mui/icons-material/QrCode";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import {
     Box,
@@ -22,6 +27,8 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
+
+// const icon = require("/Users/bormilan/Downloads/qr-code.png");
 
 type Props = {
     location: Location;
@@ -76,8 +83,24 @@ function LocationCard({ location }: Props) {
 
     const renamePopup = usePopupState({ variant: "popover", popupId: "rename-location" });
     const deletePopup = usePopupState({ variant: "popover", popupId: "delete-location" });
+    const qrPopup = usePopupState({ variant: "popover", popupId: "qr-location" });
 
     const isSelected = matchedLocationId === location.id;
+
+    //qr generation and download
+    const handleGenerateQR = () => {
+        const canvas = document.getElementById("qr-gen");
+        //@ts-ignore
+        const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        let downloadLink = document.createElement("a");
+        downloadLink.href = image;
+        downloadLink.download = `qr_code-location_id:${location.id}(${location.name}).png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        qrPopup.close();
+    };
 
     const onClick = () => {
         chDispatch({ type: "Select", level: Level.Location, id: location.id, navFn: navigate });
@@ -91,7 +114,7 @@ function LocationCard({ location }: Props) {
                         // Enough height to fit the button column - my first attempt was setting the
                         // button column width to 0, but that caused weird artifacts on the border
                         // (probably some pixels of the icon buttons were shown somewhy)
-                        height: "120px",
+                        height: "160px",
                         flexShrink: 0,
                         display: "flex",
                         border: "1px solid",
@@ -149,6 +172,9 @@ function LocationCard({ location }: Props) {
                             <IconButton color="error" onClick={deletePopup.open}>
                                 <DeleteIcon />
                             </IconButton>
+                            <IconButton color="info" onClick={qrPopup.open}>
+                                <QrCodeIcon />
+                            </IconButton>
                         </Box>
                     </Box>
                 </Card>
@@ -174,6 +200,9 @@ function LocationCard({ location }: Props) {
             >
                 <input readOnly hidden name="id" value={location.id} />
             </ConfirmPopup>
+            <QrPopup popupProps={qrPopup} handler={handleGenerateQR} id={location.id} />
+            {/* <input readOnly hidden name="id" value={location.id} /> */}
+            {/* </QrPopup> */}
         </>
     );
 }

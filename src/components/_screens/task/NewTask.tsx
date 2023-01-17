@@ -1,4 +1,5 @@
 import { config as apiConfig } from "api";
+import { backend } from "api";
 import { JobsApi, LocationsApi, TasksApi, TasksCreateRes, TaskType } from "api_client";
 import Title from "components/Title";
 import { Form, redirect, useActionData, useFetcher, useLoaderData } from "react-router-dom";
@@ -103,6 +104,7 @@ export default function NewTask() {
     console.log(thing);
 
     let snapshotUrl = "https://via.placeholder.com/640x360";
+    // const source = `${backend}/api/v1/detectors/${3}/stream`;
 
     if (snapshot) {
         snapshotUrl = URL.createObjectURL(snapshot);

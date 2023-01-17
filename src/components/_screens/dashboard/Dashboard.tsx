@@ -1,8 +1,16 @@
 import { config as apiConfig, DetailedError } from "api";
-import { LocationsApi, ResponseError } from "api_client";
-import { useState } from "react";
+import {
+    ApiEndpointsDetectorsCommandRequest,
+    DetectorsApi,
+    LocationsApi,
+    ResponseError,
+    TaskType,
+} from "api_client";
+import axios from "axios";
+import { plainToClass } from "class-transformer";
+import React, { useEffect, useState } from "react";
 import { Params, useLoaderData, useRouteLoaderData } from "react-router-dom";
-import { Location, parseDetectorState, Station } from "types";
+import { Location, OngoingTask, parseDetectorState, Station } from "types";
 
 import { Box, Grid, Typography, useMediaQuery, useTheme } from "@mui/material";
 
@@ -43,8 +51,35 @@ export async function loader({ params }: { params: Params }) {
 }
 
 export default function Dashboard() {
+    const [selectedTaskId, setSelectedTaskId] = useState(-1);
+
+    const temp = useLoaderData() as Location;
+    const [location, setLocation] = useState(temp);
+
+    const [IsLoaded, setIsLoaded] = useState(false);
+    const [Error, setError] = useState(false);
+    const [Data, setData] = useState(false);
     const station = useRouteLoaderData("dashboard-container") as Station;
-    const location = useLoaderData() as Location;
+
+    React.useEffect(() => {
+        const eventSource = new EventSource(
+            `https://localhost:9696/api/v1/locations/${location.id}/sse-notify`
+        );
+        eventSource.onmessage = (e) => {
+            if (e.data == location.id) {
+                fetch(`https://localhost:9696/api/v1/locations/${location.id}`)
+                    .then((res) => res.json())
+                    .then((result) => {
+                        if (result.detector) {
+                            result.detector.state = parseDetectorState(
+                                result.detector.state as unknown as string
+                            );
+                        }
+                        setLocation(result);
+                    });
+            }
+        };
+    }, []);
 
     const [streamFps, setStreamFps] = useState(0);
 
@@ -73,8 +108,10 @@ export default function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
                 <Stream
                     playing={playing}
+                    location={location}
                     detector={location.detector}
                     setStreamFps={setStreamFps}
+                    ongoingTask={location.ongoingTask}
                 />
                 <Grid container spacing={2} flexGrow={1}>
                     <Grid item xs={12} sm={12} md={12} lg={3}>
@@ -86,7 +123,14 @@ export default function Dashboard() {
                         />
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={9}>
-                        <DetectionControls detector={location.detector} task={task} />
+                        <DetectionControls
+                            detector={location.detector}
+                            task={task}
+                            setSelected={setSelectedTaskId}
+                            selected={selectedTaskId}
+                            locationId={location.id}
+                            parseDetectorState={parseDetectorState}
+                        />
                     </Grid>
                 </Grid>
                 {isBelowXl ? (

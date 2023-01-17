@@ -8,6 +8,8 @@ import NewTask, {
     newJobAction,
 } from "components/_screens/task/NewTask";
 import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
+import SignIn from "components/signin/SignIn";
+import UserManager from "components/signin/UserManager";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -123,6 +125,8 @@ const router = createBrowserRouter(
         <>
             <Route path="*" element={<Navigate to="/hierarchy" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
+                <Route path="/signin" element={<SignIn />}></Route>
+                <Route path="/usermanager" element={<UserManager />}></Route>
                 <Route path="/hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
                     <Route path="new" action={newCHNodeAction} />
                     <Route path="edit" action={editCHNodeAction} />

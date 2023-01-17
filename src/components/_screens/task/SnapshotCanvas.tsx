@@ -1,3 +1,4 @@
+import { backend } from "api";
 import { useEffect, useRef, useState } from "react";
 import { CanvasAction, drawObject, editorDarkenOutsideRectangle, getAction } from "utils/canvas";
 
@@ -28,6 +29,7 @@ export default function SnapshotCanvas({ snapshot, state, dispatch }: Props) {
     const isLg = useMediaQuery(theme.breakpoints.up("lg"));
 
     const snapshotUrl = URL.createObjectURL(snapshot);
+    // const snapshotUrl = `${backend}/api/v1/detectors/${3}/stream`;
     const snapshotImage = new Image(640, 360);
     snapshotImage.src = snapshotUrl;
     snapshotImage.onload = () => {
@@ -98,7 +100,7 @@ export default function SnapshotCanvas({ snapshot, state, dispatch }: Props) {
 
         if (state.selection?.uuid) {
             const selectedObject = state.task.objects.find((o) => state.selection!.uuid === o.uuid);
-
+            console.log(selectedObject);
             if (selectedObject) {
                 drawObject(snapshotImage, ctx, selectedObject, true, true);
             }

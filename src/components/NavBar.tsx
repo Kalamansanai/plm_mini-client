@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { User } from "types";
+
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FactoryIcon from "@mui/icons-material/Factory";
@@ -12,6 +16,18 @@ import Typography from "@mui/material/Typography";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export default function NavBar() {
+    const [logState, setLogState] = useState(false);
+    const user: User = {
+        name: "lajos",
+        role: "részeg",
+    };
+    const [userState, setUserState] = useState(user);
+    const navigate = useNavigate();
+
+    const onProfile = () => {
+        navigate({ pathname: "/signin" });
+    };
+
     return (
         <>
             <AppBar
@@ -23,8 +39,19 @@ export default function NavBar() {
                         Production Line Monitoring
                     </Typography>
                     <Box display="flex" gap={2} sx={{ ml: "auto" }}>
-                        <Button size="large" sx={{ color: "white", fontSize: "1.2em" }}>
-                            <div>Superuser</div>
+                        <Button
+                            onClick={onProfile}
+                            size="large"
+                            sx={{ color: "white", fontSize: "1.2em" }}
+                        >
+                            <Box flexDirection="column">
+                                <Box>{logState ? <div>{userState["name"]}</div> : null}</Box>
+                                {logState ? (
+                                    <Box mt="0" mb="0" color="red" fontSize="small">
+                                        {userState["role"]}
+                                    </Box>
+                                ) : null}
+                            </Box>
                             <AccountCircleIcon fontSize="large" sx={{ ml: 2 }} />
                         </Button>
                         <Divider
