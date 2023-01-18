@@ -53,6 +53,10 @@ export interface ApiEndpointsLocationsOngoingStatus {
     id: number;
 }
 
+export interface ApiEndpointsLocationsDetachRequest {
+    id: number;
+}
+
 /**
  *
  */

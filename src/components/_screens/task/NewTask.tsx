@@ -3,7 +3,7 @@ import { backend } from "api";
 import { JobsApi, LocationsApi, TasksApi, TasksCreateRes, TaskType } from "api_client";
 import Title from "components/Title";
 import { Form, redirect, useActionData, useFetcher, useLoaderData } from "react-router-dom";
-import { CompanyHierarchyNode, Job } from "types";
+import { CompanyHierarchyNode, Job, Location } from "types";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
@@ -37,7 +37,7 @@ export async function loader({ request }: { request: Request }) {
         const jobs = (await new JobsApi(apiConfig).apiEndpointsJobsList()) as Array<Job>;
         const location = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
             id: locationId,
-        })) as CompanyHierarchyNode;
+        })) as Location;
 
         return { jobs, location, snapshot };
     } catch (err) {
@@ -78,7 +78,7 @@ export async function action({ request }: { request: Request }) {
 
 type LoaderData = {
     jobs: Array<Job>;
-    location: CompanyHierarchyNode;
+    location: Location;
     snapshot: Blob | null;
 };
 
@@ -121,6 +121,10 @@ export default function NewTask() {
         )),
     ];
 
+    const handleNewSnapshot = () => {
+        fetch(`${backend}/api/v1/detectors/${location?.detector?.id}/snapshot`);
+    };
+
     // NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
     return (
         <Container maxWidth="xl" sx={{ height: "calc(100% - 32px)", my: 2 }}>
@@ -141,7 +145,12 @@ export default function NewTask() {
                             />
                         </Box>
                         <Box display="flex" gap={2} alignSelf="center" mt={2}>
-                            <Button size="large" variant="outlined" startIcon={<PhotoCameraIcon />}>
+                            <Button
+                                onClick={handleNewSnapshot}
+                                size="large"
+                                variant="outlined"
+                                startIcon={<PhotoCameraIcon />}
+                            >
                                 Take new snapshot
                             </Button>
                             <Button

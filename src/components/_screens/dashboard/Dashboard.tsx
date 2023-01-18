@@ -1,4 +1,4 @@
-import { config as apiConfig, DetailedError } from "api";
+import { backend, config as apiConfig, DetailedError } from "api";
 import {
     ApiEndpointsDetectorsCommandRequest,
     DetectorsApi,
@@ -46,7 +46,6 @@ export async function loader({ params }: { params: Params }) {
             );
         }
     }
-
     return location;
 }
 
@@ -56,18 +55,19 @@ export default function Dashboard() {
     const temp = useLoaderData() as Location;
     const [location, setLocation] = useState(temp);
 
-    const [IsLoaded, setIsLoaded] = useState(false);
-    const [Error, setError] = useState(false);
-    const [Data, setData] = useState(false);
+    useEffect(() => {
+        setLocation(temp);
+    }, [temp]);
+
     const station = useRouteLoaderData("dashboard-container") as Station;
 
-    React.useEffect(() => {
+    const subscribe = async (): Promise<EventSource> => {
         const eventSource = new EventSource(
-            `https://localhost:9696/api/v1/locations/${location.id}/sse-notify`
+            `${backend}/api/v1/locations/${location.id}/sse-notify`
         );
         eventSource.onmessage = (e) => {
             if (e.data == location.id) {
-                fetch(`https://localhost:9696/api/v1/locations/${location.id}`)
+                fetch(`${backend}/api/v1/locations/${location.id}`)
                     .then((res) => res.json())
                     .then((result) => {
                         if (result.detector) {
@@ -79,7 +79,15 @@ export default function Dashboard() {
                     });
             }
         };
-    }, []);
+        return eventSource;
+    };
+
+    useEffect(() => {
+        const eventSource = subscribe();
+        return () => {
+            eventSource.then((res) => res.close());
+        };
+    }, [location.id]);
 
     const [streamFps, setStreamFps] = useState(0);
 
@@ -128,7 +136,7 @@ export default function Dashboard() {
                             task={task}
                             setSelected={setSelectedTaskId}
                             selected={selectedTaskId}
-                            locationId={location.id}
+                            detectorId={location?.detector?.id}
                             parseDetectorState={parseDetectorState}
                         />
                     </Grid>

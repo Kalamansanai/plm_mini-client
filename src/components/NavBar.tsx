@@ -7,7 +7,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import FactoryIcon from "@mui/icons-material/Factory";
 import InfoIcon from "@mui/icons-material/Info";
 import ListAltIcon from "@mui/icons-material/ListAlt";
-import { Box, Button, Divider, styled, Tooltip } from "@mui/material";
+import { Box, Button, Divider, Link, styled, Tooltip } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
@@ -28,6 +28,10 @@ export default function NavBar() {
         navigate({ pathname: "/signin" });
     };
 
+    const onLogo = () => {
+        navigate({ pathname: "/hierarchy" });
+    };
+
     return (
         <>
             <AppBar
@@ -35,9 +39,11 @@ export default function NavBar() {
                 sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: "primary.dark" }}
             >
                 <Toolbar>
-                    <Typography component="div" variant="h5">
-                        Production Line Monitoring
-                    </Typography>
+                    <Button sx={{ color: "white", fontSize: "1.2em" }}>
+                        <Typography component="div" variant="h5" onClick={onLogo}>
+                            Production Line Monitoring
+                        </Typography>
+                    </Button>
                     <Box display="flex" gap={2} sx={{ ml: "auto" }}>
                         <Button
                             onClick={onProfile}

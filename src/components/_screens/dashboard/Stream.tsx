@@ -19,12 +19,6 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
     const containerRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
-    const [ongoingTaskState, setOngoingTaskState] = useState(ongoingTask);
-
-    useEffect(() => {
-        setOngoingTaskState(ongoingTask);
-    }, [ongoingTask]);
-
     const source =
         playing && detector && detector.id
             ? `${backend}/api/v1/detectors/${detector.id}/stream`
@@ -32,50 +26,61 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
 
     const requestRef = useRef<number>();
 
+    const [img, setImg] = useState(new Image());
+
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas?.getContext("2d");
-        const img = new Image();
         img.src = source;
+        img.onload = () => {
+            const canvas = canvasRef.current;
+            if (!canvas) return;
+            canvas.width = img.width;
+            canvas.height = img.height;
+            draw();
+        };
+    }, [source]);
+
+    const draw = () => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
         if (canvas != null) {
             canvas.width = img.width;
             canvas.height = img.height;
             ctx?.drawImage(img, 0, 0);
-        }
-        const draw = () => {
-            if (canvas != null) {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx?.drawImage(img, 0, 0);
 
-                if (ongoingTask) {
-                    //next step with green
-                    ongoingTask.ongoingInstance?.currentOrderNumRemainingSteps.forEach((s) => {
-                        ctx!.strokeStyle = "green";
-                        ctx!.lineWidth = 5;
-                        ctx!.strokeRect(
-                            s.object.coordinates.x,
-                            s.object.coordinates.y,
-                            s.object.coordinates.width,
-                            s.object.coordinates.height
-                        );
-                    });
-                    //all objects with dashed
-                    ongoingTask.steps.forEach((s) => {
-                        ctx!.strokeStyle = "grey";
-                        ctx!.lineWidth = 2;
-                        ctx!.setLineDash([5, 10]);
-                        ctx!.strokeRect(
-                            s.object.coordinates.x,
-                            s.object.coordinates.y,
-                            s.object.coordinates.width,
-                            s.object.coordinates.height
-                        );
-                    });
-                }
-                requestRef.current = requestAnimationFrame(draw);
+            if (ongoingTask) {
+                //next step with green
+                ongoingTask.ongoingInstance?.currentOrderNumRemainingSteps.forEach((s) => {
+                    ctx!.strokeStyle = "green";
+                    ctx!.lineWidth = 5;
+                    ctx!.strokeRect(
+                        s.object.coordinates.x,
+                        s.object.coordinates.y,
+                        s.object.coordinates.width,
+                        s.object.coordinates.height
+                    );
+                });
+                //all objects with dashed
+                ongoingTask.steps.forEach((s) => {
+                    ctx!.strokeStyle = "grey";
+                    ctx!.lineWidth = 2;
+                    ctx!.setLineDash([5, 10]);
+                    ctx!.strokeRect(
+                        s.object.coordinates.x,
+                        s.object.coordinates.y,
+                        s.object.coordinates.width,
+                        s.object.coordinates.height
+                    );
+                });
             }
-        };
+            requestRef.current = requestAnimationFrame(draw);
+        }
+    };
+
+    useEffect(() => {
         if (playing) {
             draw();
         }
@@ -84,7 +89,7 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
                 cancelAnimationFrame(requestRef.current);
             }
         };
-    }, [playing, ongoingTask]);
+    }, [source, ongoingTask]);
 
     useResizeObserver(containerRef, (_) => {
         adjustVideoSize();

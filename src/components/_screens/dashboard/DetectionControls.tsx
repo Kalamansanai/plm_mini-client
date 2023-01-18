@@ -185,7 +185,7 @@ type Props = {
     task?: OngoingTask;
     setSelected: React.Dispatch<React.SetStateAction<number>>;
     selected: number;
-    locationId: number;
+    detectorId: number | undefined;
     parseDetectorState: (state: string) => Array<DetectorState>;
 };
 
@@ -194,7 +194,7 @@ export default function DetectionControls({
     task,
     setSelected,
     selected,
-    locationId,
+    detectorId,
     parseDetectorState,
 }: Props) {
     const startDetectionPopup = usePopupState({ variant: "popover", popupId: "start-detection" });
@@ -230,15 +230,18 @@ export default function DetectionControls({
             command: { msg: commandMessage, task_id: selected },
         };
 
-        const req: ApiEndpointsDetectorsCommandRequest = {
-            id: locationId,
-            detectorsCommandReq: command,
-        };
+        if (detector != undefined) {
+            const req: ApiEndpointsDetectorsCommandRequest = {
+                //@ts-ignore
+                id: detectorId,
+                detectorsCommandReq: command,
+            };
 
-        api.apiEndpointsDetectorsCommand(req);
+            api.apiEndpointsDetectorsCommand(req);
 
-        if (commandMessage === "start") {
-            setTime(0);
+            if (commandMessage === "start") {
+                setTime(0);
+            }
         }
     };
 

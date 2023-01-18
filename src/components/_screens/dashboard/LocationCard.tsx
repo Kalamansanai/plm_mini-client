@@ -1,3 +1,4 @@
+import { backend } from "api";
 import useCHState, { Level } from "companyHierarchyProvider";
 import { StateIndicator as DetectorStateIndicator } from "components/DetectorIndicators";
 import ConfirmPopup from "components/popups/ConfirmPopup";
@@ -106,6 +107,10 @@ function LocationCard({ location }: Props) {
         chDispatch({ type: "Select", level: Level.Location, id: location.id, navFn: navigate });
     };
 
+    const handleDetach = () => {
+        fetch(`${backend}/api/v1/detectors/${location.id}/detach`, { method: "POST" });
+    };
+
     return (
         <>
             <Grid item xs={6} sm={6} md={12}>
@@ -163,7 +168,7 @@ function LocationCard({ location }: Props) {
                     <Box sx={{ display: isSelected ? "flex" : "flex" }} className="hover">
                         <Divider orientation="vertical" flexItem sx={{ bgcolor: "primary.main" }} />
                         <Box display="flex" flexDirection="column" sx={{ height: "120px" }}>
-                            <IconButton color="info">
+                            <IconButton color="info" onClick={handleDetach}>
                                 <PowerOffIcon />
                             </IconButton>
                             <IconButton color="secondary" onClick={renamePopup.open}>
