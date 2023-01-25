@@ -32,6 +32,10 @@ export default function NavBar() {
         navigate({ pathname: "/hierarchy" });
     };
 
+    const onData = () => {
+        navigate({ pathname: "/prev_instances" });
+    };
+
     return (
         <>
             <AppBar
@@ -77,7 +81,7 @@ export default function NavBar() {
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Data">
-                            <IconButton sx={{ color: "white" }}>
+                            <IconButton onClick={onData} sx={{ color: "white" }}>
                                 <ListAltIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>

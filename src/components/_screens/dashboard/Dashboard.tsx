@@ -49,6 +49,22 @@ export async function loader({ params }: { params: Params }) {
     return location;
 }
 
+async function getNewLocation(
+    setLocation: React.Dispatch<React.SetStateAction<Location>>,
+    location_id: number
+) {
+    await fetch(`${backend}/api/v1/locations/${location_id}`)
+        .then((res) => res.json())
+        .then((result) => {
+            if (result.detector) {
+                result.detector.state = parseDetectorState(
+                    result.detector.state as unknown as string
+                );
+            }
+            setLocation(result);
+        });
+}
+
 export default function Dashboard() {
     const [selectedTaskId, setSelectedTaskId] = useState(-1);
 
@@ -67,16 +83,7 @@ export default function Dashboard() {
         );
         eventSource.onmessage = (e) => {
             if (e.data == location.id) {
-                fetch(`${backend}/api/v1/locations/${location.id}`)
-                    .then((res) => res.json())
-                    .then((result) => {
-                        if (result.detector) {
-                            result.detector.state = parseDetectorState(
-                                result.detector.state as unknown as string
-                            );
-                        }
-                        setLocation(result);
-                    });
+                getNewLocation(setLocation, location.id);
             }
         };
         return eventSource;
@@ -116,7 +123,6 @@ export default function Dashboard() {
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
                 <Stream
                     playing={playing}
-                    location={location}
                     detector={location.detector}
                     setStreamFps={setStreamFps}
                     ongoingTask={location.ongoingTask}

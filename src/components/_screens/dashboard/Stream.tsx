@@ -9,13 +9,12 @@ import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 type Props = {
     playing: boolean;
-    location: Location;
     detector?: Detector;
     setStreamFps: React.Dispatch<React.SetStateAction<number>>;
     ongoingTask: OngoingTask | undefined;
 };
 
-export default function Stream({ playing, location, detector, setStreamFps, ongoingTask }: Props) {
+export default function Stream({ playing, detector, setStreamFps, ongoingTask }: Props) {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -37,6 +36,11 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
             canvas.height = img.height;
             draw();
         };
+        return () => {
+            if (requestRef.current) {
+                cancelAnimationFrame(requestRef.current);
+            }
+        };
     }, [source]);
 
     const draw = () => {
@@ -52,6 +56,7 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
             ctx?.drawImage(img, 0, 0);
 
             if (ongoingTask) {
+                // console.log(ongoingTask);
                 //next step with green
                 ongoingTask.ongoingInstance?.currentOrderNumRemainingSteps.forEach((s) => {
                     ctx!.strokeStyle = "green";
@@ -81,6 +86,7 @@ export default function Stream({ playing, location, detector, setStreamFps, ongo
     };
 
     useEffect(() => {
+        // console.log(playing);
         if (playing) {
             draw();
         }

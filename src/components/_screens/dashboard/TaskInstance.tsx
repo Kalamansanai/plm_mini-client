@@ -1,5 +1,6 @@
 import { LabeledValue } from "components/LabeledValue";
 import Title from "components/Title";
+import { useNavigate } from "react-router-dom";
 import { OngoingTaskInstance } from "types";
 
 import Grid3x3Icon from "@mui/icons-material/Grid3x3";
@@ -12,6 +13,7 @@ type Props = { instance?: OngoingTaskInstance; maxOrderNum?: number };
 export default function TaskInstance({ instance, maxOrderNum }: Props) {
     const theme = useTheme();
     const isBelowXl = useMediaQuery(theme.breakpoints.down("xl"));
+    const navigate = useNavigate();
 
     const disabled = !instance;
 
@@ -19,6 +21,10 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
         instance && maxOrderNum !== undefined
             ? Math.floor((instance.currentOrderNum * 100) / maxOrderNum)
             : 0;
+
+    const goToPreviousInstances = () => {
+        navigate("/prev_instances/3");
+    };
 
     return (
         <Paper sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -65,7 +71,7 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
             </Box>
             <Divider />
             <Box display="flex" justifyContent="flex-end" p={1}>
-                <Button variant="outlined" size="large">
+                <Button variant="outlined" size="large" onClick={goToPreviousInstances}>
                     View previous instances
                 </Button>
             </Box>

@@ -523,7 +523,7 @@ export default function Task() {
                             display="flex"
                             flexDirection="column"
                             flexGrow={1}
-                            height={isLg ? "auto" : "400px"}
+                            height={isLg ? "auto" : "auto"}
                         >
                             <Grid container height="100%">
                                 <>

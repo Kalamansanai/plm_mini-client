@@ -8,7 +8,7 @@ import NewTask, {
     newJobAction,
 } from "components/_screens/task/NewTask";
 import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
-import SignIn from "components/signin/SignIn";
+import SignIn, { loader as signInLoader } from "components/signin/SignIn";
 import UserManager from "components/signin/UserManager";
 import { SnackbarProvider } from "notistack";
 import React from "react";
@@ -38,6 +38,9 @@ import newCHNodeAction from "./components/_screens/company_hierarchy/new";
 import Dashboard, {
     loader as dashboardLocationLoader,
 } from "./components/_screens/dashboard/Dashboard";
+import PrevInstances, {
+    loader as prevInstancesLocationLoader,
+} from "./components/_screens/dashboard/PrevInstances";
 import locationTasksLoader from "./components/_screens/dashboard/getLocationTasks";
 import DashboardContainer, {
     loader as dashboardLoader,
@@ -125,9 +128,14 @@ const router = createBrowserRouter(
         <>
             <Route path="*" element={<Navigate to="/hierarchy" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
-                <Route path="/signin" element={<SignIn />}></Route>
-                <Route path="/usermanager" element={<UserManager />}></Route>
-                <Route path="/hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
+                <Route path="signin" element={<SignIn />} loader={signInLoader}></Route>
+                <Route path="usermanager" element={<UserManager />}></Route>
+                <Route
+                    path="prev_instances/:location_id"
+                    loader={prevInstancesLocationLoader}
+                    element={<PrevInstances />}
+                />
+                <Route path="hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
                     <Route path="new" action={newCHNodeAction} />
                     <Route path="edit" action={editCHNodeAction} />
                     <Route path="delete" action={deleteCHNodeAction} />
