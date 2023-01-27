@@ -107,9 +107,9 @@ function LocationCard({ location }: Props) {
         chDispatch({ type: "Select", level: Level.Location, id: location.id, navFn: navigate });
     };
 
-    const handleDetach = () => {
-        fetch(`${backend}/api/v1/detectors/${location.id}/detach`, { method: "POST" });
-    };
+    async function handleDetach() {
+        await fetch(`${backend}/api/v1/detectors/${location.id}/detach`, { method: "POST" });
+    }
 
     return (
         <>
