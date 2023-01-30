@@ -1,9 +1,13 @@
+import { backend } from "api";
 import { DetectorsApi, LocationsGetTasksResTaskRes } from "api_client";
 import { ApiEndpointsDetectorsCommandRequest } from "api_client/apis/DetectorsApi";
 import { DetectorsCommandReq } from "api_client/models/index";
 import { LabeledValue } from "components/LabeledValue";
 import Title from "components/Title";
+import ConfirmPopup from "components/popups/ConfirmPopup";
 import NoTaskPopup from "components/popups/NoTaskPopup";
+import QrPopup from "components/popups/QrPopup";
+import TaskDeletePopup from "components/popups/TaskDeletePopup";
 import { TIMEOUT } from "dns";
 import { bindPopover, PopupState } from "material-ui-popup-state/core";
 import { usePopupState } from "material-ui-popup-state/hooks";
@@ -80,6 +84,10 @@ function TasksPopup({ popupProps, setSelected, selected }: TasksPopupProps) {
     const navigate = useNavigate();
     const params = useParams();
 
+    const [temp, setTemp] = useState();
+
+    const deletePopup = usePopupState({ variant: "popover", popupId: "delete-task" });
+
     const matchedLocationId = params ? Number(params["location_id"]) : null;
 
     useEffect(() => {
@@ -100,83 +108,109 @@ function TasksPopup({ popupProps, setSelected, selected }: TasksPopupProps) {
         return null;
     }
 
+    async function handleDelete(id: number | undefined) {
+        await fetch(`${backend}/api/v1/tasks/${id}`, { method: "DELETE" });
+        // fetcher.data = undefined;
+        fetcher.load(location.pathname + "/tasks");
+    }
+
     return (
-        <Popover
-            {...bindPopover(popupProps)}
-            anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            transformOrigin={{
-                vertical: "bottom",
-                horizontal: "right",
-            }}
-            PaperProps={{
-                sx: {
-                    display: "flex",
-                    flexDirection: "column",
-                    maxHeight: "600px",
-                    alignItems: "center",
-                },
-            }}
-        >
-            {tasks && tasks.length ? (
-                <List>
-                    {tasks.map((t, i) => (
-                        <ListItem key={i} sx={{ display: "flex", alignItems: "center" }}>
-                            <Box display="flex" flexDirection="column" flexGrow={1} sx={{ mr: 3 }}>
-                                <Typography fontSize="1.4em">{t.name}</Typography>
-                                <Typography
-                                    fontSize="1em"
-                                    sx={{ fontStyle: "italic", color: "text.secondary" }}
-                                >
-                                    {t.jobName}
-                                </Typography>
-                            </Box>
-                            <Box display="flex">
-                                <Button
-                                    disabled={selected === t.id}
-                                    onClick={() => {
-                                        popupProps.close();
-                                        //@ts-ignore
-                                        setSelected(t.id);
-                                    }}
-                                >
-                                    Select
-                                </Button>
-                                <IconButton
-                                    size="large"
-                                    sx={{ color: "secondary.light" }}
-                                    onClick={() => {
-                                        navigate("/task/" + t.id);
-                                    }}
-                                >
-                                    <EditIcon />
-                                </IconButton>
-                                <IconButton size="large" sx={{ color: "error.light" }}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Box>
-                        </ListItem>
-                    ))}
-                </List>
-            ) : (
-                <Typography sx={{ py: 2, fontStyle: "italic" }}>No tasks found.</Typography>
-            )}
-            <Divider flexItem />
-            <Button
-                variant="contained"
-                color="success"
-                sx={{ m: 1 }}
-                startIcon={<AddIcon />}
-                onClick={() => {
-                    popupProps.close();
-                    navigate({ pathname: "/task/new", search: "location_id=" + matchedLocationId });
+        <>
+            <Popover
+                {...bindPopover(popupProps)}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                transformOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                }}
+                PaperProps={{
+                    sx: {
+                        display: "flex",
+                        flexDirection: "column",
+                        maxHeight: "600px",
+                        alignItems: "center",
+                    },
                 }}
             >
-                Add new task
-            </Button>
-        </Popover>
+                {tasks && tasks.length ? (
+                    <List>
+                        {tasks.map((t, i) => (
+                            <ListItem key={i} sx={{ display: "flex", alignItems: "center" }}>
+                                <Box
+                                    display="flex"
+                                    flexDirection="column"
+                                    flexGrow={1}
+                                    sx={{ mr: 3 }}
+                                >
+                                    <Typography fontSize="1.4em">{t.name}</Typography>
+                                    <Typography
+                                        fontSize="1em"
+                                        sx={{ fontStyle: "italic", color: "text.secondary" }}
+                                    >
+                                        {t.jobName}
+                                    </Typography>
+                                </Box>
+                                <Box display="flex">
+                                    <Button
+                                        disabled={selected === t.id}
+                                        onClick={() => {
+                                            popupProps.close();
+                                            //@ts-ignore
+                                            setSelected(t.id);
+                                        }}
+                                    >
+                                        Select
+                                    </Button>
+                                    <IconButton
+                                        size="large"
+                                        sx={{ color: "secondary.light" }}
+                                        onClick={() => {
+                                            navigate("/task/" + t.id);
+                                        }}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton
+                                        size="large"
+                                        sx={{ color: "error.light" }}
+                                        onClick={deletePopup.open}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    <TaskDeletePopup
+                                        popupProps={deletePopup}
+                                        text={<>Deleting Task</>}
+                                        handler={handleDelete}
+                                        id={t.id}
+                                    />
+                                </Box>
+                            </ListItem>
+                        ))}
+                    </List>
+                ) : (
+                    <Typography sx={{ py: 2, fontStyle: "italic" }}>No tasks found.</Typography>
+                )}
+                <Divider flexItem />
+                <Button
+                    variant="contained"
+                    color="success"
+                    sx={{ m: 1 }}
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                        popupProps.close();
+                        navigate({
+                            pathname: "/task/new",
+                            search: "location_id=" + matchedLocationId,
+                        });
+                    }}
+                >
+                    Add new task
+                </Button>
+            </Popover>
+        </>
     );
 }
 
