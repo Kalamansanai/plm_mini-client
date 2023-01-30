@@ -10,6 +10,7 @@ import NewTask, {
 import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
 import SignIn, { loader as signInLoader } from "components/signin/SignIn";
 import UserManager from "components/signin/UserManager";
+import About from "About";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -130,6 +131,7 @@ const router = createBrowserRouter(
             <Route element={<App />} errorElement={<ErrorPage />}>
                 <Route path="signin" element={<SignIn />} loader={signInLoader}></Route>
                 <Route path="usermanager" element={<UserManager />}></Route>
+                <Route path="about" element={<About />}></Route>
                 <Route
                     path="prev_instances/:location_id"
                     loader={prevInstancesLocationLoader}

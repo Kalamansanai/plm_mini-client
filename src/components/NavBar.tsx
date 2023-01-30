@@ -12,11 +12,13 @@ import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Popup from "About";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export default function NavBar() {
     const [logState, setLogState] = useState(false);
+    const [openPopup, setOpenPopup] = useState(false);
     const user: User = {
         name: "lajos",
         role: "részeg",
@@ -34,6 +36,11 @@ export default function NavBar() {
 
     const onData = () => {
         navigate({ pathname: "/prev_instances" });
+    };
+
+    const onAbout = () => {
+
+        navigate({ pathname: "/about" });
     };
 
     return (
@@ -85,13 +92,19 @@ export default function NavBar() {
                                 <ListAltIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title="About">
+                        <Tooltip onClick={() => setOpenPopup(true)} title="About">
                             <IconButton sx={{ color: "white" }}>
                                 <InfoIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                     </Box>
                 </Toolbar>
+                <Popup
+                    openPopup = {openPopup}
+                    setOpenPopup = {setOpenPopup}
+                >
+                    
+                </Popup>
             </AppBar>
             <Offset />
         </>
