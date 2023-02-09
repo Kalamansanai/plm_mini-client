@@ -1,4 +1,5 @@
 import { DetailedError } from "api";
+import FileManager from "components/FileManager/FileManager";
 import deleteLocationAction from "components/_screens/dashboard/deleteLocation";
 import editLocationAction from "components/_screens/dashboard/editLocation";
 import newLocationAction from "components/_screens/dashboard/newLocation";
@@ -130,6 +131,7 @@ const router = createBrowserRouter(
             <Route element={<App />} errorElement={<ErrorPage />}>
                 <Route path="signin" element={<SignIn />} loader={signInLoader}></Route>
                 <Route path="usermanager" element={<UserManager />}></Route>
+                <Route path="filemanager" element={<FileManager />}></Route>
                 <Route
                     path="prev_instances/:location_id"
                     loader={prevInstancesLocationLoader}
