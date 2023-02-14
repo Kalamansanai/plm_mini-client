@@ -1,5 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { GlobalContext } from "App";
+import { backend } from "api";
+import { useContext, useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { User } from "types";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -16,12 +18,8 @@ import Typography from "@mui/material/Typography";
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
 export default function NavBar() {
-    const [logState, setLogState] = useState(false);
-    const user: User = {
-        name: "lajos",
-        role: "részeg",
-    };
-    const [userState, setUserState] = useState(user);
+    const { user } = useContext(GlobalContext);
+
     const navigate = useNavigate();
 
     const onProfile = () => {
@@ -55,10 +53,10 @@ export default function NavBar() {
                             sx={{ color: "white", fontSize: "1.2em" }}
                         >
                             <Box flexDirection="column">
-                                <Box>{logState ? <div>{userState["name"]}</div> : null}</Box>
-                                {logState ? (
+                                <Box>{user ? <div>{user.name}</div> : null}</Box>
+                                {user ? (
                                     <Box mt="0" mb="0" color="red" fontSize="small">
-                                        {userState["role"]}
+                                        {user.role}
                                     </Box>
                                 ) : null}
                             </Box>
