@@ -1,0 +1,14 @@
+.openapi-generator-ignore
+apis/DetectorsApi.ts
+apis/EventsApi.ts
+apis/JobsApi.ts
+apis/LinesApi.ts
+apis/LocationsApi.ts
+apis/OPUsApi.ts
+apis/SitesApi.ts
+apis/StationsApi.ts
+apis/TasksApi.ts
+apis/index.ts
+index.ts
+models/index.ts
+runtime.ts

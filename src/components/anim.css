@@ -1,0 +1,9 @@
+.labeled-value-flash-in {
+    background-color: #8bc6f7 !important;
+    transition: none !important;
+}
+
+.labeled-value-flash-out {
+    transition: background-color 0.5s ease-out !important;
+    background-color: #e6e6e6 !important;
+}
