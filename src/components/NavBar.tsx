@@ -34,8 +34,11 @@ export default function NavBar() {
         navigate({ pathname: "/hierarchy" });
     };
 
-    const onData = () => {
+    const onOrganization = () => {
         navigate({ pathname: "/prev_instances" });
+    };
+
+    const onData = () => {
     };
 
     const onAbout = () => {
@@ -78,17 +81,17 @@ export default function NavBar() {
                             sx={{ bgcolor: "white", mx: 1 }}
                         />
                         <Tooltip title="Organization">
-                            <IconButton sx={{ color: "white" }}>
+                            <IconButton onClick={onOrganization} sx={{ color: "white" }}>
                                 <FactoryIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Dashboard">
-                            <IconButton sx={{ color: "white" }}>
+                            <IconButton onClick={onData} sx={{ color: "white" }}>
                                 <DashboardIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Data">
-                            <IconButton onClick={onData} sx={{ color: "white" }}>
+                            <IconButton sx={{ color: "white" }}>
                                 <ListAltIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>

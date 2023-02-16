@@ -5,12 +5,13 @@ import { Station } from "types";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { Box, IconButton, Tab, Tabs } from "@mui/material";
+import { Box, Grid, IconButton, Tab, Tabs } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 import TabPanel from "../../TabPanel";
 import LocationCardsGrid from "./LocationCard";
+import DetectorCard from "./DetectorCard";
 
 export default function StationMenu({ station }: { station: Station }) {
     const [tab, setTab] = useState(0);
@@ -55,8 +56,22 @@ export default function StationMenu({ station }: { station: Station }) {
             >
                 <LocationCardsGrid locations={locations} />
             </TabPanel>
-            <TabPanel currentIndex={tab} index={1} sx={{ p: 1, flexGrow: 1 }}>
-                <div>something</div>
+            <TabPanel
+                currentIndex={tab}
+                flexDirection="column"
+                index={1}
+                gap={1}
+                sx={{
+                    p: 2,
+                    flexGrow: 1,
+                    height: 0,
+                    overflowY: "auto",
+                    backgroundColor: "background.subtle",
+                }}
+            >
+                <Grid container flexGrow={1} spacing={1} alignContent="flex-start">
+                    {locations.filter((l) => !!l.detector).map((l) => (<DetectorCard key={l.detector!.id} detector={l.detector!} location={l} />))}
+                </Grid>
             </TabPanel>
             <Divider />
             <Box>

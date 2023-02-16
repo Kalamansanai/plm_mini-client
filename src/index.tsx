@@ -49,6 +49,7 @@ import DashboardContainer, {
 } from "./components/_screens/dashboard/index";
 import sendCommandAction from "./components/_screens/dashboard/sendCommand";
 import theme from "./theme";
+import DetectorDetails, { loader as detectorDetailsLoader } from "components/_screens/dashboard/DetectorDetails";
 
 // TODO(rg): better error handling
 
@@ -177,6 +178,13 @@ const router = createBrowserRouter(
                     >
                         <Route path="tasks" loader={locationTasksLoader} />
                         <Route path="send_command" action={sendCommandAction} />
+                    </Route>
+                    <Route
+                        errorElement={<ErrorPage />}
+                        loader={detectorDetailsLoader}
+                        path="detector/:detector_id"
+                        element={<DetectorDetails />}
+                    >
                     </Route>
                 </Route>
             </Route>
