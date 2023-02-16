@@ -1,4 +1,5 @@
 import { DetailedError } from "api";
+import FileManager from "components/FileManager/FileManager";
 import deleteLocationAction from "components/_screens/dashboard/deleteLocation";
 import editLocationAction from "components/_screens/dashboard/editLocation";
 import newLocationAction from "components/_screens/dashboard/newLocation";
@@ -8,7 +9,7 @@ import NewTask, {
     newJobAction,
 } from "components/_screens/task/NewTask";
 import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
-import SignIn, { loader as signInLoader } from "components/signin/SignIn";
+import SignIn from "components/signin/SignIn";
 import UserManager from "components/signin/UserManager";
 import About from "About";
 import { SnackbarProvider } from "notistack";
@@ -130,9 +131,10 @@ const router = createBrowserRouter(
         <>
             <Route path="*" element={<Navigate to="/hierarchy" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
-                <Route path="signin" element={<SignIn />} loader={signInLoader}></Route>
+                <Route path="signin" element={<SignIn />}></Route>
                 <Route path="usermanager" element={<UserManager />}></Route>
                 <Route path="about" element={<About />}></Route>
+                <Route path="filemanager" element={<FileManager />}></Route>
                 <Route
                     path="prev_instances/:location_id"
                     loader={prevInstancesLocationLoader}

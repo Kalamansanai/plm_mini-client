@@ -1,6 +1,8 @@
+import { login } from "components/signin/SignIn";
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
+import { User } from "types";
 
 import { Box } from "@mui/material";
 
@@ -8,8 +10,30 @@ import "./App.css";
 import { setupInterceptors } from "./api";
 import NavBar from "./components/NavBar";
 
+export const GlobalContext = createContext<{
+    user: User | null;
+    setUser: (u: User | null) => void;
+}>({
+    user: null,
+    setUser: () => {},
+});
+
 export default function App() {
+    const [user, setUser] = useState<User | null>(null);
+
     const { enqueueSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        if (!user) {
+            login()
+                .then((res) => {
+                    if (res) setUser(res);
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        }
+    }, [user]);
 
     useEffect(() => {
         setupInterceptors({
@@ -36,11 +60,18 @@ export default function App() {
     }, []);
 
     return (
-        <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-            <NavBar />
-            <Box sx={{ flexGrow: 1 }}>
-                <Outlet />
+        <GlobalContext.Provider
+            value={{
+                user,
+                setUser,
+            }}
+        >
+            <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+                <NavBar />
+                <Box sx={{ flexGrow: 1 }}>
+                    <Outlet />
+                </Box>
             </Box>
-        </Box>
+        </GlobalContext.Provider>
     );
 }

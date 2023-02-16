@@ -2,6 +2,7 @@ import { config as apiConfig } from "api";
 import { backend } from "api";
 import { JobsApi, LocationsApi, TasksApi, TasksCreateRes, TaskType } from "api_client";
 import Title from "components/Title";
+import { useEffect, useState } from "react";
 import { Form, redirect, useActionData, useFetcher, useLoaderData } from "react-router-dom";
 import { CompanyHierarchyNode, Job, Location } from "types";
 
@@ -43,6 +44,26 @@ export async function loader({ request }: { request: Request }) {
     } catch (err) {
         throw err;
     }
+}
+
+async function getNewSnapshot(
+    detectorId: number,
+    locationId: number,
+    setSnapshot: React.Dispatch<React.SetStateAction<Blob | null>>
+) {
+    await fetch(`${backend}/api/v1/detectors/${detectorId}/snapshot`);
+
+    let snapshot = null;
+    try {
+        snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
+            id: locationId,
+        });
+    } catch {
+        // Location doesn't exist, or doesn't have a snapshot
+        // noop
+    }
+
+    setSnapshot(snapshot);
 }
 
 export async function action({ request }: { request: Request }) {
@@ -98,17 +119,19 @@ export async function newJobAction({ request }: { request: Request }) {
 
 export default function NewTask() {
     const { jobs, location, snapshot } = useLoaderData() as LoaderData;
+    const [currentSnapshot, setSnapshot] = useState(snapshot);
     const fetcher = useFetcher();
 
     const thing = useActionData();
     console.log(thing);
 
-    let snapshotUrl = "https://via.placeholder.com/640x360";
+    const [snapshotUrl, setSnapshotUrl] = useState("https://via.placeholder.com/640x360");
+    // let snapshotUrl = ;
     // const source = `${backend}/api/v1/detectors/${3}/stream`;
 
-    if (snapshot) {
-        snapshotUrl = URL.createObjectURL(snapshot);
-    }
+    useEffect(() => {
+        setSnapshotUrl(URL.createObjectURL(currentSnapshot));
+    }, [currentSnapshot]);
 
     const jobsSelectArray = [
         <MenuItem key={""} value={""}>
@@ -122,7 +145,7 @@ export default function NewTask() {
     ];
 
     const handleNewSnapshot = () => {
-        fetch(`${backend}/api/v1/detectors/${location?.detector?.id}/snapshot`);
+        getNewSnapshot(location.detector?.id, location.id, setSnapshot);
     };
 
     // NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
