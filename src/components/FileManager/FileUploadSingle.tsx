@@ -17,6 +17,7 @@ function FileUploadSingle() {
         }
 
         var bodyFormData = new FormData();
+        8;
         bodyFormData.append("Name", `${file.name}`);
         bodyFormData.append("Type", "Code");
         bodyFormData.append("File", file);
@@ -30,10 +31,7 @@ function FileUploadSingle() {
             headers: {
                 "content-type": "multipart/form-data",
             },
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.error(err));
+        });
     };
 
     return (

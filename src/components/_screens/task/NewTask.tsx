@@ -130,7 +130,9 @@ export default function NewTask() {
     // const source = `${backend}/api/v1/detectors/${3}/stream`;
 
     useEffect(() => {
-        setSnapshotUrl(URL.createObjectURL(currentSnapshot));
+        if (currentSnapshot != null) {
+            setSnapshotUrl(URL.createObjectURL(currentSnapshot));
+        }
     }, [currentSnapshot]);
 
     const jobsSelectArray = [
@@ -145,7 +147,7 @@ export default function NewTask() {
     ];
 
     const handleNewSnapshot = () => {
-        getNewSnapshot(location.detector?.id, location.id, setSnapshot);
+        getNewSnapshot(location.detector!.id, location.id, setSnapshot);
     };
 
     // NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
