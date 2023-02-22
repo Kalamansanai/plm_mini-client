@@ -163,6 +163,16 @@ export class DetectorsApi extends runtime.BaseAPI {
 
         headerParameters["Content-Type"] = "application/json";
 
+        // const response = await fetch(`https://localhost/api/v1/detectors/4/command`, {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: {
+        //         //@ts-ignore
+        //         msg: "start",
+        //         task_id: "4",
+        //     },
+        // });
+
         const response = await this.request(
             {
                 path: `/api/v1/detectors/{id}/command`.replace(

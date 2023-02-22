@@ -1,6 +1,7 @@
 import { GlobalContext } from "App";
 import { backend, config as apiConfig } from "api";
 import InvalidPasswordPopup from "components/popups/InvalidPasswordPopup";
+import CryptoJS from "crypto-js";
 import { usePopupState } from "material-ui-popup-state/hooks";
 import * as React from "react";
 import { User } from "types";
@@ -13,6 +14,8 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
+import UserManager from "./UserManager";
+
 function Copyright(props: any) {
     return (
         <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -21,15 +24,23 @@ function Copyright(props: any) {
     );
 }
 
+export const hash = (string: string) => {
+    return CryptoJS.SHA256(string).toString();
+};
+
 const theme = createTheme();
 
 type Params = {
     name: string;
-    password: string;
+    pass: string;
     setUser: (u: User | null) => void;
     setInvalidPassword: React.Dispatch<React.SetStateAction<boolean>>;
 };
-async function SignInReq({ name, password, setUser, setInvalidPassword }: Params) {
+async function SignInReq({ name, pass, setUser, setInvalidPassword }: Params) {
+    console.log(name);
+    console.log(pass);
+    const password = hash(pass);
+    console.log(password);
     const response = await fetch(`${backend}/api/v1/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -50,6 +61,7 @@ async function SignInReq({ name, password, setUser, setInvalidPassword }: Params
     if (userResponse.status != 400) {
         const temp = await userResponse.json();
         console.log(temp);
+        temp;
         setUser(temp);
         setInvalidPassword(false);
     } else {
@@ -100,13 +112,13 @@ export default function SignIn() {
         const data = new FormData(event.currentTarget);
 
         const name = data.get("username");
-        const psw = data.get("password");
+        const psw = data.get("password")?.toString();
 
         SignInReq({
             //@ts-ignore
             name: name,
             //@ts-ignore
-            password: psw,
+            pass: psw,
             setUser: setUser,
             setInvalidPassword: setInvalidPassword,
         });
@@ -193,7 +205,7 @@ export default function SignIn() {
                     >
                         <Button
                             variant="outlined"
-                            sx={{ marginTop: 4, marginRight: 4 }}
+                            sx={{ marginTop: 3, marginRight: 4, marginBottom: 1 }}
                             onClick={handleLogOut}
                         >
                             Log out
@@ -201,9 +213,10 @@ export default function SignIn() {
                     </Box>
                 </Box>
             ) : null}
+            {user?.role === "SuperUser" ? <UserManager /> : null}
 
             {invalidPassword ? <InvalidPasswordPopup popupProps={invalidPasswordPopup} /> : null}
         </Box>
     );
 }
-export {Copyright};
+export { Copyright };

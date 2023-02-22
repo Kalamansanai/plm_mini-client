@@ -1,11 +1,5 @@
 import { backend, config as apiConfig, DetailedError } from "api";
-import {
-    ApiEndpointsDetectorsCommandRequest,
-    DetectorsApi,
-    LocationsApi,
-    ResponseError,
-    TaskType,
-} from "api_client";
+import { LocationsApi, ResponseError } from "api_client";
 import axios from "axios";
 import { plainToClass } from "class-transformer";
 import React, { useEffect, useState } from "react";
