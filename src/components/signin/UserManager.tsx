@@ -49,6 +49,11 @@ const listUsers = async (setUsers: React.Dispatch<React.SetStateAction<Array<_Us
     }
 };
 
+type RegisterResponse = {
+    id: number;
+    errorMessage: string | undefined;
+};
+
 const registrateUser = async (
     username: string,
     password: string,
@@ -69,10 +74,16 @@ const registrateUser = async (
 
     //need to set better (not only 400 can be an error)
     if (response.status != 400) {
-        const id = await response.json().then((res) => {
-            return res.Id as number;
+        const responseObject = await response.json().then((res: any) => {
+            return res as RegisterResponse;
         });
-        const new_user = { id: id, name: username, role: role };
+
+        if (responseObject.errorMessage != undefined) {
+            alert(responseObject.errorMessage);
+            return;
+        }
+
+        const new_user = { id: responseObject.id, name: username, role: role };
         setSelected(new_user);
     } else {
         setSelected(null);
@@ -136,19 +147,26 @@ export default function UserManager() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        if (data.get("password") != data.get("re-password")) {
-            alert("The passwords are different!");
+        const password = data.get("password");
+        const re_password = data.get("re-password");
+        const username = data.get("username");
+
+        if (password == null || re_password == null || newRole === "-") {
+            alert("Username, Role and both Passwords need to be set!");
             return;
         }
 
-        if (newRole === "-") {
-            alert("Role is need to be set to a valid value!");
+        if (password.length < 8) {
+            alert("Password is need to be at least 8 characters long!");
             return;
         }
 
-        const password = hash(data.get("password")!.toString());
-        console.log(data.get("password")!.toString());
-        registrateUser(data.get("username")!.toString(), password, newRole, setSelected);
+        if (password != re_password) {
+            alert("The two given passwords need to match!");
+            return;
+        }
+
+        registrateUser(username!.toString(), password!.toString(), newRole, setSelected);
     };
 
     const handleDelete = () => {
@@ -163,14 +181,17 @@ export default function UserManager() {
         const name = data.get("new_username")?.toString();
         var password = data.get("new_password")?.toString();
         const repassword = data.get("new_re-password")?.toString();
-        const role = data.get("new_role")?.toString();
+        const role =
+            data.get("new_role")?.toString() != "-" ? data.get("new_role")?.toString() : undefined;
 
         if (password != repassword) {
             alert("The passwords are different!");
             return;
         }
 
-        password = password === undefined ? undefined : hash(password);
+        if (password != undefined) {
+            password = password != "" ? hash(password) : undefined;
+        }
         //it always be selected, bc the delete button only shows up if the user select one
         updateUser(selected!.id, setSelected, name, password, role);
     };
