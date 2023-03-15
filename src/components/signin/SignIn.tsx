@@ -134,11 +134,12 @@ export default function SignIn() {
     console.log(user);
     return (
         <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-            }}
+            // sx={{
+            //     display: "flex",
+            //     flexDirection: "column",
+            //     justifyContent: "flex-start",
+            // }}
+            sx={{ height: "100%" }}
         >
             {!user ? (
                 <Box
