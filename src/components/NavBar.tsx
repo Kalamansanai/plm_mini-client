@@ -1,3 +1,4 @@
+import Popup from "About";
 import { GlobalContext } from "App";
 import { backend } from "api";
 import { useContext, useEffect, useState } from "react";
@@ -14,7 +15,6 @@ import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Popup from "About";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -32,14 +32,12 @@ export default function NavBar() {
     };
 
     const onOrganization = () => {
-        navigate({ pathname: "/prev_instances" });
+        navigate({ pathname: "/hierarchy" });
     };
 
-    const onData = () => {
-    };
+    const onData = () => {};
 
     const onAbout = () => {
-
         navigate({ pathname: "/about" });
     };
 
@@ -99,12 +97,7 @@ export default function NavBar() {
                         </Tooltip>
                     </Box>
                 </Toolbar>
-                <Popup
-                    openPopup = {openPopup}
-                    setOpenPopup = {setOpenPopup}
-                >
-                    
-                </Popup>
+                <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}></Popup>
             </AppBar>
             <Offset />
         </>
