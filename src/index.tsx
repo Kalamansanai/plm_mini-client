@@ -137,11 +137,7 @@ const router = createBrowserRouter(
                 {/* <Route path="usermanager" element={<UserManager />}></Route> */}
                 <Route path="about" element={<About />}></Route>
                 <Route path="filemanager" element={<FileManager />}></Route>
-                <Route
-                    path="prev_instances/:location_id"
-                    loader={prevInstancesLocationLoader}
-                    element={<PrevInstances />}
-                />
+
                 <Route path="hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
                     <Route path="new" action={newCHNodeAction} />
                     <Route path="edit" action={editCHNodeAction} />
@@ -171,6 +167,11 @@ const router = createBrowserRouter(
                     element={<DashboardContainer />}
                     errorElement={<ErrorPage />}
                 >
+                    <Route
+                        path="prev_instances/:location_id"
+                        loader={prevInstancesLocationLoader}
+                        element={<PrevInstances />}
+                    />
                     <Route path="new" action={newLocationAction} />
                     <Route path="edit" action={editLocationAction} />
                     <Route path="delete" action={deleteLocationAction} />
@@ -183,6 +184,7 @@ const router = createBrowserRouter(
                         <Route path="tasks" loader={locationTasksLoader} />
                         <Route path="send_command" action={sendCommandAction} />
                     </Route>
+
                     <Route
                         errorElement={<ErrorPage />}
                         loader={detectorDetailsLoader}

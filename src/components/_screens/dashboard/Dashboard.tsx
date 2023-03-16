@@ -147,7 +147,11 @@ export default function Dashboard() {
                             <NextStepGuide instance={instance} />
                         </Grid>
                         <Grid item xs={8}>
-                            <TaskInstance instance={instance} maxOrderNum={task?.maxOrderNum} />
+                            <TaskInstance
+                                instance={instance}
+                                maxOrderNum={task?.maxOrderNum}
+                                location_id={location.id}
+                            />
                         </Grid>
                     </Grid>
                 ) : null}
@@ -156,7 +160,11 @@ export default function Dashboard() {
                 <Grid display="flex" item xl={3} height="100%" flexDirection="column" gap={2}>
                     <NextStepGuide instance={instance} />
                     <Box flexGrow={1}>
-                        <TaskInstance instance={instance} maxOrderNum={task?.maxOrderNum} />
+                        <TaskInstance
+                            instance={instance}
+                            maxOrderNum={task?.maxOrderNum}
+                            location_id={location.id}
+                        />
                     </Box>
                 </Grid>
             ) : null}
