@@ -1,4 +1,4 @@
-import { config as apiConfig, DetailedError } from "api";
+import { backend, config as apiConfig, DetailedError } from "api";
 import { JobsApi, LocationsApi, ResponseError, TasksApi, TasksUpdateReq } from "api_client";
 import Title from "components/Title";
 import { usePopupState } from "material-ui-popup-state/hooks";
@@ -21,6 +21,7 @@ import {
     TaskType,
     GetStepActionString,
     Location,
+    Detector,
 } from "types";
 import { bifilter } from "utils/bifilter";
 import { v4 as uuidv4 } from "uuid";
@@ -56,6 +57,22 @@ import reducer, {
     EditedTask,
     SelectionType,
 } from "./reducer";
+
+async function takeNewSnapshot(
+    locationId: number | null,
+    taskId: number,
+    setSnapshot: React.Dispatch<React.SetStateAction<Blob>>
+) {
+    const response = await fetch(`${backend}/api/v1/locations/${taskId}/sse-notify`, {
+        method: "GET",
+        body: JSON.stringify({
+            taskId: taskId,
+        }),
+    });
+
+    const snapshot = await response.json();
+    setSnapshot(snapshot);
+}
 
 // Get the difference between the original object and the edited object. Called before sending the
 // update to determine what the update request should contain.
@@ -189,15 +206,27 @@ export async function loader({ params }: { params: Params }) {
         const stepsObjects = await new TasksApi(apiConfig).apiEndpointsTasksGetObjectsAndSteps({
             taskId: id,
         });
-        const snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
-            id: task!.location!.id!,
-        });
+        // const snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
+        //     id: task!.location!.id!,
+        // });
 
         const steps = stepsObjects.steps! as Array<Step & { objectId: number }>;
         const objects = stepsObjects.objects! as Array<EditedObject>;
         resolveStepObjects(steps, objects);
 
         const [stepsWithIds, objectsWithIds] = assignTemporaryIds(steps, objects);
+
+        const response = await fetch(
+            `${backend}/api/v1/locations/${task!.location!.id}/sse-notify`,
+            {
+                method: "GET",
+                body: JSON.stringify({
+                    taskId: id,
+                }),
+            }
+        );
+
+        const snapshot = await response.json();
 
         const reqLocation = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
             id: task!.location!.id!,
@@ -229,7 +258,7 @@ export async function loader({ params }: { params: Params }) {
 type LoaderData = {
     jobs: Array<Job>;
     task: EditedTask;
-    snapshot: Blob;
+    _snapshot: Blob;
 };
 
 // The Tasks.Update endpoint on the backend expects the delta between the "initial" task (which we
@@ -349,9 +378,11 @@ export default function Task() {
     const theme = useTheme();
     const fetcher = useFetcher();
     const location = useLocation();
-    const { jobs, task: originalTask, snapshot } = useLoaderData() as LoaderData;
+    const { jobs, task: originalTask, _snapshot } = useLoaderData() as LoaderData;
     const isLg = useMediaQuery(theme.breakpoints.up("lg"));
     const navigate = useNavigate();
+
+    const [snapshot, setSnapshot] = useState(_snapshot);
 
     const [state, dispatch] = useReducer(reducer, {
         selection: null,
@@ -582,6 +613,23 @@ export default function Task() {
                                     dispatch={dispatch}
                                 />
                             </Box>
+                            {!state.selection ? (
+                                <Grid display="flex" justifyContent="center">
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ width: "40%", mt: 2 }}
+                                        onClick={() => {
+                                            takeNewSnapshot(
+                                                state.task.location.id,
+                                                state.task.id,
+                                                setSnapshot
+                                            );
+                                        }}
+                                    >
+                                        Take new snapshot
+                                    </Button>
+                                </Grid>
+                            ) : null}
                             <Box display="flex" flexDirection="column" flexGrow={0}>
                                 {state.selection ? (
                                     state.selection.selectionType === "object" ? (
