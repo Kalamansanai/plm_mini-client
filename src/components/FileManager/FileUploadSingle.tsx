@@ -24,11 +24,8 @@ async function handleUploadClick(
     // 👇 Uploading the file using the fetch API to the server
     const res = await fetch(`${backend}/api/v1/files/upload`, {
         method: "POST",
+        // headers: { "Content-Type": "multipart/form-data" },
         body: bodyFormData,
-
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
     });
 
     if (res.status != 400) {
