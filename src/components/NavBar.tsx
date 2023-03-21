@@ -8,6 +8,7 @@ import { User } from "types";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FactoryIcon from "@mui/icons-material/Factory";
+import FolderIcon from "@mui/icons-material/Folder";
 import InfoIcon from "@mui/icons-material/Info";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Box, Button, Divider, Link, styled, Tooltip } from "@mui/material";
@@ -36,6 +37,10 @@ export default function NavBar() {
     };
 
     const onData = () => {};
+
+    const onFiles = () => {
+        navigate({ pathname: "/filemanager" });
+    };
 
     const onAbout = () => {
         navigate({ pathname: "/about" });
@@ -88,6 +93,11 @@ export default function NavBar() {
                         <Tooltip title="Data">
                             <IconButton sx={{ color: "white" }}>
                                 <ListAltIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Files" onClick={onFiles}>
+                            <IconButton sx={{ color: "white" }}>
+                                <FolderIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip onClick={() => setOpenPopup(true)} title="About">
