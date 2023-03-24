@@ -1,8 +1,6 @@
 import { backend, config as apiConfig, DetailedError } from "api";
 import { JobsApi, LocationsApi, ResponseError, TasksApi, TasksUpdateReq } from "api_client";
 import Title from "components/Title";
-import { usePopupState } from "material-ui-popup-state/hooks";
-import { useSnackbar } from "notistack";
 import React, { useEffect, useMemo } from "react";
 import { useReducer, useState } from "react";
 import {
@@ -58,21 +56,18 @@ import reducer, {
     SelectionType,
 } from "./reducer";
 
-async function takeNewSnapshot(
-    locationId: number | null,
-    taskId: number,
-    setSnapshot: React.Dispatch<React.SetStateAction<Blob>>
-) {
-    const response = await fetch(`${backend}/api/v1/locations/${taskId}/sse-notify`, {
-        method: "GET",
-        body: JSON.stringify({
-            taskId: taskId,
-        }),
-    });
+// async function takeNewSnapshot(
+//     locationId: number | null,
+//     taskId: number
+//     // setSnapshot: React.Dispatch<React.SetStateAction<Blob>>
+// ) {
+//     const response = await fetch(
+//         `${backend}/api/v1/locations/${locationId}/request-snapshot/${taskId}`
+//     );
 
-    const snapshot = await response.json();
-    setSnapshot(snapshot);
-}
+//     const snapshot = await response.json();
+//     // setSnapshot(snapshot);
+// }
 
 // Get the difference between the original object and the edited object. Called before sending the
 // update to determine what the update request should contain.
@@ -217,16 +212,16 @@ export async function loader({ params }: { params: Params }) {
         const [stepsWithIds, objectsWithIds] = assignTemporaryIds(steps, objects);
 
         const response = await fetch(
-            `${backend}/api/v1/locations/${task!.location!.id}/sse-notify`,
-            {
-                method: "GET",
-                body: JSON.stringify({
-                    taskId: id,
-                }),
-            }
+            `${backend}/api/v1/locations/${task!.location!.id}/request-snapshot/${id}`
         );
 
-        const snapshot = await response.json();
+        // const snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
+        //     id: task!.location!.id!,
+        // });
+
+        // console.log(snapshot);
+        // console.log(await response.blob());
+        const snapshot = await response.blob();
 
         const reqLocation = (await new LocationsApi(apiConfig).apiEndpointsLocationsGetById({
             id: task!.location!.id!,
@@ -258,7 +253,7 @@ export async function loader({ params }: { params: Params }) {
 type LoaderData = {
     jobs: Array<Job>;
     task: EditedTask;
-    _snapshot: Blob;
+    snapshot: Blob;
 };
 
 // The Tasks.Update endpoint on the backend expects the delta between the "initial" task (which we
@@ -378,11 +373,11 @@ export default function Task() {
     const theme = useTheme();
     const fetcher = useFetcher();
     const location = useLocation();
-    const { jobs, task: originalTask, _snapshot } = useLoaderData() as LoaderData;
+    const { jobs, task: originalTask, snapshot } = useLoaderData() as LoaderData;
     const isLg = useMediaQuery(theme.breakpoints.up("lg"));
     const navigate = useNavigate();
 
-    const [snapshot, setSnapshot] = useState(_snapshot);
+    // const [snapshot, setSnapshot] = useState(_snapshot);
 
     const [state, dispatch] = useReducer(reducer, {
         selection: null,
@@ -618,13 +613,13 @@ export default function Task() {
                                     <Button
                                         variant="outlined"
                                         sx={{ width: "40%", mt: 2 }}
-                                        onClick={() => {
-                                            takeNewSnapshot(
-                                                state.task.location.id,
-                                                state.task.id,
-                                                setSnapshot
-                                            );
-                                        }}
+                                        // onClick={() => {
+                                        //     takeNewSnapshot(
+                                        //         state.task.location.id,
+                                        //         state.task.id
+                                        //         // setSnapshot
+                                        //     );
+                                        // }}
                                     >
                                         Take new snapshot
                                     </Button>
