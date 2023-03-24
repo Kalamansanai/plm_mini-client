@@ -21,8 +21,9 @@ export default function DetectorDetails() {
     const data = useLoaderData() as DetectorsGetByIdRes;
 
     return (
-        <Paper sx={{height: '100%', width: '100%'}}>
-            <Typography sx={{textTransform: 'uppercase', fontWeight: 'bold', margin: 1}}>{data.name!}</Typography>
+        <Paper sx={{display: 'flex',flexDirection: 'column', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center',}}>
+            <Typography sx={{display: 'flex', textTransform: 'uppercase', fontWeight: 'bold', margin: 1}}>{data.name!}</Typography>
+            <Typography>This page and feature is under development.</Typography>
         </Paper>
     )
 }
