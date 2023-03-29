@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-export const BASE_PATH = "https://localhost:9696";
+export const BASE_PATH = "http://localhost:9695";
 
 export interface ConfigurationParameters {
     basePath?: string; // override base path

@@ -133,7 +133,7 @@ export default function PrevInstances() {
                     }}
                 >
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Typography variant="h6">Tasks</Typography>
+                        <Typography variant="h6">Task Instances</Typography>
                     </Box>
                     <InstanceList
                         taskInstances={instances}
@@ -152,9 +152,15 @@ export default function PrevInstances() {
                     }}
                 >
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <Typography variant="h6">Instances</Typography>
+                        <Typography variant="h6">Events</Typography>
                     </Box>
-                    <EventList events={events} />
+                    <Grid
+                        display="flex"
+                        flexDirection="column"
+                        sx={{ overflowX: "auto", height: "85%" }}
+                    >
+                        <EventList events={events} />
+                    </Grid>
                 </Grid>
             </Grid>
         </Box>
@@ -228,7 +234,7 @@ function InstanceList({ taskInstances, selected, setSelected }: TCProps) {
                 sx={{
                     display: "flex",
                     flexDirection: "column-reverse",
-                    overflowX: "auto",
+                    overflowY: "auto",
                     height: "80%",
                     width: "100%",
                     mt: 2,
@@ -314,7 +320,7 @@ type ICProps = {
 
 function EventList({ events }: ICProps) {
     return (
-        <Grid display="flex" flexDirection="column-reverse" sx={{ overflowX: "auto" }}>
+        <Grid display="flex" flexDirection="column-reverse">
             {events ? events?.map((event) => <EventCard event={event} />) : <Box></Box>}
         </Grid>
     );
