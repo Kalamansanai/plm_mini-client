@@ -1,7 +1,7 @@
 import useResizeObserver from "@react-hook/resize-observer";
 import { backend } from "api";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Detector, OngoingTask, Step } from "types";
+import { Detector, ObjectState, OngoingTask, Step } from "types";
 import { Location } from "types";
 import { drawObject } from "utils/canvas";
 
@@ -59,7 +59,8 @@ export default function Stream({ playing, detector, setStreamFps, ongoingTask }:
                 // console.log(ongoingTask);
                 //next step with green
                 ongoingTask.ongoingInstance?.currentOrderNumRemainingSteps.forEach((s) => {
-                    ctx!.strokeStyle = "green";
+                    ctx!.strokeStyle =
+                        s.expectedInitialState === ObjectState.Present ? "green" : "yellow";
                     ctx!.lineWidth = 5;
                     ctx!.strokeRect(
                         s.object.coordinates.x,
