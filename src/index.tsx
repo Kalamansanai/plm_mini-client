@@ -1,6 +1,7 @@
 import About from "About";
 import { DetailedError } from "api";
 import FileManager from "components/FileManager/FileManager";
+import CAAEmulator from "components/_screens/CAAEmulator";
 import DetectorDetails, {
     loader as detectorDetailsLoader,
 } from "components/_screens/dashboard/DetectorDetails";
@@ -134,6 +135,7 @@ const router = createBrowserRouter(
             <Route path="*" element={<Navigate to="/hierarchy" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
                 <Route path="signin" element={<SignIn />}></Route>
+                <Route path="caa" element={<CAAEmulator />}></Route>
                 {/* <Route path="usermanager" element={<UserManager />}></Route> */}
                 <Route path="about" element={<About />}></Route>
                 <Route path="filemanager" element={<FileManager />}></Route>
