@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { User } from "types";
 
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FactoryIcon from "@mui/icons-material/Factory";
@@ -44,6 +45,10 @@ export default function NavBar() {
 
     const onAbout = () => {
         navigate({ pathname: "/about" });
+    };
+
+    const onClock = () => {
+        navigate({ pathname: "/caa" });
     };
 
     return (
@@ -103,6 +108,11 @@ export default function NavBar() {
                         <Tooltip onClick={() => setOpenPopup(true)} title="About">
                             <IconButton sx={{ color: "white" }}>
                                 <InfoIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip onClick={onClock} title="CAA Emulator">
+                            <IconButton sx={{ color: "white" }}>
+                                <AccessTimeFilledIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                     </Box>
