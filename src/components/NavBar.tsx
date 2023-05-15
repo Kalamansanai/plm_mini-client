@@ -1,12 +1,15 @@
+import Popup from "About";
 import { GlobalContext } from "App";
 import { backend } from "api";
 import { useContext, useEffect, useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 import { User } from "types";
 
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FactoryIcon from "@mui/icons-material/Factory";
+import FolderIcon from "@mui/icons-material/Folder";
 import InfoIcon from "@mui/icons-material/Info";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import { Box, Button, Divider, Link, styled, Tooltip } from "@mui/material";
@@ -14,7 +17,6 @@ import AppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import Popup from "About";
 
 const Offset = styled("div")(({ theme }) => theme.mixins.toolbar);
 
@@ -32,15 +34,21 @@ export default function NavBar() {
     };
 
     const onOrganization = () => {
-        navigate({ pathname: "/prev_instances" });
+        navigate({ pathname: "/hierarchy" });
     };
 
-    const onData = () => {
+    const onData = () => {};
+
+    const onFiles = () => {
+        navigate({ pathname: "/filemanager" });
     };
 
     const onAbout = () => {
-
         navigate({ pathname: "/about" });
+    };
+
+    const onClock = () => {
+        navigate({ pathname: "/caa" });
     };
 
     return (
@@ -92,19 +100,24 @@ export default function NavBar() {
                                 <ListAltIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Files" onClick={onFiles}>
+                            <IconButton sx={{ color: "white" }}>
+                                <FolderIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
                         <Tooltip onClick={() => setOpenPopup(true)} title="About">
                             <IconButton sx={{ color: "white" }}>
                                 <InfoIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip onClick={onClock} title="CAA Emulator">
+                            <IconButton sx={{ color: "white" }}>
+                                <AccessTimeFilledIcon fontSize="large" />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 </Toolbar>
-                <Popup
-                    openPopup = {openPopup}
-                    setOpenPopup = {setOpenPopup}
-                >
-                    
-                </Popup>
+                <Popup openPopup={openPopup} setOpenPopup={setOpenPopup}></Popup>
             </AppBar>
             <Offset />
         </>

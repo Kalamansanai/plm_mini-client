@@ -19,6 +19,7 @@ export interface DetectorsCommandReq {
  * @interface DetectorsGetByIdRes
  */
 export interface DetectorsGetByIdRes {
+    map(arg0: (log: any) => JSX.Element): import("react").ReactNode;
     /**
      *
      * @type {number}

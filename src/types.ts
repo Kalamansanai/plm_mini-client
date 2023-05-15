@@ -1,3 +1,5 @@
+import { timeStamp } from "console";
+
 export type Template = {
     name: string;
     present: boolean;
@@ -146,4 +148,18 @@ export type ExpectedStepAction = "remove" | "replace";
 export type User = {
     name: string;
     role: string;
+};
+
+export type Task = {
+    id: number;
+    name: string;
+    jobName: string;
+    active: boolean;
+};
+
+export type TaskInstance = {
+    id: number;
+    finalState: TaskInstanceState | null;
+    events: Event[];
+    taskId: number;
 };

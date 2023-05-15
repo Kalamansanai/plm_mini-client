@@ -8,22 +8,24 @@ import { Box, Button, Divider, Paper, Typography, useMediaQuery, useTheme } from
 
 import EventCard from "./EventCard";
 
-type Props = { instance?: OngoingTaskInstance; maxOrderNum?: number };
+type Props = { instance?: OngoingTaskInstance; maxOrderNum?: number; location_id: number };
 
-export default function TaskInstance({ instance, maxOrderNum }: Props) {
+export default function TaskInstance({ instance, maxOrderNum, location_id }: Props) {
     const theme = useTheme();
     const isBelowXl = useMediaQuery(theme.breakpoints.down("xl"));
     const navigate = useNavigate();
 
     const disabled = !instance;
 
+    const completedInstances = instance?.currentOrderNum ? instance?.currentOrderNum - 1 : 0;
+
     const progressPercent =
         instance && maxOrderNum !== undefined
-            ? Math.floor((instance.currentOrderNum * 100) / maxOrderNum)
+            ? Math.floor((completedInstances * 100) / maxOrderNum)
             : 0;
 
     const goToPreviousInstances = () => {
-        navigate("/prev_instances/3");
+        navigate(`../prev_instances/${location_id}`);
     };
 
     return (
@@ -39,7 +41,7 @@ export default function TaskInstance({ instance, maxOrderNum }: Props) {
                                 icon={<Grid3x3Icon fontSize="large" />}
                             />
                             <LabeledValue
-                                value={`${instance?.currentOrderNum} / ${maxOrderNum} (${progressPercent}%)`}
+                                value={`${completedInstances} / ${maxOrderNum} (${progressPercent}%)`}
                                 label="Progress"
                             />
                         </Box>

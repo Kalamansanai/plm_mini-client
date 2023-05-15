@@ -6,8 +6,8 @@ import {
     ResponseError,
 } from "./api_client";
 
-export const backend = "https://localhost:9696";
-// export const backend = "https://192.168.0.108:9696";
+export const backend = "http://localhost:9695";
+// export const backend = "https://192.168.0.112:9696";
 
 // Mirror of the ApiExceptionResponse class on the backend
 export type ApiExceptionResponse = {

@@ -46,25 +46,25 @@ export async function loader({ request }: { request: Request }) {
     }
 }
 
-async function getNewSnapshot(
-    detectorId: number,
-    locationId: number,
-    setSnapshot: React.Dispatch<React.SetStateAction<Blob | null>>
-) {
-    await fetch(`${backend}/api/v1/detectors/${detectorId}/snapshot`);
+// async function getNewSnapshot(
+//     detectorId: number,
+//     locationId: number,
+//     setSnapshot: React.Dispatch<React.SetStateAction<Blob | null>>
+// ) {
+//     await fetch(`${backend}/api/v1/detectors/${detectorId}/snapshot`);
 
-    let snapshot = null;
-    try {
-        snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
-            id: locationId,
-        });
-    } catch {
-        // Location doesn't exist, or doesn't have a snapshot
-        // noop
-    }
+//     let snapshot = null;
+//     try {
+//         snapshot = await new LocationsApi(apiConfig).apiEndpointsLocationsGetSnapshot({
+//             id: locationId,
+//         });
+//     } catch {
+//         // Location doesn't exist, or doesn't have a snapshot
+//         // noop
+//     }
 
-    setSnapshot(snapshot);
-}
+//     setSnapshot(snapshot);
+// }
 
 export async function action({ request }: { request: Request }) {
     const formData = await request.formData();
@@ -122,6 +122,8 @@ export default function NewTask() {
     const [currentSnapshot, setSnapshot] = useState(snapshot);
     const fetcher = useFetcher();
 
+    const [task, setTask] = useState(null);
+
     const thing = useActionData();
     console.log(thing);
 
@@ -146,16 +148,19 @@ export default function NewTask() {
         )),
     ];
 
-    const handleNewSnapshot = () => {
-        getNewSnapshot(location.detector!.id, location.id, setSnapshot);
-    };
+    // const handleNewSnapshot = () => {
+    //     getNewSnapshot(location.detector!.id, location.id, setSnapshot);
+    // };
 
     // NOTE(rg): Some margin is needed to keep the Paper from touching the edge of the screen or the app bar. 2 * margin size is subtracted from the height to avoid scrolling
     return (
-        <Container maxWidth="xl" sx={{ height: "calc(100% - 32px)", my: 2 }}>
-            <Paper elevation={8}>
-                <Grid container height="100%">
-                    <Grid item xs={12} lg={8} sx={{ p: 2 }} display="flex" flexDirection="column">
+        <Container
+            maxWidth="xl"
+            sx={{ height: "calc(100% - 32px)", my: 2, display: "flex", justifyContent: "center" }}
+        >
+            <Paper elevation={8} sx={{ width: "60%" }}>
+                {/* <Grid container height="100%"> */}
+                {/* <Grid item xs={12} lg={8} sx={{ p: 2 }} display="flex" flexDirection="column">
                         <Title sx={{ mb: 4 }}>Snapshot</Title>
                         <Box>
                             <Box
@@ -171,6 +176,7 @@ export default function NewTask() {
                         </Box>
                         <Box display="flex" gap={2} alignSelf="center" mt={2}>
                             <Button
+                                disabled={task === null}
                                 onClick={handleNewSnapshot}
                                 size="large"
                                 variant="outlined"
@@ -178,7 +184,7 @@ export default function NewTask() {
                             >
                                 Take new snapshot
                             </Button>
-                            <Button
+                            {/* <Button
                                 disabled
                                 size="large"
                                 variant="contained"
@@ -195,101 +201,97 @@ export default function NewTask() {
                                 startIcon={<SaveIcon />}
                             >
                                 Save
-                            </Button>
-                        </Box>
-                    </Grid>
-                    <Grid item xs={12} lg={4} sx={{ display: "flex" }}>
-                        <Divider orientation="vertical" flexItem />
-                        <Box
-                            display="flex"
-                            flexDirection="column"
-                            justifyContent="space-between"
-                            flexGrow={1}
-                            height="100%"
-                        >
-                            <Box display="flex" flexDirection="column" p={2}>
-                                <Title sx={{ mb: 4 }}>New task</Title>
-                                <Form method="post">
-                                    <Box display="flex" flexDirection="column" gap={2}>
-                                        <TextField
-                                            required
-                                            label="Task name"
-                                            name="name"
-                                            fullWidth
-                                        />
-                                        <TextField
-                                            required
-                                            disabled
-                                            label="Location"
-                                            defaultValue={location.name}
-                                            fullWidth
-                                        />
-                                        <input
-                                            readOnly
-                                            hidden
-                                            type="number"
-                                            name="locationId"
-                                            value={location.id}
-                                        />
-                                        <TextField
-                                            required
-                                            select
-                                            label="Task type"
-                                            name="taskType"
-                                            fullWidth
-                                            defaultValue={""}
-                                        >
-                                            <MenuItem value={""}>
-                                                <i>None</i>
-                                            </MenuItem>
-                                            <MenuItem value={TaskType.ToolKit}>Tool kit</MenuItem>
-                                            <MenuItem value={TaskType.ItemKit}>Item kit</MenuItem>
-                                        </TextField>
-                                        <TextField
-                                            required
-                                            select
-                                            label="Job"
-                                            name="parentJobId"
-                                            fullWidth
-                                            defaultValue={""}
-                                        >
-                                            {jobsSelectArray}
-                                        </TextField>
-                                        <Box display="flex" justifyContent="flex-end">
-                                            <Button size="large" variant="contained" type="submit">
-                                                Submit
-                                            </Button>
-                                        </Box>
+                            </Button> */}
+                {/* </Box>
+                    </Grid> */}
+                <Grid
+                    item
+                    sx={{
+                        display: "flex",
+                        width: "100%",
+                    }}
+                >
+                    {/* <Divider orientation="vertical" flexItem /> */}
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="space-between"
+                        flexGrow={1}
+                        height="100%"
+                    >
+                        <Box display="flex" flexDirection="column" p={2}>
+                            <Title sx={{ mb: 4 }}>New task</Title>
+                            <Form method="post">
+                                <Box display="flex" flexDirection="column" gap={2}>
+                                    <TextField required label="Task name" name="name" fullWidth />
+                                    <TextField
+                                        required
+                                        disabled
+                                        label="Location"
+                                        defaultValue={location.name}
+                                        fullWidth
+                                    />
+                                    <input
+                                        readOnly
+                                        hidden
+                                        type="number"
+                                        name="locationId"
+                                        value={location.id}
+                                    />
+                                    <TextField
+                                        required
+                                        select
+                                        label="Task type"
+                                        name="taskType"
+                                        fullWidth
+                                        defaultValue={""}
+                                    >
+                                        <MenuItem value={""}>
+                                            <i>None</i>
+                                        </MenuItem>
+                                        <MenuItem value={TaskType.ToolKit}>Tool kit</MenuItem>
+                                        <MenuItem value={TaskType.ItemKit}>Item kit</MenuItem>
+                                    </TextField>
+                                    <TextField
+                                        required
+                                        select
+                                        label="Job"
+                                        name="parentJobId"
+                                        fullWidth
+                                        defaultValue={""}
+                                    >
+                                        {jobsSelectArray}
+                                    </TextField>
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <Button size="large" variant="contained" type="submit">
+                                            Submit
+                                        </Button>
                                     </Box>
-                                </Form>
-                            </Box>
-                            <Divider flexItem sx={{ my: 2 }} />
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                justifyContent="flex-end"
-                                p={2}
-                            >
-                                <Title sx={{ mb: 4 }}>New job</Title>
-                                <fetcher.Form method="post" action="new_job">
-                                    <Box display="flex" flexDirection="column" gap={2}>
-                                        <TextField
-                                            required
-                                            label="Job name"
-                                            name="job_name"
-                                            fullWidth
-                                        />
-                                        <Box display="flex" justifyContent="flex-end">
-                                            <Button size="large" variant="contained" type="submit">
-                                                Submit
-                                            </Button>
-                                        </Box>
-                                    </Box>
-                                </fetcher.Form>
-                            </Box>
+                                </Box>
+                            </Form>
                         </Box>
-                    </Grid>
+                        <Divider flexItem sx={{ my: 2 }} />
+                        <Box display="flex" flexDirection="column" justifyContent="flex-end" p={2}>
+                            <Title sx={{ mb: 4 }}>New job</Title>
+                            <fetcher.Form method="post" action="new_job">
+                                <Box display="flex" flexDirection="column" gap={2}>
+                                    <TextField
+                                        required
+                                        label="Job name"
+                                        name="job_name"
+                                        fullWidth
+                                    />
+                                    <Box display="flex" justifyContent="flex-end">
+                                        <Button size="large" variant="contained" type="submit">
+                                            Submit
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </fetcher.Form>
+                        </Box>
+                    </Box>
                 </Grid>
+                {/* </Grid> */}
             </Paper>
         </Container>
     );

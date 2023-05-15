@@ -1,5 +1,10 @@
+import About from "About";
 import { DetailedError } from "api";
 import FileManager from "components/FileManager/FileManager";
+import CAAEmulator from "components/_screens/CAAEmulator";
+import DetectorDetails, {
+    loader as detectorDetailsLoader,
+} from "components/_screens/dashboard/DetectorDetails";
 import deleteLocationAction from "components/_screens/dashboard/deleteLocation";
 import editLocationAction from "components/_screens/dashboard/editLocation";
 import newLocationAction from "components/_screens/dashboard/newLocation";
@@ -11,7 +16,6 @@ import NewTask, {
 import Task, { loader as taskLoader, action as taskAction } from "components/_screens/task/Task";
 import SignIn from "components/signin/SignIn";
 import UserManager from "components/signin/UserManager";
-import About from "About";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -50,7 +54,6 @@ import DashboardContainer, {
 } from "./components/_screens/dashboard/index";
 import sendCommandAction from "./components/_screens/dashboard/sendCommand";
 import theme from "./theme";
-import DetectorDetails, { loader as detectorDetailsLoader } from "components/_screens/dashboard/DetectorDetails";
 
 // TODO(rg): better error handling
 
@@ -132,14 +135,11 @@ const router = createBrowserRouter(
             <Route path="*" element={<Navigate to="/hierarchy" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
                 <Route path="signin" element={<SignIn />}></Route>
-                <Route path="usermanager" element={<UserManager />}></Route>
+                <Route path="caa" element={<CAAEmulator />}></Route>
+                {/* <Route path="usermanager" element={<UserManager />}></Route> */}
                 <Route path="about" element={<About />}></Route>
                 <Route path="filemanager" element={<FileManager />}></Route>
-                <Route
-                    path="prev_instances/:location_id"
-                    loader={prevInstancesLocationLoader}
-                    element={<PrevInstances />}
-                />
+
                 <Route path="hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
                     <Route path="new" action={newCHNodeAction} />
                     <Route path="edit" action={editCHNodeAction} />
@@ -169,6 +169,11 @@ const router = createBrowserRouter(
                     element={<DashboardContainer />}
                     errorElement={<ErrorPage />}
                 >
+                    <Route
+                        path="prev_instances/:location_id"
+                        loader={prevInstancesLocationLoader}
+                        element={<PrevInstances />}
+                    />
                     <Route path="new" action={newLocationAction} />
                     <Route path="edit" action={editLocationAction} />
                     <Route path="delete" action={deleteLocationAction} />
@@ -181,13 +186,13 @@ const router = createBrowserRouter(
                         <Route path="tasks" loader={locationTasksLoader} />
                         <Route path="send_command" action={sendCommandAction} />
                     </Route>
+
                     <Route
                         errorElement={<ErrorPage />}
                         loader={detectorDetailsLoader}
                         path="detector/:detector_id"
                         element={<DetectorDetails />}
-                    >
-                    </Route>
+                    ></Route>
                 </Route>
             </Route>
         </>
