@@ -21,6 +21,7 @@
         "base64-arraybuffer": "^1.0.2",
         "class-transformer": "^0.5.1",
         "crypto-js": "^4.1.1",
+        "date-fns": "^2.29.3",
         "live-server": "^1.2.2",
         "material-ui-popup-state": "^4.0.0",
         "notistack": "^2.0.5",
