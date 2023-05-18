@@ -10,8 +10,8 @@ import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
 import TabPanel from "../../TabPanel";
-import LocationCardsGrid from "./LocationCard";
 import DetectorCard from "./DetectorCard";
+import LocationCardsGrid from "./LocationCard";
 
 export default function StationMenu({ station }: { station: Station }) {
     const [tab, setTab] = useState(0);
@@ -22,16 +22,15 @@ export default function StationMenu({ station }: { station: Station }) {
 
     const detectors = locations.filter((l) => !!l.detector).map((l) => l.detector!);
 
-    const onBack = () => {
-        const sel = encodeSelectedIds(chState.selectedIds);
-        navigate({ pathname: "/hierarchy", search: "sel=" + sel });
+    const onRefresh = () => {
+        window.location.reload();
     };
 
     return (
         <Box display="flex" flexDirection="column" sx={{ height: "100%" }}>
             <Box display="flex" alignItems="center" sx={{ p: 1 }}>
-                <IconButton onClick={onBack} sx={{ mr: 1 }}>
-                    <ArrowBackIcon />
+                <IconButton onClick={onRefresh} sx={{ mr: 1 }}>
+                    <RefreshIcon />
                 </IconButton>
                 <Typography variant="h5">{station.name}</Typography>
             </Box>
@@ -70,14 +69,20 @@ export default function StationMenu({ station }: { station: Station }) {
                 }}
             >
                 <Grid container flexGrow={1} spacing={1} alignContent="flex-start">
-                    {locations.filter((l) => !!l.detector).map((l) => (<DetectorCard key={l.detector!.id} detector={l.detector!} location={l} />))}
+                    {locations
+                        .filter((l) => !!l.detector)
+                        .map((l) => (
+                            <DetectorCard
+                                key={l.detector!.id}
+                                detector={l.detector!}
+                                location={l}
+                            />
+                        ))}
                 </Grid>
             </TabPanel>
             <Divider />
             <Box>
-                <IconButton>
-                    <RefreshIcon />
-                </IconButton>
+                <IconButton></IconButton>
             </Box>
         </Box>
     );

@@ -129,7 +129,7 @@ export default function Dashboard() {
     }
 
     return (
-        <Grid container spacing={2} height="100%">
+        <Grid container spacing={2} height="100%" overflow={"hidden"}>
             <Grid display="flex" flexDirection="column" gap={2} item xs={12} xl={9}>
                 {detectionSuccessful.current ? (
                     <EndDetectionAlert location_id={location.id} />

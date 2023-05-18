@@ -29,11 +29,7 @@ export default function NavBar() {
         navigate({ pathname: "/signin" });
     };
 
-    const onLogo = () => {
-        navigate({ pathname: "/hierarchy" });
-    };
-
-    const onOrganization = () => {
+    const toHierarchy = () => {
         navigate({ pathname: "/hierarchy" });
     };
 
@@ -47,10 +43,6 @@ export default function NavBar() {
         navigate({ pathname: "/about" });
     };
 
-    const onClock = () => {
-        navigate({ pathname: "/caa" });
-    };
-
     return (
         <>
             <AppBar
@@ -59,7 +51,7 @@ export default function NavBar() {
             >
                 <Toolbar>
                     <Button sx={{ color: "white", fontSize: "1.2em" }}>
-                        <Typography component="div" variant="h5" onClick={onLogo}>
+                        <Typography component="div" variant="h5" onClick={toHierarchy}>
                             Production Line Monitoring
                         </Typography>
                     </Button>
@@ -86,18 +78,8 @@ export default function NavBar() {
                             sx={{ bgcolor: "white", mx: 1 }}
                         />
                         <Tooltip title="Organization">
-                            <IconButton onClick={onOrganization} sx={{ color: "white" }}>
+                            <IconButton onClick={toHierarchy} sx={{ color: "white" }}>
                                 <FactoryIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Dashboard">
-                            <IconButton onClick={onData} sx={{ color: "white" }}>
-                                <DashboardIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Data">
-                            <IconButton sx={{ color: "white" }}>
-                                <ListAltIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                         <Tooltip title="Files" onClick={onFiles}>
@@ -108,11 +90,6 @@ export default function NavBar() {
                         <Tooltip onClick={() => setOpenPopup(true)} title="About">
                             <IconButton sx={{ color: "white" }}>
                                 <InfoIcon fontSize="large" />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip onClick={onClock} title="CAA Emulator">
-                            <IconButton sx={{ color: "white" }}>
-                                <AccessTimeFilledIcon fontSize="large" />
                             </IconButton>
                         </Tooltip>
                     </Box>

@@ -1,7 +1,6 @@
 import About from "About";
 import { DetailedError } from "api";
 import FileManager from "components/FileManager/FileManager";
-import CAAEmulator from "components/_screens/CAAEmulator";
 import DetectorDetails, {
     loader as detectorDetailsLoader,
 } from "components/_screens/dashboard/DetectorDetails";
@@ -35,12 +34,6 @@ import Typography from "@mui/material/Typography";
 
 import App from "./App";
 import { CompanyHierarchyProvider } from "./companyHierarchyProvider";
-import CompanyHierarchy, {
-    loader as chLoader,
-} from "./components/_screens/company_hierarchy/CompanyHierarchy";
-import deleteCHNodeAction from "./components/_screens/company_hierarchy/delete";
-import editCHNodeAction from "./components/_screens/company_hierarchy/edit";
-import newCHNodeAction from "./components/_screens/company_hierarchy/new";
 import Dashboard, {
     loader as dashboardLocationLoader,
 } from "./components/_screens/dashboard/Dashboard";
@@ -132,19 +125,12 @@ function ErrorPage() {
 const router = createBrowserRouter(
     createRoutesFromElements(
         <>
-            <Route path="*" element={<Navigate to="/hierarchy" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard/1" replace />} />
             <Route element={<App />} errorElement={<ErrorPage />}>
                 <Route path="signin" element={<SignIn />}></Route>
-                <Route path="caa" element={<CAAEmulator />}></Route>
-                {/* <Route path="usermanager" element={<UserManager />}></Route> */}
+
                 <Route path="about" element={<About />}></Route>
                 <Route path="filemanager" element={<FileManager />}></Route>
-
-                <Route path="hierarchy" loader={chLoader} element={<CompanyHierarchy />}>
-                    <Route path="new" action={newCHNodeAction} />
-                    <Route path="edit" action={editCHNodeAction} />
-                    <Route path="delete" action={deleteCHNodeAction} />
-                </Route>
                 <Route path="dashboard" element={<DashboardNoStation />} />
                 <Route path="task">
                     <Route

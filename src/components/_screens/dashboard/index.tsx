@@ -47,8 +47,8 @@ export function DashboardNoStation() {
             null,
             (
                 <Typography fontSize="1em">
-                    No station is selected. Please select a station{" "}
-                    <Link to="/hierarchy">here.</Link>
+                    No station is selected. Please go to a station{" "}
+                    <Link to="/dashboar/1">here.</Link>
                 </Typography>
             )
         );
