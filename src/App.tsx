@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { User } from "types";
 
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 
 import "./App.css";
 import { setupInterceptors } from "./api";
@@ -20,6 +20,7 @@ export const GlobalContext = createContext<{
 
 export default function App() {
     const [user, setUser] = useState<User | null>(null);
+    const isOverflowHidden = useMediaQuery("(min-width: 1900px) and (max-width: 1921px)");
 
     const { enqueueSnackbar } = useSnackbar();
 
@@ -66,7 +67,14 @@ export default function App() {
                 setUser,
             }}
         >
-            <Box sx={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+            <Box
+                sx={{
+                    height: "100vh",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: isOverflowHidden ? "hidden" : "auto",
+                }}
+            >
                 <NavBar />
                 <Box sx={{ flexGrow: 1 }}>
                     <Outlet />
