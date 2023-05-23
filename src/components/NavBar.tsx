@@ -52,7 +52,7 @@ export default function NavBar() {
                 <Toolbar>
                     <Button sx={{ color: "white", fontSize: "1.2em" }}>
                         <Typography component="div" variant="h5" onClick={toHierarchy}>
-                            Production Line Monitoring
+                            Production Line Monitoring Mini
                         </Typography>
                     </Button>
                     <Box display="flex" gap={2} sx={{ ml: "auto" }}>
